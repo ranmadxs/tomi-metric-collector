@@ -6,6 +6,10 @@ app = Flask(__name__)
 metricas = []
 logs = []
 
+@app.route('/')
+def hola_mundo():
+    return "Hola Mundo", 200
+
 @app.route('/metrics', methods=['POST'])
 def guardar_metrica():
     data = request.json
