@@ -10,6 +10,9 @@ packages = [{include = "tomi_metrics"}]
 python = "^3.13"
 flask = "^3.0.3"
 gunicorn = "^23.0.0"
+requests = "^2.32.3"
+python-dotenv = "^1.0.1"
+pymongo = "^4.10.1"
 
 [build-system]
 requires = ["poetry-core"]

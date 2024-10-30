@@ -1,50 +1,112 @@
 from flask import Flask, request, jsonify
+import requests
+from pymongo import MongoClient
+import os
+from dotenv import load_dotenv
+from datetime import datetime
+
+# Cargar las variables de entorno desde el archivo .env
+load_dotenv()
 
 app = Flask(__name__)
 
 # Variables en memoria para almacenar los datos
-metricas = []
+metrics = []
 logs = []
 
+# Configuración de DataDog y MongoDB desde variables de entorno
+DATADOG_API_URL = "https://api.datadoghq.com/api/v1/series"
+DATADOG_API_KEY = os.getenv("DATADOG_API_KEY")  # Lee la API Key de DataDog desde variables de entorno
+MONGO_URI = os.getenv("MONGO_URI")  # Lee la URI de MongoDB desde variables de entorno
+
+# Conexión a MongoDB
+mongo_client = MongoClient(MONGO_URI)
+db = mongo_client["aia-db"]  # Reemplaza "database_name" con el nombre de tu base de datos
+logs_collection = db["tomi-logs"]  # Colección para guardar los logs
+
+
+def send_metric_to_datadog(metric_name, tags):
+    """
+    Función para enviar métricas a la API de DataDog.
+    """
+    headers = {
+        "Content-Type": "application/json",
+        "DD-API-KEY": DATADOG_API_KEY
+    }
+    payload = {
+        "series": [
+            {
+                "metric": metric_name,
+                "points": [[int(requests.utils.datetime_to_timestamp(requests.utils.datetime.now())), 1]],
+                "tags": [f"{tag['key']}:{tag['value']}" for tag in tags]
+            }
+        ]
+    }
+
+    response = requests.post(DATADOG_API_URL, json=payload, headers=headers)
+    return response.status_code, response.json()
+
+
+def save_log_to_mongodb(message, level, log_date):
+    """
+    Función para almacenar logs en MongoDB.
+    """
+    log = {
+        "message": message,
+        "level": level,
+        "date": log_date
+    }
+    logs_collection.insert_one(log)
+
+
 @app.route('/')
-def hola_mundo():
+def hello_world():
     return "Hola Mundo", 200
 
+
 @app.route('/metrics', methods=['POST'])
-def guardar_metrica():
+def save_metric():
     data = request.json
-    nombre_metrica = data.get('name')
+    metric_name = data.get('name')
     tags = data.get('tags')
 
-    if not nombre_metrica:
-        return jsonify({"error": "metric name required"}), 400
+    if not metric_name:
+        return '', 400
 
     # Verificación de la estructura de cada tag
     if not isinstance(tags, list) or not all(isinstance(tag, dict) and "key" in tag and "value" in tag for tag in tags):
-        return jsonify({"error": "Cada tag debe ser un diccionario con 'key' y 'value'"}), 400
+        return '', 400
 
-    metrica = {
-        "name": nombre_metrica,
+    # Llamada a DataDog
+    status_code, response = send_metric_to_datadog(metric_name, tags)
+    if status_code != 202:
+        return '', status_code
+
+    metric = {
+        "name": metric_name,
         "tags": tags
     }
-    metricas.append(metrica)
-    return jsonify({"message": "Metric Saved", "data": metrica}), 201
+    metrics.append(metric)
+    return jsonify({"message": "Metric saved ok"}), 201  # Devuelve un mensaje de éxito en el cuerpo
+
 
 @app.route('/log', methods=['POST'])
-def guardar_log():
+def save_log():
     data = request.json
-    mensaje = data.get('message')
-    severidad = data.get('level')
+    message = data.get('message')
+    level = data.get('level')
+    log_date = data.get('date', datetime.utcnow().isoformat())  # Usa la fecha actual si no se proporciona una
 
-    if not mensaje or not severidad:
-        return jsonify({"error": "Mensaje y severidad son requeridos"}), 400
+    if not message or not level:
+        return '', 400
 
-    log = {
-        "message": mensaje,
-        "level": severidad
-    }
-    logs.append(log)
-    return jsonify({"message": "Log saved", "data": log}), 201
+    try:
+        # Guardar log en MongoDB
+        save_log_to_mongodb(message, level, log_date)
+        return jsonify({"message": "Log saved ok"}), 201  # Devuelve un mensaje de éxito en el cuerpo
+    except Exception as e:
+        return '', 500  # Devuelve solo el código de error sin cuerpo en caso de fallo
+
 
 if __name__ == '__main__':
     app.run(debug=True)
