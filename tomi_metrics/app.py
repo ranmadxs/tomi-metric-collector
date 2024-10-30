@@ -17,7 +17,7 @@ logs = []
 # Configuración de DataDog y MongoDB desde variables de entorno
 DATADOG_API_URL = "https://api.datadoghq.com/api/v1/series"
 DATADOG_API_KEY = os.getenv("DATADOG_API_KEY")  # Lee la API Key de DataDog desde variables de entorno
-MONGO_URI = os.getenv("MONGO_URI")  # Lee la URI de MongoDB desde variables de entorno
+MONGO_URI = os.getenv("MONGODB_URI")  # Lee la URI de MongoDB desde variables de entorno
 
 # Conexión a MongoDB
 mongo_client = MongoClient(MONGO_URI)
