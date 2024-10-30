@@ -58,6 +58,7 @@ def save_log_to_mongodb(message, level, log_date, service):
         "service": service
     }
     try:
+        print(f"MONGO_URI={MONGO_URI}")
         logs_collection.insert_one(log)
         print("Log insertado en MongoDB correctamente.")
     except Exception as e:
@@ -104,7 +105,7 @@ def save_log():
     level = data.get('level')
     service = data.get('service')
     log_date = data.get('date', datetime.utcnow().isoformat())  # Usa la fecha actual si no se proporciona una
-
+    print(MONGO_URI)
     # Validación de campos obligatorios
     if not message or not level or not service:
         return '', 400
