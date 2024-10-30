@@ -34,7 +34,18 @@ curl -X POST http://localhost:5000/log \
 ### tomi-metric-collector-production.up.railway.app
 
 ```sh
-curl -X POST http://tomi-metric-collector-production.up.railway.app/log \
+
+curl -X POST https://tomi-metric-collector-production.up.railway.app/metrics \
+     -H "Content-Type: application/json" \
+     -d '{
+           "name": "tomi.metric.collector.test.counter",
+           "tags": [
+             {"key": "tag1", "value": "valor1asdas"},
+             {"key": "tag2", "value": "valor2wedaw"}
+           ]
+         }'
+
+curl -X POST https://tomi-metric-collector-production.up.railway.app/log \
      -H "Content-Type: application/json" \
      -d '{
            "message": "An error occurred",

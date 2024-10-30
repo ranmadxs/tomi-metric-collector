@@ -57,7 +57,13 @@ def save_log_to_mongodb(message, level, log_date, service):
         "date": log_date,
         "service": service
     }
-    logs_collection.insert_one(log)
+    try:
+        logs_collection.insert_one(log)
+        print("Log insertado en MongoDB correctamente.")
+    except Exception as e:
+        print(f"Error al insertar el log en MongoDB: {e}")
+        raise
+
 
 
 @app.route('/')
