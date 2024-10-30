@@ -26,7 +26,39 @@ curl -X POST http://localhost:5000/log \
      -d '{
            "message": "An error occurred",
            "level": "error",
+           "service": "test",
            "date": "2024-10-28T12:34:56"
          }'
 
 ```
+### tomi-metric-collector-production.up.railway.app
+
+```sh
+curl -X POST http://tomi-metric-collector-production.up.railway.app/log \
+     -H "Content-Type: application/json" \
+     -d '{
+           "message": "An error occurred",
+           "level": "error",
+           "service": "test",
+           "date": "2024-10-28T12:34:56"
+         }'
+
+
+curl -o /dev/null -s -w "%{http_code}\n" -X POST http://tomi-metric-collector-production.up.railway.app/log \
+     -H "Content-Type: application/json" \
+     -d '{
+           "message": "System initialized",
+           "level": "info",
+           "service": "test"
+         }'
+
+curl -X POST https://tomi-metric-collector-production.up.railway.app/log \
+     -H "Content-Type: application/json" \
+     -d '{
+           "message": "System started",
+           "service": "test",
+           "level": "info"
+         }'
+
+```
+

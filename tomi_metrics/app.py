@@ -21,7 +21,7 @@ MONGO_URI = os.getenv("MONGO_URI")  # Lee la URI de MongoDB desde variables de e
 
 # Conexión a MongoDB
 mongo_client = MongoClient(MONGO_URI)
-db = mongo_client["aia-db"]  # Reemplaza "database_name" con el nombre de tu base de datos
+db = mongo_client["tomi-db"]  # Reemplaza "database_name" con el nombre de tu base de datos
 logs_collection = db["tomi-logs"]  # Colección para guardar los logs
 
 
@@ -37,7 +37,7 @@ def send_metric_to_datadog(metric_name, tags):
         "series": [
             {
                 "metric": metric_name,
-                "points": [[int(requests.utils.datetime_to_timestamp(requests.utils.datetime.now())), 1]],
+                "points": [[int(datetime.now().timestamp()), 1]],  # Utiliza datetime.now().timestamp() para el timestamp
                 "tags": [f"{tag['key']}:{tag['value']}" for tag in tags]
             }
         ]
@@ -47,14 +47,15 @@ def send_metric_to_datadog(metric_name, tags):
     return response.status_code, response.json()
 
 
-def save_log_to_mongodb(message, level, log_date):
+def save_log_to_mongodb(message, level, log_date, service):
     """
     Función para almacenar logs en MongoDB.
     """
     log = {
         "message": message,
         "level": level,
-        "date": log_date
+        "date": log_date,
+        "service": service
     }
     logs_collection.insert_one(log)
 
@@ -95,14 +96,16 @@ def save_log():
     data = request.json
     message = data.get('message')
     level = data.get('level')
+    service = data.get('service')
     log_date = data.get('date', datetime.utcnow().isoformat())  # Usa la fecha actual si no se proporciona una
 
-    if not message or not level:
+    # Validación de campos obligatorios
+    if not message or not level or not service:
         return '', 400
 
     try:
         # Guardar log en MongoDB
-        save_log_to_mongodb(message, level, log_date)
+        save_log_to_mongodb(message, level, log_date, service)
         return jsonify({"message": "Log saved ok"}), 201  # Devuelve un mensaje de éxito en el cuerpo
     except Exception as e:
         return '', 500  # Devuelve solo el código de error sin cuerpo en caso de fallo
