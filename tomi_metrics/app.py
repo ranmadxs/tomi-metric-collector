@@ -21,13 +21,12 @@ MONGO_URI = os.getenv("MONGODB_URI")  # Lee la URI de MongoDB desde variables de
 
 # Conexión a MongoDB
 mongo_client = MongoClient(MONGO_URI)
-db = mongo_client["tomi-db"]  # Reemplaza "database_name" con el nombre de tu base de datos
-logs_collection = db["tomi-logs"]  # Colección para guardar los logs
+db = mongo_client["tomi-db"]
+logs_collection = db["tomi-logs"]
 
-
-def send_metric_to_datadog(metric_name, tags):
+def send_metric_to_datadog(metric_name, tags, count):
     """
-    Función para enviar métricas a la API de DataDog.
+    Función para enviar métricas a la API de DataDog con soporte para la cantidad de ocurrencias.
     """
     headers = {
         "Content-Type": "application/json",
@@ -37,7 +36,7 @@ def send_metric_to_datadog(metric_name, tags):
         "series": [
             {
                 "metric": metric_name,
-                "points": [[int(datetime.now().timestamp()), 1]],  # Utiliza datetime.now().timestamp() para el timestamp
+                "points": [[int(datetime.now().timestamp()), count]],  # Utiliza el parámetro count
                 "tags": [f"{tag['key']}:{tag['value']}" for tag in tags]
             }
         ]
@@ -45,7 +44,6 @@ def send_metric_to_datadog(metric_name, tags):
 
     response = requests.post(DATADOG_API_URL, json=payload, headers=headers)
     return response.status_code, response.json()
-
 
 def save_log_to_mongodb(message, level, log_date, service):
     """
@@ -58,25 +56,22 @@ def save_log_to_mongodb(message, level, log_date, service):
         "service": service
     }
     try:
-        print(f"MONGO_URI={MONGO_URI}")
         logs_collection.insert_one(log)
         print("Log insertado en MongoDB correctamente.")
     except Exception as e:
         print(f"Error al insertar el log en MongoDB: {e}")
         raise
 
-
-
 @app.route('/')
 def hello_world():
     return "Hola Mundo", 200
-
 
 @app.route('/metrics', methods=['POST'])
 def save_metric():
     data = request.json
     metric_name = data.get('name')
     tags = data.get('tags')
+    count = data.get('count', 1)  # Lee el parámetro count o usa 1 como valor predeterminado
 
     if not metric_name:
         return '', 400
@@ -85,18 +80,18 @@ def save_metric():
     if not isinstance(tags, list) or not all(isinstance(tag, dict) and "key" in tag and "value" in tag for tag in tags):
         return '', 400
 
-    # Llamada a DataDog
-    status_code, response = send_metric_to_datadog(metric_name, tags)
+    # Llamada a DataDog con el nuevo parámetro count
+    status_code, response = send_metric_to_datadog(metric_name, tags, count)
     if status_code != 202:
         return '', status_code
 
     metric = {
         "name": metric_name,
-        "tags": tags
+        "tags": tags,
+        "count": count
     }
     metrics.append(metric)
     return jsonify({"message": "Metric saved ok"}), 201  # Devuelve un mensaje de éxito en el cuerpo
-
 
 @app.route('/log', methods=['POST'])
 def save_log():
@@ -104,8 +99,8 @@ def save_log():
     message = data.get('message')
     level = data.get('level')
     service = data.get('service')
-    log_date = data.get('date', datetime.utcnow().isoformat())  # Usa la fecha actual si no se proporciona una
-    print(MONGO_URI)
+    log_date = data.get('date', datetime.utcnow().isoformat())
+
     # Validación de campos obligatorios
     if not message or not level or not service:
         return '', 400
@@ -116,7 +111,6 @@ def save_log():
         return jsonify({"message": "Log saved ok"}), 201  # Devuelve un mensaje de éxito en el cuerpo
     except Exception as e:
         return '', 500  # Devuelve solo el código de error sin cuerpo en caso de fallo
-
 
 if __name__ == '__main__':
     app.run(debug=True)

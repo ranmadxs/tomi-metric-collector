@@ -13,6 +13,7 @@ curl -X POST http://localhost:5000/metrics \
      -H "Content-Type: application/json" \
      -d '{
            "name": "cpu_usage",
+           "count": 3,
            "tags": [
              {"key": "host", "value": "server1"},
              {"key": "environment", "value": "production"}
@@ -39,6 +40,7 @@ curl -X POST https://tomi-metric-collector-production.up.railway.app/metrics \
      -H "Content-Type: application/json" \
      -d '{
            "name": "tomi.metric.collector.test.counter",
+           "count": 1,
            "tags": [
              {"key": "tag1", "value": "valor1asdas"},
              {"key": "tag2", "value": "valor2wedaw"}
