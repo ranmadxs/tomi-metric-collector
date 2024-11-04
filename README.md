@@ -32,13 +32,26 @@ curl -X POST http://localhost:5000/metrics \
 curl -X POST http://localhost:5000/log \
      -H "Content-Type: application/json" \
      -d '{
+           "message": "An info occurred",
+           "level": "info",
+           "service": "test",
+           "ddsource": "python",
+           "hostname": "localhost",
+           "tags": ["env:test"],
+           "date": "2024-11-04T15:35:56"
+         }'
+
+
+curl -X POST http://localhost:5000/log \
+     -H "Content-Type: application/json" \
+     -d '{
            "message": "An error occurred",
            "level": "error",
            "service": "test",
            "ddsource": "python",
            "hostname": "localhost",
            "tags": ["env:production"],
-           "date": "2024-10-28T12:34:56"
+           "date": "2024-11-04T14:34:56"
          }'
 ```
 
@@ -48,8 +61,8 @@ curl -X POST http://localhost:5000/log \
 curl -X POST https://tomi-metric-collector-production.up.railway.app/metrics \
      -H "Content-Type: application/json" \
      -d '{
-           "metric": "tomi.metric.collector.test.counter",
-           "points": [[1700749200, 1]],
+           "metric": "tomi.metric.collector.test3.counter",
+           "points": [[1730746325, 1]],
            "tags": ["tag1:valor1asdas", "tag2:valor2wedaw"]
          }'
 ```

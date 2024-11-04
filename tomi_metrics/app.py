@@ -18,7 +18,8 @@ logs = []
 DATADOG_API_URL = "https://api.datadoghq.com/api/v1/series?api_key="
 DATADOG_API_KEY = os.getenv("DATADOG_API_KEY")  # Lee la API Key de DataDog desde variables de entorno
 MONGO_URI = os.getenv("MONGODB_URI")  # Lee la URI de MongoDB desde variables de entorno
-ENABLE_SEND_LOG_TO_DATADOG = False  # Flag para habilitar/deshabilitar el envío de logs a DataDog
+# Flag para habilitar/deshabilitar el envío de logs a DataDog desde variables de entorno
+ENABLE_SEND_LOG_TO_DATADOG = os.getenv("ENABLE_SEND_LOG_TO_DATADOG", "False").lower() == "true"
 
 # Conexión a MongoDB
 mongo_client = MongoClient(MONGO_URI)
@@ -46,14 +47,14 @@ def send_metric_to_datadog(metric_name, tags, points):
     print(f"{response.status_code} {response.json()}")
     return response.status_code, response.json()
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 def save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, tags):
     """
     Función para almacenar logs en MongoDB con la estructura completa y con fecha de creación automática.
     """
     # Obtener la fecha y hora actual en formato datetime para MongoDB
-    created_at = datetime.utcnow()
+    created_at = datetime.now(timezone.utc)
     
     # Convertir log_date a datetime si es una cadena en el formato especificado
     if isinstance(log_date, str):
