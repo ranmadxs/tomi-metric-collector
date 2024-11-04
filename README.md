@@ -1,26 +1,20 @@
-README.md
-
 ```sh {"id":"01HJQ7F9RXZBJJ4YEQA7Q49GYF"}
 poetry run python tomi_metrics/app.py
 
 
 poetry run gunicorn -w 4 -b 0.0.0.0:8000 tomi_metrics.app:app --reload
-
 ```
 
 ```sh
 curl -X POST http://localhost:5000/metrics \
      -H "Content-Type: application/json" \
      -d '{
-           "name": "cpu_usage",
-           "count": 3,
-           "tags": [
-             {"key": "host", "value": "server1"},
-             {"key": "environment", "value": "production"}
-           ]
+           "metric": "cpu_usage",
+           "points": [[1700749200, 0.5]],
+           "tags": ["host:server1", "environment:production"]
          }'
-
 ```
+
 ```sh
 curl -X POST http://localhost:5000/log \
      -H "Content-Type: application/json" \
@@ -30,23 +24,21 @@ curl -X POST http://localhost:5000/log \
            "service": "test",
            "date": "2024-10-28T12:34:56"
          }'
-
 ```
+
 ### tomi-metric-collector-production.up.railway.app
 
 ```sh
-
 curl -X POST https://tomi-metric-collector-production.up.railway.app/metrics \
      -H "Content-Type: application/json" \
      -d '{
-           "name": "tomi.metric.collector.test.counter",
-           "count": 1,
-           "tags": [
-             {"key": "tag1", "value": "valor1asdas"},
-             {"key": "tag2", "value": "valor2wedaw"}
-           ]
+           "metric": "tomi.metric.collector.test.counter",
+           "points": [[1700749200, 1]],
+           "tags": ["tag1:valor1asdas", "tag2:valor2wedaw"]
          }'
+```
 
+```sh
 curl -X POST https://tomi-metric-collector-production.up.railway.app/log \
      -H "Content-Type: application/json" \
      -d '{
@@ -55,8 +47,9 @@ curl -X POST https://tomi-metric-collector-production.up.railway.app/log \
            "service": "test",
            "date": "2024-10-28T12:34:56"
          }'
+```
 
-
+```sh
 curl -o /dev/null -s -w "%{http_code}\n" -X POST http://tomi-metric-collector-production.up.railway.app/log \
      -H "Content-Type: application/json" \
      -d '{
@@ -64,7 +57,9 @@ curl -o /dev/null -s -w "%{http_code}\n" -X POST http://tomi-metric-collector-pr
            "level": "info",
            "service": "test"
          }'
+```
 
+```sh
 curl -X POST https://tomi-metric-collector-production.up.railway.app/log \
      -H "Content-Type: application/json" \
      -d '{
@@ -72,6 +67,4 @@ curl -X POST https://tomi-metric-collector-production.up.railway.app/log \
            "service": "test",
            "level": "info"
          }'
-
 ```
-

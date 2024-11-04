@@ -24,9 +24,9 @@ mongo_client = MongoClient(MONGO_URI)
 db = mongo_client["tomi-db"]
 logs_collection = db["tomi-logs"]
 
-def send_metric_to_datadog(metric_name, tags, count):
+def send_metric_to_datadog(metric_name, tags, points):
     """
-    Función para enviar métricas a la API de DataDog con soporte para la cantidad de ocurrencias.
+    Función para enviar métricas a la API de DataDog con soporte para puntos específicos.
     """
     headers = {
         "Content-Type": "application/json",
@@ -36,8 +36,8 @@ def send_metric_to_datadog(metric_name, tags, count):
         "series": [
             {
                 "metric": metric_name,
-                "points": [[int(datetime.now().timestamp()), count]],  # Utiliza el parámetro count
-                "tags": [f"{tag['key']}:{tag['value']}" for tag in tags]
+                "points": points,  # Utiliza el parámetro points que incluye el timestamp y valor
+                "tags": tags
             }
         ]
     }
@@ -69,26 +69,23 @@ def hello_world():
 @app.route('/metrics', methods=['POST'])
 def save_metric():
     data = request.json
-    metric_name = data.get('name')
-    tags = data.get('tags')
-    count = data.get('count', 1)  # Lee el parámetro count o usa 1 como valor predeterminado
+    metric_name = data.get('metric')
+    points = data.get('points')
+    tags = data.get('tags', [])
 
-    if not metric_name:
+    # Validación de la estructura
+    if not metric_name or not isinstance(points, list) or not all(isinstance(tag, str) for tag in tags):
         return '', 400
 
-    # Verificación de la estructura de cada tag
-    if not isinstance(tags, list) or not all(isinstance(tag, dict) and "key" in tag and "value" in tag for tag in tags):
-        return '', 400
-
-    # Llamada a DataDog con el nuevo parámetro count
-    status_code, response = send_metric_to_datadog(metric_name, tags, count)
+    # Enviar a DataDog con los datos en el formato esperado
+    status_code, response = send_metric_to_datadog(metric_name, tags, points)
     if status_code != 202:
         return '', status_code
 
     metric = {
-        "name": metric_name,
-        "tags": tags,
-        "count": count
+        "metric": metric_name,
+        "points": points,
+        "tags": tags
     }
     metrics.append(metric)
     return jsonify({"message": "Metric saved ok"}), 201  # Devuelve un mensaje de éxito en el cuerpo
