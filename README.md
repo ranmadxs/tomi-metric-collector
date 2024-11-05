@@ -94,7 +94,7 @@ curl -X POST http://localhost:5000/logs -H "Content-Type: application/json" -d '
       "ddsource": "python",
       "hostname": "localhost",
       "tags": ["env:production"],
-      "date": "2024-11-05T19:38:56"
+      "date": "2024-11-05T20:20:56"
     }
   ]
 }'

@@ -133,7 +133,7 @@ def save_logs():
     for log in logs_array:
         executor.submit(process_log_entry_safe, log)
 
-    return jsonify({"message": "Todos los logs han sido recibidos y están en proceso"}), 202
+    return jsonify({"message": "Todos los logs han sido recibidos y estan en proceso"}), 202
 
 def save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, tags):
     if not ENABLE_MONGO_DB:
