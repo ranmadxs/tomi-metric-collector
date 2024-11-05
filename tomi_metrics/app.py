@@ -3,7 +3,7 @@ import requests
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Cargar las variables de entorno desde el archivo .env
 load_dotenv()
@@ -16,20 +16,17 @@ logs = []
 
 # Configuración de DataDog y MongoDB desde variables de entorno
 DATADOG_API_URL = "https://api.datadoghq.com/api/v1/series?api_key="
-DATADOG_API_KEY = os.getenv("DATADOG_API_KEY")  # Lee la API Key de DataDog desde variables de entorno
-MONGO_URI = os.getenv("MONGODB_URI")  # Lee la URI de MongoDB desde variables de entorno
-# Flag para habilitar/deshabilitar el envío de logs a DataDog desde variables de entorno
+DATADOG_API_KEY = os.getenv("DATADOG_API_KEY")  # API Key de DataDog desde variables de entorno
+MONGO_URI = os.getenv("MONGODB_URI")  # URI de MongoDB desde variables de entorno
 ENABLE_SEND_LOG_TO_DATADOG = os.getenv("ENABLE_SEND_LOG_TO_DATADOG", "False").lower() == "true"
+ENABLE_MONGO_DB = os.getenv("ENABLE_MONGO_DB", "False").lower() == "true"  # Default False para métricas y logs
 
 # Conexión a MongoDB
 mongo_client = MongoClient(MONGO_URI)
 db = mongo_client["tomi-db"]
 logs_collection = db["tomi-logs"]
-
+dmMetrics = db["tomi-metrics"]
 def send_metric_to_datadog(metric_name, tags, points):
-    """
-    Función para enviar métricas a la API de DataDog con soporte para puntos específicos.
-    """
     headers = {
         "Content-Type": "application/json"
     }
@@ -47,28 +44,41 @@ def send_metric_to_datadog(metric_name, tags, points):
     print(f"{response.status_code} {response.json()}")
     return response.status_code, response.json()
 
-from datetime import datetime, timezone
+def send_metric_to_mongodb(metric_name, tags, points):
+    if not ENABLE_MONGO_DB:
+        return  # Salir si el almacenamiento en MongoDB está deshabilitado
+
+    metric = {
+        "metric": metric_name,
+        "points": points,
+        "tags": tags,
+        "created_at": datetime.now(timezone.utc)  # Fecha de creación en UTC
+    }
+
+    try:
+        dmMetrics.insert_one(metric)
+        print("Métrica insertada en MongoDB correctamente.")
+    except Exception as e:
+        print(f"Error al insertar la métrica en MongoDB: {e}")
+        raise
 
 def save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, tags):
-    """
-    Función para almacenar logs en MongoDB con la estructura completa y con fecha de creación automática.
-    """
-    # Obtener la fecha y hora actual en formato datetime para MongoDB
+    if not ENABLE_MONGO_DB:
+        return  # Salir si el almacenamiento de logs en MongoDB está deshabilitado
+
     created_at = datetime.now(timezone.utc)
     
-    # Convertir log_date a datetime si es una cadena en el formato especificado
     if isinstance(log_date, str):
         try:
             log_date = datetime.strptime(log_date, '%Y-%m-%dT%H:%M:%S')
         except ValueError:
             print("Error: log_date no tiene el formato correcto. Usando fecha actual.")
-            log_date = created_at  # Usa la fecha actual si el formato no coincide
+            log_date = created_at
     elif log_date is None:
-        log_date = created_at  # Usa la fecha actual si no se proporciona log_date
+        log_date = created_at
 
-    # Procesar tags: si es una cadena, dividirla en una lista
     if isinstance(tags, str):
-        tags = tags.split(',')  # Divide los tags en una lista si están en una cadena separada por comas
+        tags = tags.split(',')
 
     log = {
         "message": message,
@@ -77,7 +87,7 @@ def save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, t
         "service": service,
         "ddsource": ddsource,
         "hostname": hostname,
-        "tags": tags,           # Almacenar los tags como una lista de strings
+        "tags": tags,
         "created_at": created_at
     }
     try:
@@ -87,12 +97,7 @@ def save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, t
         print(f"Error al insertar el log en MongoDB: {e}")
         raise
 
-
-
 def send_log_to_datadog(log_entry):
-    """
-    Función para enviar logs a DataDog solo si el flag ENABLE_SEND_LOG_TO_DATADOG está habilitado.
-    """
     if not ENABLE_SEND_LOG_TO_DATADOG:
         return  # Salir si el envío está deshabilitado
 
@@ -122,14 +127,14 @@ def save_metric():
     points = data.get('points')
     tags = data.get('tags', [])
 
-    # Validación de la estructura
     if not metric_name or not isinstance(points, list) or not all(isinstance(tag, str) for tag in tags):
         return '', 400
 
-    # Enviar a DataDog con los datos en el formato esperado
     status_code, response = send_metric_to_datadog(metric_name, tags, points)
     if status_code != 202:
         return '', status_code
+
+    send_metric_to_mongodb(metric_name, tags, points)
 
     metric = {
         "metric": metric_name,
@@ -150,11 +155,9 @@ def save_log():
     tags = data.get('tags', [])
     log_date = data.get('date', datetime.utcnow().isoformat())
 
-    # Validación de campos obligatorios
     if not message or not service:
         return '', 400
 
-    # Crear el log en el formato esperado por DataDog
     log_entry = {
         "message": message,
         "ddsource": ddsource,
@@ -165,14 +168,12 @@ def save_log():
         "date": log_date
     }
 
-    # Guardar en MongoDB con el nuevo formato
     try:
         save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, tags)
     except Exception as e:
         print(f"Error al insertar el log en MongoDB: {e}")
         return '', 500
 
-    # Enviar log a DataDog
     send_log_to_datadog(log_entry)
 
     return jsonify({"message": "Log saved ok"}), 201
