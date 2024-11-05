@@ -4,6 +4,7 @@ from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timezone
+from concurrent.futures import ThreadPoolExecutor
 
 # Cargar las variables de entorno desde el archivo .env
 load_dotenv()
@@ -27,6 +28,9 @@ db = mongo_client["tomi-db"]
 logs_collection = db["tomi-logs"]
 dmMetrics = db["tomi-metrics"]
 
+# Crear un ejecutor de hilos con un número específico de trabajadores
+executor = ThreadPoolExecutor(max_workers=10)
+
 def send_metric_to_datadog(series):
     headers = {
         "Content-Type": "application/json"
@@ -34,9 +38,13 @@ def send_metric_to_datadog(series):
     payload = {
         "series": series
     }
-    response = requests.post(DATADOG_API_URL + DATADOG_API_KEY, json=payload, headers=headers)
-    print(f"{response.status_code} {response.json()}")
-    return response.status_code, response.json()
+    try:
+        response = requests.post(DATADOG_API_URL + DATADOG_API_KEY, json=payload, headers=headers)
+        print(f"{response.status_code} {response.json()}")
+        return response.status_code, response.json()
+    except Exception as e:
+        print(f"Error al enviar métricas a DataDog: {e}")
+        return 500, {"error": str(e)}
 
 def send_metric_to_mongodb(series):
     if not ENABLE_MONGO_DB:
@@ -76,6 +84,14 @@ def process_log_entry(data):
     save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, tags)
     send_log_to_datadog(log_entry)
 
+def process_log_entry_safe(data):
+    try:
+        process_log_entry(data)
+    except ValueError as e:
+        print(f"Error de valor en el log: {e}")
+    except Exception as e:
+        print(f"Error inesperado al procesar el log: {e}")
+
 @app.route('/')
 def hello_world():
     return "Hola Mundo", 200
@@ -88,28 +104,23 @@ def save_metric():
     if not series or not isinstance(series, list):
         return jsonify({"error": "Formato de datos incorrecto"}), 400
 
-    # Enviar las métricas a DataDog y MongoDB
-    status_code, response = send_metric_to_datadog(series)
-    if status_code != 202:
-        return '', status_code
-
-    send_metric_to_mongodb(series)
+    # Enviar las métricas a DataDog y MongoDB en segundo plano
+    executor.submit(send_metric_to_datadog, series)
+    executor.submit(send_metric_to_mongodb, series)
 
     metrics.extend(series)
-    return jsonify({"message": "Metric saved ok"}), 201
+    return jsonify({"message": "Metric recibido y en proceso"}), 202
 
 @app.route('/log', methods=['POST'])
 def save_log():
     data = request.json
-    try:
-        process_log_entry(data)
-    except ValueError as e:
-        return jsonify({"error": str(e)}), 400
-    except Exception as e:
-        print(f"Error al procesar el log: {e}")
-        return jsonify({"error": "Error al guardar el log"}), 500
+    if not data:
+        return jsonify({"error": "No se proporcionaron datos"}), 400
 
-    return jsonify({"message": "Log saved ok"}), 201
+    # Enviar la tarea al ejecutor de hilos
+    executor.submit(process_log_entry_safe, data)
+
+    return jsonify({"message": "Log recibido y en proceso"}), 202
 
 @app.route('/logs', methods=['POST'])
 def save_logs():
@@ -120,15 +131,9 @@ def save_logs():
         return jsonify({"error": "Formato de datos incorrecto"}), 400
 
     for log in logs_array:
-        try:
-            process_log_entry(log)
-        except ValueError as e:
-            return jsonify({"error": str(e)}), 400
-        except Exception as e:
-            print(f"Error al procesar el log: {e}")
-            return jsonify({"error": "Error al guardar el log"}), 500
+        executor.submit(process_log_entry_safe, log)
 
-    return jsonify({"message": "Todos los logs se han guardado correctamente"}), 201
+    return jsonify({"message": "Todos los logs han sido recibidos y están en proceso"}), 202
 
 def save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, tags):
     if not ENABLE_MONGO_DB:
@@ -147,7 +152,7 @@ def save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, t
 
     if isinstance(tags, str):
         tags = tags.split(',')
-
+    print(log_date)
     log = {
         "message": message,
         "level": level,
@@ -181,6 +186,8 @@ def send_log_to_datadog(log_entry):
         )
         if datadog_response.status_code != 200:
             print(f"Error al enviar el log a DataDog: Status {datadog_response.status_code}")
+        else:
+            print("Log enviado a DataDog correctamente")
     except Exception as e:
         print(f"Error al enviar el log a DataDog: {e}")
 

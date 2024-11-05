@@ -33,8 +33,7 @@ curl -X POST http://localhost:5000/log -H "Content-Type: application/json" -d '{
   "service": "test",
   "ddsource": "python",
   "hostname": "localhost",
-  "tags": ["env:production"],
-  "date": "2024-11-04T14:34:56"
+  "tags": ["env:production"]
 }'
 
 curl -X POST https://tomi-metric-collector-production.up.railway.app/metrics -H "Content-Type: application/json" -d '{
@@ -76,26 +75,26 @@ curl -X POST https://tomi-metric-collector-production.up.railway.app/log -H "Con
   "tags": ["env:production"]
 }'
 
-# Nuevo endpoint para enviar un arreglo de logs
+# Nuevo endpoint para enviar un arreglo de logs https://tomi-metric-collector-production.up.railway.app
 curl -X POST http://localhost:5000/logs -H "Content-Type: application/json" -d '{
   "logs": [
     {
-      "message": "First log message",
+      "message": "First log message11",
       "level": "info",
       "service": "test",
       "ddsource": "python",
       "hostname": "localhost",
-      "tags": ["env:test"],
-      "date": "2024-11-04T15:35:56"
+      "tags": ["env:test"]
+
     },
     {
-      "message": "Second log message",
+      "message": "Second log message22",
       "level": "error",
       "service": "test",
       "ddsource": "python",
       "hostname": "localhost",
       "tags": ["env:production"],
-      "date": "2024-11-04T14:34:56"
+      "date": "2024-11-05T19:38:56"
     }
   ]
 }'
