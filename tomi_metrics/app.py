@@ -51,6 +51,31 @@ def send_metric_to_mongodb(series):
             print(f"Error al insertar la métrica en MongoDB: {e}")
             raise
 
+def process_log_entry(data):
+    message = data.get('message')
+    level = data.get('level', 'info')
+    service = data.get('service', 'my-service')
+    ddsource = data.get('ddsource', 'python')
+    hostname = data.get('hostname', os.getenv("HOSTNAME", "localhost"))
+    tags = data.get('tags', [])
+    log_date = data.get('date', datetime.now(timezone.utc).isoformat())
+
+    if not message or not service:
+        raise ValueError("Cada log debe tener un mensaje y servicio")
+
+    log_entry = {
+        "message": message,
+        "ddsource": ddsource,
+        "service": service,
+        "hostname": hostname,
+        "status": level,
+        "tags": tags,
+        "date": log_date
+    }
+
+    save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, tags)
+    send_log_to_datadog(log_entry)
+
 @app.route('/')
 def hello_world():
     return "Hola Mundo", 200
@@ -76,36 +101,34 @@ def save_metric():
 @app.route('/log', methods=['POST'])
 def save_log():
     data = request.json
-    message = data.get('message')
-    level = data.get('level', 'info')
-    service = data.get('service', 'my-service')
-    ddsource = data.get('ddsource', 'python')
-    hostname = data.get('hostname', os.getenv("HOSTNAME", "localhost"))
-    tags = data.get('tags', [])
-    log_date = data.get('date', datetime.utcnow().isoformat())
-
-    if not message or not service:
-        return '', 400
-
-    log_entry = {
-        "message": message,
-        "ddsource": ddsource,
-        "service": service,
-        "hostname": hostname,
-        "status": level,
-        "tags": tags,
-        "date": log_date
-    }
-
     try:
-        save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, tags)
+        process_log_entry(data)
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
     except Exception as e:
-        print(f"Error al insertar el log en MongoDB: {e}")
-        return '', 500
-
-    send_log_to_datadog(log_entry)
+        print(f"Error al procesar el log: {e}")
+        return jsonify({"error": "Error al guardar el log"}), 500
 
     return jsonify({"message": "Log saved ok"}), 201
+
+@app.route('/logs', methods=['POST'])
+def save_logs():
+    data = request.json
+    logs_array = data.get("logs", [])
+
+    if not logs_array or not isinstance(logs_array, list):
+        return jsonify({"error": "Formato de datos incorrecto"}), 400
+
+    for log in logs_array:
+        try:
+            process_log_entry(log)
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
+        except Exception as e:
+            print(f"Error al procesar el log: {e}")
+            return jsonify({"error": "Error al guardar el log"}), 500
+
+    return jsonify({"message": "Todos los logs se han guardado correctamente"}), 201
 
 def save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, tags):
     if not ENABLE_MONGO_DB:
