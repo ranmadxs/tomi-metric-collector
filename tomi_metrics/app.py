@@ -26,41 +26,86 @@ mongo_client = MongoClient(MONGO_URI)
 db = mongo_client["tomi-db"]
 logs_collection = db["tomi-logs"]
 dmMetrics = db["tomi-metrics"]
-def send_metric_to_datadog(metric_name, tags, points):
+
+def send_metric_to_datadog(series):
     headers = {
         "Content-Type": "application/json"
     }
     payload = {
-        "series": [
-            {
-                "metric": metric_name,
-                "points": points,
-                "tags": tags
-            }
-        ]
+        "series": series
     }
-
     response = requests.post(DATADOG_API_URL + DATADOG_API_KEY, json=payload, headers=headers)
     print(f"{response.status_code} {response.json()}")
     return response.status_code, response.json()
 
-def send_metric_to_mongodb(metric_name, tags, points):
+def send_metric_to_mongodb(series):
     if not ENABLE_MONGO_DB:
         return  # Salir si el almacenamiento en MongoDB está deshabilitado
 
-    metric = {
-        "metric": metric_name,
-        "points": points,
+    for metric in series:
+        metric["created_at"] = datetime.now(timezone.utc)  # Fecha de creación en UTC
+        try:
+            dmMetrics.insert_one(metric)
+            print("Métrica insertada en MongoDB correctamente.")
+        except Exception as e:
+            print(f"Error al insertar la métrica en MongoDB: {e}")
+            raise
+
+@app.route('/')
+def hello_world():
+    return "Hola Mundo", 200
+
+@app.route('/metrics', methods=['POST'])
+def save_metric():
+    data = request.json
+    series = data.get("series", [])
+    
+    if not series or not isinstance(series, list):
+        return jsonify({"error": "Formato de datos incorrecto"}), 400
+
+    # Enviar las métricas a DataDog y MongoDB
+    status_code, response = send_metric_to_datadog(series)
+    if status_code != 202:
+        return '', status_code
+
+    send_metric_to_mongodb(series)
+
+    metrics.extend(series)
+    return jsonify({"message": "Metric saved ok"}), 201
+
+@app.route('/log', methods=['POST'])
+def save_log():
+    data = request.json
+    message = data.get('message')
+    level = data.get('level', 'info')
+    service = data.get('service', 'my-service')
+    ddsource = data.get('ddsource', 'python')
+    hostname = data.get('hostname', os.getenv("HOSTNAME", "localhost"))
+    tags = data.get('tags', [])
+    log_date = data.get('date', datetime.utcnow().isoformat())
+
+    if not message or not service:
+        return '', 400
+
+    log_entry = {
+        "message": message,
+        "ddsource": ddsource,
+        "service": service,
+        "hostname": hostname,
+        "status": level,
         "tags": tags,
-        "created_at": datetime.now(timezone.utc)  # Fecha de creación en UTC
+        "date": log_date
     }
 
     try:
-        dmMetrics.insert_one(metric)
-        print("Métrica insertada en MongoDB correctamente.")
+        save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, tags)
     except Exception as e:
-        print(f"Error al insertar la métrica en MongoDB: {e}")
-        raise
+        print(f"Error al insertar el log en MongoDB: {e}")
+        return '', 500
+
+    send_log_to_datadog(log_entry)
+
+    return jsonify({"message": "Log saved ok"}), 201
 
 def save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, tags):
     if not ENABLE_MONGO_DB:
@@ -115,68 +160,6 @@ def send_log_to_datadog(log_entry):
             print(f"Error al enviar el log a DataDog: Status {datadog_response.status_code}")
     except Exception as e:
         print(f"Error al enviar el log a DataDog: {e}")
-
-@app.route('/')
-def hello_world():
-    return "Hola Mundo", 200
-
-@app.route('/metrics', methods=['POST'])
-def save_metric():
-    data = request.json
-    metric_name = data.get('metric')
-    points = data.get('points')
-    tags = data.get('tags', [])
-
-    if not metric_name or not isinstance(points, list) or not all(isinstance(tag, str) for tag in tags):
-        return '', 400
-
-    status_code, response = send_metric_to_datadog(metric_name, tags, points)
-    if status_code != 202:
-        return '', status_code
-
-    send_metric_to_mongodb(metric_name, tags, points)
-
-    metric = {
-        "metric": metric_name,
-        "points": points,
-        "tags": tags
-    }
-    metrics.append(metric)
-    return jsonify({"message": "Metric saved ok"}), 201
-
-@app.route('/log', methods=['POST'])
-def save_log():
-    data = request.json
-    message = data.get('message')
-    level = data.get('level', 'info')
-    service = data.get('service', 'my-service')
-    ddsource = data.get('ddsource', 'python')
-    hostname = data.get('hostname', os.getenv("HOSTNAME", "localhost"))
-    tags = data.get('tags', [])
-    log_date = data.get('date', datetime.utcnow().isoformat())
-
-    if not message or not service:
-        return '', 400
-
-    log_entry = {
-        "message": message,
-        "ddsource": ddsource,
-        "service": service,
-        "hostname": hostname,
-        "status": level,
-        "tags": tags,
-        "date": log_date
-    }
-
-    try:
-        save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, tags)
-    except Exception as e:
-        print(f"Error al insertar el log en MongoDB: {e}")
-        return '', 500
-
-    send_log_to_datadog(log_entry)
-
-    return jsonify({"message": "Log saved ok"}), 201
 
 if __name__ == '__main__':
     app.run(debug=True)
