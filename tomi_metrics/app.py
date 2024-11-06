@@ -44,6 +44,7 @@ def send_metric_to_datadog(series):
         return response.status_code, response.json()
     except Exception as e:
         print(f"Error al enviar métricas a DataDog: {e}")
+        print(payload)
         return 500, {"error": str(e)}
 
 def send_metric_to_mongodb(series):
