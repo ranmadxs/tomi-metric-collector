@@ -22,7 +22,7 @@
                     <h1>Monitor de Estanque <span class="version">v{{ version }}</span></h1>
                     <p class="location">
                         <a href="https://airbnb.cl/h/posadaenelbosque" target="_blank" class="header-link airbnb-link" title="Reservar en Airbnb">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Airbnb_Logo_B%C3%A9lo.svg" alt="Airbnb" class="brand-icon">
+                            <img src="https://www.airbnb.com/favicon.ico" alt="Airbnb" class="brand-icon">
                         </a>
                         <span class="posada-name">{{ parcela_nombre }} 🌲</span> - {{ parcela_ubicacion }}
                         <a href="https://waze.com/ul/h66m0jv780" target="_blank" class="header-link waze-link" title="Cómo llegar">
@@ -57,12 +57,21 @@
                                 <span class="level-arrow">→</span>
                             </div>
                         </div>
-                        <div class="tank">
-                            <div class="tank-water" id="tank-water">
-                                <div class="wave"></div>
-                                <div class="wave wave2"></div>
-                                <div class="wave wave3"></div>
+                        <div class="tank-wrapper">
+                            <!-- Sensor ultrasónico -->
+                            <div class="sensor">
+                                <div class="sensor-body">
+                                    <div class="sensor-eye"></div>
+                                    <div class="sensor-eye"></div>
+                                </div>
+                                <div class="sensor-beam" id="sensor-beam"></div>
                             </div>
+                            <div class="tank">
+                                <div class="tank-water" id="tank-water">
+                                    <div class="wave"></div>
+                                    <div class="wave wave2"></div>
+                                    <div class="wave wave3"></div>
+                                </div>
                             <div class="tank-reference-lines">
                                 <div class="reference-line line-50"></div>
                                 <div class="reference-line line-10"></div>
@@ -78,6 +87,7 @@
                             <div class="tank-stamp">
                                 <span id="litros-display">--</span>
                                 <small>[Litros]</small>
+                            </div>
                             </div>
                         </div>
                         <div class="tank-capacity">
@@ -178,7 +188,7 @@
             <p>💧 Monitor de Estanque v{{ version }} | {{ parcela_nombre }}</p>
             <p class="footer-links">
                 <a href="https://airbnb.cl/h/posadaenelbosque" target="_blank" class="footer-link">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Airbnb_Logo_B%C3%A9lo.svg" alt="Airbnb" width="16" height="16">
+                    <img src="https://www.airbnb.com/favicon.ico" alt="Airbnb" width="16" height="16">
                     Airbnb
                 </a>
                 <span>•</span>

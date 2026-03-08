@@ -224,6 +224,58 @@ header {
     color: var(--color-peligro);
 }
 
+/* Tank Wrapper con Sensor */
+.tank-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Sensor Ultrasónico */
+.sensor {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: -5px;
+    z-index: 15;
+}
+
+.sensor-body {
+    width: 50px;
+    height: 25px;
+    background: linear-gradient(180deg, #555 0%, #333 100%);
+    border-radius: 8px 8px 4px 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    border: 2px solid #666;
+}
+
+.sensor-eye {
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle at 30% 30%, #888 0%, #333 100%);
+    border-radius: 50%;
+    border: 1px solid #222;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.sensor-beam {
+    width: 2px;
+    height: 0;
+    background: linear-gradient(180deg, rgba(0, 200, 255, 0.8) 0%, rgba(0, 200, 255, 0) 100%);
+    box-shadow: 0 0 8px rgba(0, 200, 255, 0.5);
+    transition: height 1s ease-out;
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 .tank {
     position: relative;
     width: 180px;
@@ -806,4 +858,212 @@ footer {
 .footer-link:hover {
     opacity: 0.8;
     transform: scale(1.05);
+}
+
+/* ============================================
+   RESPONSIVE - VISTA MÓVIL
+   ============================================ */
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    /* Header compacto */
+    header {
+        padding: 12px 15px;
+        margin-bottom: 15px;
+        border-radius: 12px;
+    }
+
+    .header-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .logo {
+        font-size: 2em;
+    }
+
+    .title-group h1 {
+        font-size: 1.2em;
+    }
+
+    .title-group .version {
+        font-size: 0.7em;
+    }
+
+    /* Ubicación más compacta */
+    .location {
+        flex-wrap: wrap;
+        justify-content: center;
+        font-size: 0.9em;
+        gap: 6px;
+    }
+
+    .posada-name {
+        font-size: 1em;
+    }
+
+    .brand-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .status-badge {
+        padding: 6px 12px;
+        font-size: 0.8em;
+    }
+
+    /* Dashboard centrado en estanque */
+    .dashboard {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    /* Estanque protagonista */
+    .tank-panel {
+        order: 1;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding: 15px;
+    }
+
+    .tank-container {
+        transform: scale(0.85);
+    }
+
+    .level-indicators {
+        display: none;
+    }
+
+    .tank-stamp span {
+        font-size: 1.8em;
+    }
+
+    /* Métricas como widgets */
+    .metrics-panel {
+        order: 2;
+        width: 100%;
+    }
+
+    .metric-card.main-metric {
+        padding: 12px;
+    }
+
+    .metric-card.main-metric .metric-icon {
+        font-size: 1.5em;
+    }
+
+    .metric-card.main-metric .metric-value {
+        font-size: 1em;
+    }
+
+    /* Grid de widgets 2x2 */
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .metric-card {
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .metric-card .metric-icon {
+        font-size: 1.2em;
+    }
+
+    .metric-card .metric-label {
+        font-size: 0.7em;
+    }
+
+    .metric-card .metric-value {
+        font-size: 0.9em;
+    }
+
+    .timestamp-card {
+        grid-column: span 2;
+    }
+
+    /* Config y Simulación compactos */
+    .config-panel,
+    .simulation-panel {
+        padding: 15px;
+        margin-bottom: 10px;
+    }
+
+    .config-panel h3,
+    .simulation-panel h3 {
+        font-size: 1em;
+    }
+
+    .config-grid {
+        gap: 10px;
+    }
+
+    .simulation-buttons {
+        gap: 6px;
+    }
+
+    .sim-btn {
+        padding: 8px 12px;
+        font-size: 0.75em;
+    }
+
+    /* Footer compacto */
+    footer {
+        padding: 15px;
+        font-size: 0.75em;
+    }
+
+    .footer-links {
+        gap: 8px;
+        font-size: 0.85em;
+    }
+
+    /* Overlay simulación móvil */
+    .simulation-overlay {
+        top: 10px;
+        right: 10px;
+        padding: 8px 12px;
+        font-size: 0.8em;
+    }
+
+    .sim-overlay-btn {
+        padding: 6px 10px;
+        font-size: 0.75em;
+    }
+}
+
+/* Extra pequeño (teléfonos pequeños) */
+@media (max-width: 400px) {
+    .tank-container {
+        transform: scale(0.7);
+    }
+
+    .metrics-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .location {
+        font-size: 0.8em;
+    }
+
+    .posada-name {
+        font-size: 0.9em;
+    }
+
+    .simulation-buttons {
+        flex-direction: column;
+    }
+
+    .sim-btn {
+        width: 100%;
+    }
 }

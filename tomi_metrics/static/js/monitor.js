@@ -11,7 +11,8 @@ const elements = {
     litrosValue: document.getElementById('litros-value'),
     alturaValue: document.getElementById('altura-value'),
     distanciaValue: document.getElementById('distancia-value'),
-    timestampValue: document.getElementById('timestamp-value')
+    timestampValue: document.getElementById('timestamp-value'),
+    sensorBeam: document.getElementById('sensor-beam')
 };
 
 // Estados y sus configuraciones
@@ -46,6 +47,14 @@ function actualizarUI(datos) {
 
     // Actualizar tanque visual (siempre azul)
     elements.tankWater.style.height = `${datos.porcentaje}%`;
+
+    // Actualizar rayo del sensor (altura inversa al nivel de agua)
+    // El rayo va desde el sensor hasta el nivel del agua
+    const tankHeight = 300; // altura del tanque en px
+    const beamHeight = tankHeight * (100 - datos.porcentaje) / 100;
+    if (elements.sensorBeam) {
+        elements.sensorBeam.style.height = `${beamHeight}px`;
+    }
 
     // Actualizar litros en el tanque (solo el número, "[Litros]" está en small)
     elements.litrosDisplay.textContent = Math.round(datos.litros);
@@ -107,6 +116,11 @@ function mostrarDesconectado() {
     elements.estadoText.textContent = 'Sin conexión';
     elements.estadoCard.className = 'metric-card main-metric disconnected';
     elements.timestampValue.textContent = '--';
+    
+    // Ocultar rayo del sensor
+    if (elements.sensorBeam) {
+        elements.sensorBeam.style.height = '0px';
+    }
 }
 
 // Estado local de simulación (el frontend es la fuente de verdad)
