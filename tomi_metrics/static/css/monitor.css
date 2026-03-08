@@ -88,6 +88,12 @@ header {
     text-shadow: 0 0 10px rgba(144, 238, 144, 0.3);
 }
 
+.location-sub {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    margin-top: 4px;
+}
+
 .header-link {
     text-decoration: none;
     transition: transform 0.2s ease, filter 0.2s ease;
@@ -905,6 +911,11 @@ footer {
 
     .posada-name {
         font-size: 1em;
+    }
+
+    .location-sub {
+        font-size: 0.75em;
+        opacity: 0.8;
     }
 
     .brand-icon {
