@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ app_name }} v{{ app_version }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>{{ app_name }}</h1>
+            <span class="version">v{{ app_version }}</span>
+            <div class="status">
+                <div class="status-card">
+                    <div class="status-header">
+                        <span class="status-icon {{ 'connected' if mongo_status.connected else 'disconnected' }}">
+                            {{ '🟢' if mongo_status.connected else '🔴' }}
+                        </span>
+                        <span class="status-name">MongoDB</span>
+                    </div>
+                    <div class="status-state">
+                        <span class="status-dot {{ '' if mongo_status.connected else 'disconnected' }}"></span>
+                        {{ mongo_status.status }}
+                    </div>
+                    <div class="status-info">
+                        URI: <code>{{ mongo_status.uri }}</code>
+                    </div>
+                </div>
+                <div class="status-card">
+                    <div class="status-header">
+                        <span class="status-icon {{ 'connected' if datadog_status.connected else 'disconnected' }}">
+                            {{ '🟢' if datadog_status.connected else '🔴' }}
+                        </span>
+                        <span class="status-name">DataDog</span>
+                    </div>
+                    <div class="status-state">
+                        <span class="status-dot {{ '' if datadog_status.connected else 'disconnected' }}"></span>
+                        {{ datadog_status.status }}
+                    </div>
+                    <div class="status-info">
+                        API Key: <code>{{ datadog_status.api_key }}</code>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="content">
+            <div class="description">
+                <p><strong>Colector centralizado de métricas y logs</strong> que actúa como intermediario entre tus aplicaciones y servicios de monitoreo.</p>
+                <div class="features">
+                    <div class="feature">Procesamiento asíncrono</div>
+                    <div class="feature">Conexión lazy a MongoDB</div>
+                    <div class="feature">Envío a DataDog</div>
+                    <div class="feature">Respuestas inmediatas (HTTP 202)</div>
+                </div>
+            </div>
+
+            <div class="swagger-link">
+                <a href="/apidocs/" target="_blank">
+                    <span class="swagger-icon">📖</span>
+                    <span class="swagger-text">
+                        <strong>Swagger UI - Documentación Interactiva</strong>
+                        <small>/apidocs/</small>
+                    </span>
+                    <span class="swagger-arrow">→</span>
+                </a>
+            </div>
+
+            <div class="section">
+                <h2>API Endpoints</h2>
+                
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/</span>
+                        <span class="endpoint-desc">Documentación y estado de la API</span>
+                    </div>
+                </div>
+
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/metrics</span>
+                        <span class="endpoint-desc">Enviar métricas</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="code-block">
+                            <label>Request Body</label>
+                            <div class="code-container">
+                                <pre><code id="metrics-code">{
+  "series": [
+    {
+      "metric": "mi.metrica.contador",
+      "points": [[1730745173, 2]],
+      "tags": ["host:localhost", "environment:develop"],
+      "host": "localhost"
+    }
+  ]
+}</code></pre>
+                                <button class="copy-btn" onclick="copyCode('metrics-code', this)">📋 Copiar</button>
+                            </div>
+                        </div>
+                        <div class="response-info">
+                            <strong>Response:</strong> <code>202 Accepted</code> — {"message": "Metric recibido y en proceso"}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/log</span>
+                        <span class="endpoint-desc">Enviar un log individual</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="code-block">
+                            <label>Request Body</label>
+                            <div class="code-container">
+                                <pre><code id="log-code">{
+  "message": "Un evento ocurrió",
+  "level": "info",
+  "service": "mi-servicio",
+  "ddsource": "python",
+  "hostname": "localhost",
+  "tags": ["env:production"],
+  "date": "2024-11-04T15:35:56"
+}</code></pre>
+                                <button class="copy-btn" onclick="copyCode('log-code', this)">📋 Copiar</button>
+                            </div>
+                        </div>
+                        <div class="response-info">
+                            <strong>Response:</strong> <code>202 Accepted</code> — {"message": "Log recibido y en proceso"}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/logs</span>
+                        <span class="endpoint-desc">Enviar múltiples logs</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="code-block">
+                            <label>Request Body</label>
+                            <div class="code-container">
+                                <pre><code id="logs-code">{
+  "logs": [
+    {
+      "message": "Primer log",
+      "level": "info",
+      "service": "mi-servicio",
+      "ddsource": "python",
+      "hostname": "localhost",
+      "tags": ["env:test"]
+    },
+    {
+      "message": "Segundo log",
+      "level": "error",
+      "service": "mi-servicio",
+      "ddsource": "python",
+      "hostname": "localhost",
+      "tags": ["env:production"]
+    }
+  ]
+}</code></pre>
+                                <button class="copy-btn" onclick="copyCode('logs-code', this)">📋 Copiar</button>
+                            </div>
+                        </div>
+                        <div class="response-info">
+                            <strong>Response:</strong> <code>202 Accepted</code> — {"message": "Todos los logs han sido recibidos y estan en proceso"}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Configuración</h2>
+                <p style="margin-bottom: 15px;">Variables de entorno necesarias en el archivo <code>.env</code>:</p>
+                <table class="env-table">
+                    <thead>
+                        <tr>
+                            <th>Variable</th>
+                            <th>Descripción</th>
+                            <th>Default</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>MONGODB_URI</code></td>
+                            <td>URI de conexión a MongoDB</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><code>ENABLE_MONGO_DB</code></td>
+                            <td>Habilita almacenamiento en MongoDB</td>
+                            <td><code>false</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>DATADOG_API_KEY</code></td>
+                            <td>API Key de DataDog</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><code>ENABLE_SEND_LOG_TO_DATADOG</code></td>
+                            <td>Habilita envío de logs a DataDog</td>
+                            <td><code>false</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>Ejemplos con cURL</h2>
+                
+                <div class="code-block">
+                    <label>Enviar métrica (localhost)</label>
+                    <div class="code-container">
+                        <pre><code id="curl-metrics">curl -X POST http://localhost:5000/metrics \
+  -H "Content-Type: application/json" \
+  -d '{
+    "series": [{
+      "metric": "test.counter",
+      "points": [[1730745173, 1]],
+      "tags": ["env:dev"],
+      "host": "localhost"
+    }]
+  }'</code></pre>
+                        <button class="copy-btn" onclick="copyCode('curl-metrics', this)">📋 Copiar</button>
+                    </div>
+                </div>
+
+                <div class="code-block" style="margin-top: 20px;">
+                    <label>Enviar log (localhost)</label>
+                    <div class="code-container">
+                        <pre><code id="curl-log">curl -X POST http://localhost:5000/log \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Test log message",
+    "level": "info",
+    "service": "my-service",
+    "ddsource": "python",
+    "hostname": "localhost",
+    "tags": ["env:dev"]
+  }'</code></pre>
+                        <button class="copy-btn" onclick="copyCode('curl-log', this)">📋 Copiar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            {{ app_name }} v{{ app_version }} | Colector centralizado de métricas y logs
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,15 +1,181 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
+from flasgger import Swagger, swag_from
 import requests
 from pymongo import MongoClient
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor
+import tomllib
 
 # Cargar las variables de entorno desde el archivo .env
 load_dotenv()
 
-app = Flask(__name__)
+# Obtener información del proyecto desde pyproject.toml
+BASE_DIR = Path(__file__).resolve().parent.parent
+APP_NAME = "Tomi Metric Collector"
+APP_VERSION = "0.1.12"
+
+try:
+    with open(BASE_DIR / "pyproject.toml", "rb") as f:
+        pyproject = tomllib.load(f)
+        APP_NAME = pyproject.get("tool", {}).get("poetry", {}).get("name", APP_NAME)
+        APP_VERSION = pyproject.get("tool", {}).get("poetry", {}).get("version", APP_VERSION)
+except Exception:
+    pass
+
+def get_readme_content():
+    """Lee el contenido del README.md"""
+    try:
+        with open(BASE_DIR / "README.md", "r", encoding="utf-8") as f:
+            return f.read()
+    except Exception:
+        return "README no disponible"
+
+def check_mongodb_connection():
+    """Verifica si MongoDB está conectado y retorna info de conexión"""
+    mongo_uri = os.getenv("MONGODB_URI", "")
+    enabled = os.getenv("ENABLE_MONGO_DB", "False").lower() == "true"
+    
+    if not enabled:
+        return {
+            "connected": False,
+            "enabled": False,
+            "status": "Deshabilitado",
+            "uri": mask_uri(mongo_uri) if mongo_uri else "No configurado"
+        }
+    
+    if not mongo_uri:
+        return {
+            "connected": False,
+            "enabled": True,
+            "status": "URI no configurada",
+            "uri": "No configurado"
+        }
+    
+    try:
+        test_client = MongoClient(mongo_uri, serverSelectionTimeoutMS=3000)
+        test_client.admin.command('ping')
+        test_client.close()
+        return {
+            "connected": True,
+            "enabled": True,
+            "status": "Conectado",
+            "uri": mask_uri(mongo_uri)
+        }
+    except Exception as e:
+        return {
+            "connected": False,
+            "enabled": True,
+            "status": f"Error: {str(e)[:50]}",
+            "uri": mask_uri(mongo_uri)
+        }
+
+def check_datadog_connection():
+    """Verifica si DataDog está configurado y retorna info"""
+    api_key = os.getenv("DATADOG_API_KEY", "")
+    enabled = os.getenv("ENABLE_SEND_LOG_TO_DATADOG", "False").lower() == "true"
+    
+    if not enabled:
+        return {
+            "connected": False,
+            "enabled": False,
+            "status": "Deshabilitado",
+            "api_key": mask_api_key(api_key) if api_key else "No configurado"
+        }
+    
+    if not api_key:
+        return {
+            "connected": False,
+            "enabled": True,
+            "status": "API Key no configurada",
+            "api_key": "No configurado"
+        }
+    
+    try:
+        response = requests.get(
+            "https://api.datadoghq.com/api/v1/validate",
+            headers={"DD-API-KEY": api_key},
+            timeout=5
+        )
+        if response.status_code == 200:
+            return {
+                "connected": True,
+                "enabled": True,
+                "status": "Conectado",
+                "api_key": mask_api_key(api_key)
+            }
+        else:
+            return {
+                "connected": False,
+                "enabled": True,
+                "status": f"Error: HTTP {response.status_code}",
+                "api_key": mask_api_key(api_key)
+            }
+    except Exception as e:
+        return {
+            "connected": False,
+            "enabled": True,
+            "status": f"Error: {str(e)[:30]}",
+            "api_key": mask_api_key(api_key)
+        }
+
+def mask_uri(uri):
+    """Oculta credenciales en la URI de MongoDB"""
+    if not uri:
+        return "No configurado"
+    try:
+        if "@" in uri:
+            parts = uri.split("@")
+            host_part = parts[-1]
+            return f"mongodb://***:***@{host_part[:30]}..."
+        return uri[:40] + "..." if len(uri) > 40 else uri
+    except Exception:
+        return "***"
+
+def mask_api_key(key):
+    """Oculta la API key mostrando solo los primeros y últimos caracteres"""
+    if not key:
+        return "No configurado"
+    if len(key) < 8:
+        return "***"
+    return f"{key[:4]}...{key[-4:]}"
+
+app = Flask(__name__, 
+            template_folder='templates',
+            static_folder='static')
+
+# Configuración de Swagger
+swagger_config = {
+    "headers": [],
+    "specs": [
+        {
+            "endpoint": "apispec",
+            "route": "/apispec.json",
+            "rule_filter": lambda rule: True,
+            "model_filter": lambda tag: True,
+        }
+    ],
+    "static_url_path": "/flasgger_static",
+    "swagger_ui": True,
+    "specs_route": "/apidocs/"
+}
+
+swagger_template = {
+    "info": {
+        "title": APP_NAME,
+        "description": "Colector centralizado de métricas y logs para DataDog y MongoDB",
+        "version": APP_VERSION,
+        "contact": {
+            "name": "Edgar",
+        }
+    },
+    "basePath": "/",
+    "schemes": ["http", "https"],
+}
+
+swagger = Swagger(app, config=swagger_config, template=swagger_template)
 
 # Variables en memoria para almacenar los datos
 metrics = []
@@ -22,11 +188,32 @@ MONGO_URI = os.getenv("MONGODB_URI")  # URI de MongoDB desde variables de entorn
 ENABLE_SEND_LOG_TO_DATADOG = os.getenv("ENABLE_SEND_LOG_TO_DATADOG", "False").lower() == "true"
 ENABLE_MONGO_DB = os.getenv("ENABLE_MONGO_DB", "False").lower() == "true"  # Default False para métricas y logs
 
-# Conexión a MongoDB
-mongo_client = MongoClient(MONGO_URI)
-db = mongo_client["tomi-db"]
-logs_collection = db["tomi-logs"]
-dmMetrics = db["tomi-metrics"]
+# Conexión lazy a MongoDB
+mongo_client = None
+db = None
+logs_collection = None
+dmMetrics = None
+
+def get_mongo_collections():
+    """Inicializa la conexión a MongoDB de forma lazy (solo cuando se necesita)"""
+    global mongo_client, db, logs_collection, dmMetrics
+    
+    if not ENABLE_MONGO_DB:
+        return None, None
+    
+    if mongo_client is None:
+        try:
+            mongo_client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+            mongo_client.admin.command('ping')
+            db = mongo_client["tomi-db"]
+            logs_collection = db["tomi-logs"]
+            dmMetrics = db["tomi-metrics"]
+            print("Conexión a MongoDB establecida correctamente.")
+        except Exception as e:
+            print(f"Error al conectar a MongoDB: {e}")
+            return None, None
+    
+    return logs_collection, dmMetrics
 
 # Crear un ejecutor de hilos con un número específico de trabajadores
 executor = ThreadPoolExecutor(max_workers=10)
@@ -51,14 +238,18 @@ def send_metric_to_mongodb(series):
     if not ENABLE_MONGO_DB:
         return  # Salir si el almacenamiento en MongoDB está deshabilitado
 
+    _, metrics_collection = get_mongo_collections()
+    if metrics_collection is None:
+        print("MongoDB no disponible, métrica no guardada.")
+        return
+
     for metric in series:
         metric["created_at"] = datetime.now(timezone.utc)  # Fecha de creación en UTC
         try:
-            dmMetrics.insert_one(metric)
+            metrics_collection.insert_one(metric)
             print("Métrica insertada en MongoDB correctamente.")
         except Exception as e:
             print(f"Error al insertar la métrica en MongoDB: {e}")
-            raise
 
 def process_log_entry(data):
     message = data.get('message')
@@ -94,11 +285,91 @@ def process_log_entry_safe(data):
         print(f"Error inesperado al procesar el log: {e}")
 
 @app.route('/')
-def hello_world():
-    return "Hola Mundo", 200
+def home():
+    """
+    Home - Documentación y estado de la API
+    ---
+    tags:
+      - General
+    responses:
+      200:
+        description: Página principal con documentación y estado de conexiones
+    """
+    mongo_status = check_mongodb_connection()
+    datadog_status = check_datadog_connection()
+    
+    return render_template(
+        'home.html',
+        app_name=APP_NAME,
+        app_version=APP_VERSION,
+        mongo_status=mongo_status,
+        datadog_status=datadog_status
+    ), 200
 
 @app.route('/metrics', methods=['POST'])
 def save_metric():
+    """
+    Enviar métricas
+    ---
+    tags:
+      - Metrics
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required:
+            - series
+          properties:
+            series:
+              type: array
+              description: Lista de métricas a enviar
+              items:
+                type: object
+                properties:
+                  metric:
+                    type: string
+                    description: Nombre de la métrica
+                    example: "mi.metrica.contador"
+                  points:
+                    type: array
+                    description: Puntos de datos [[timestamp, valor]]
+                    items:
+                      type: array
+                      items:
+                        type: number
+                    example: [[1730745173, 2]]
+                  tags:
+                    type: array
+                    description: Tags asociados a la métrica
+                    items:
+                      type: string
+                    example: ["host:localhost", "environment:develop"]
+                  host:
+                    type: string
+                    description: Hostname del origen
+                    example: "localhost"
+    responses:
+      202:
+        description: Métrica recibida y en proceso
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Metric recibido y en proceso"
+      400:
+        description: Formato de datos incorrecto
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Formato de datos incorrecto"
+    """
     data = request.json
     series = data.get("series", [])
     
@@ -114,6 +385,75 @@ def save_metric():
 
 @app.route('/log', methods=['POST'])
 def save_log():
+    """
+    Enviar un log individual
+    ---
+    tags:
+      - Logs
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required:
+            - message
+            - service
+          properties:
+            message:
+              type: string
+              description: Mensaje del log
+              example: "Un evento ocurrió"
+            level:
+              type: string
+              description: Nivel del log
+              enum: [debug, info, warning, error, critical]
+              default: info
+              example: "info"
+            service:
+              type: string
+              description: Nombre del servicio
+              example: "mi-servicio"
+            ddsource:
+              type: string
+              description: Fuente del log para DataDog
+              default: python
+              example: "python"
+            hostname:
+              type: string
+              description: Hostname del origen
+              example: "localhost"
+            tags:
+              type: array
+              description: Tags asociados al log
+              items:
+                type: string
+              example: ["env:production"]
+            date:
+              type: string
+              format: date-time
+              description: Fecha del evento (ISO 8601)
+              example: "2024-11-04T15:35:56"
+    responses:
+      202:
+        description: Log recibido y en proceso
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Log recibido y en proceso"
+      400:
+        description: No se proporcionaron datos
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "No se proporcionaron datos"
+    """
     data = request.json
     if not data:
         return jsonify({"error": "No se proporcionaron datos"}), 400
@@ -125,6 +465,81 @@ def save_log():
 
 @app.route('/logs', methods=['POST'])
 def save_logs():
+    """
+    Enviar múltiples logs
+    ---
+    tags:
+      - Logs
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required:
+            - logs
+          properties:
+            logs:
+              type: array
+              description: Lista de logs a enviar
+              items:
+                type: object
+                required:
+                  - message
+                  - service
+                properties:
+                  message:
+                    type: string
+                    description: Mensaje del log
+                    example: "Primer log"
+                  level:
+                    type: string
+                    description: Nivel del log
+                    enum: [debug, info, warning, error, critical]
+                    default: info
+                    example: "info"
+                  service:
+                    type: string
+                    description: Nombre del servicio
+                    example: "mi-servicio"
+                  ddsource:
+                    type: string
+                    description: Fuente del log
+                    default: python
+                    example: "python"
+                  hostname:
+                    type: string
+                    description: Hostname del origen
+                    example: "localhost"
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                    example: ["env:test"]
+                  date:
+                    type: string
+                    format: date-time
+                    example: "2024-11-04T15:35:56"
+    responses:
+      202:
+        description: Todos los logs recibidos y en proceso
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Todos los logs han sido recibidos y estan en proceso"
+      400:
+        description: Formato de datos incorrecto
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Formato de datos incorrecto"
+    """
     data = request.json
     logs_array = data.get("logs", [])
 
@@ -139,6 +554,11 @@ def save_logs():
 def save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, tags):
     if not ENABLE_MONGO_DB:
         return  # Salir si el almacenamiento de logs en MongoDB está deshabilitado
+
+    logs_col, _ = get_mongo_collections()
+    if logs_col is None:
+        print("MongoDB no disponible, log no guardado.")
+        return
 
     created_at = datetime.now(timezone.utc)
     
@@ -165,11 +585,10 @@ def save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, t
         "created_at": created_at
     }
     try:
-        logs_collection.insert_one(log)
+        logs_col.insert_one(log)
         print("Log insertado en MongoDB correctamente.")
     except Exception as e:
         print(f"Error al insertar el log en MongoDB: {e}")
-        raise
 
 def send_log_to_datadog(log_entry):
     if not ENABLE_SEND_LOG_TO_DATADOG:
