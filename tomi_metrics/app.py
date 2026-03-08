@@ -68,7 +68,7 @@ def check_mongodb_connection():
         return {
             "connected": False,
             "enabled": True,
-            "status": f"Error: {str(e)[:50]}",
+            "status": "Error de conexión",
             "uri": mask_uri(mongo_uri)
         }
 
@@ -110,14 +110,14 @@ def check_datadog_connection():
             return {
                 "connected": False,
                 "enabled": True,
-                "status": f"Error: HTTP {response.status_code}",
+                "status": "Error de conexión",
                 "api_key": mask_api_key(api_key)
             }
     except Exception as e:
         return {
             "connected": False,
             "enabled": True,
-            "status": f"Error: {str(e)[:30]}",
+            "status": "Error de conexión",
             "api_key": mask_api_key(api_key)
         }
 

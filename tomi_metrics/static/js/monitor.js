@@ -48,7 +48,7 @@ function actualizarUI(datos) {
     elements.tankWater.style.height = `${datos.porcentaje}%`;
 
     // Actualizar litros en el tanque
-    elements.litrosDisplay.textContent = `${Math.round(datos.litros)} L`;
+    elements.litrosDisplay.textContent = `${Math.round(datos.litros)} [Litros]`;
 
     // Actualizar card de estado
     elements.estadoCard.className = 'metric-card main-metric ' + config.class;
@@ -58,7 +58,7 @@ function actualizarUI(datos) {
     // Actualizar métricas
     elements.porcentajeValue.textContent = `${datos.porcentaje.toFixed(1)}%`;
     elements.porcentajeBar.style.width = `${datos.porcentaje}%`;
-    elements.litrosValue.textContent = `${Math.round(datos.litros)} L`;
+    elements.litrosValue.textContent = `${Math.round(datos.litros)} [Litros]`;
     elements.alturaValue.textContent = `${datos.altura_agua.toFixed(1)} cm`;
     elements.distanciaValue.textContent = `${datos.distancia.toFixed(1)} cm`;
 

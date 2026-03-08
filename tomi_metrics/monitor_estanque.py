@@ -187,8 +187,7 @@ def get_mqtt_status():
     global mqtt_connected
     return {
         "connected": mqtt_connected,
-        "host": MQTT_HOST,
-        "topic": MQTT_TOPIC[:30] + "..." if len(MQTT_TOPIC) > 30 else MQTT_TOPIC,
+        "info": MQTT_HOST,
         "status": "Conectado" if mqtt_connected else "Desconectado"
     }
 
