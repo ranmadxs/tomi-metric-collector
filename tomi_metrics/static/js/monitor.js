@@ -12,7 +12,7 @@ const elements = {
     alturaValue: document.getElementById('altura-value'),
     distanciaValue: document.getElementById('distancia-value'),
     timestampValue: document.getElementById('timestamp-value'),
-    sensorBeam: document.getElementById('sensor-beam'),
+    sensorWaves: document.getElementById('sensor-waves'),
     // Mini widgets móviles
     mobilePorcentaje: document.getElementById('mobile-porcentaje'),
     mobileDistancia: document.getElementById('mobile-distancia')
@@ -51,12 +51,14 @@ function actualizarUI(datos) {
     // Actualizar tanque visual (siempre azul)
     elements.tankWater.style.height = `${datos.porcentaje}%`;
 
-    // Actualizar rayo del sensor (altura inversa al nivel de agua)
-    // El rayo va desde el sensor hasta el nivel del agua
+    // Actualizar ondas del sensor (llegan hasta 10% dentro del agua)
     const tankHeight = 300; // altura del tanque en px
-    const beamHeight = tankHeight * (100 - datos.porcentaje) / 100;
-    if (elements.sensorBeam) {
-        elements.sensorBeam.style.height = `${beamHeight}px`;
+    const nivelAgua = datos.porcentaje; // porcentaje de agua
+    // Las ondas van desde arriba hasta 10% dentro del agua
+    const penetracion = Math.min(10, nivelAgua * 0.1); // máximo 10% de penetración
+    const wavesHeight = tankHeight * (100 - nivelAgua + penetracion) / 100;
+    if (elements.sensorWaves) {
+        elements.sensorWaves.style.height = `${wavesHeight}px`;
     }
 
     // Actualizar litros en el tanque (solo el número, "[Litros]" está en small)
@@ -128,25 +130,24 @@ function mostrarDesconectado() {
     elements.estadoCard.className = 'metric-card main-metric disconnected';
     elements.timestampValue.textContent = '--';
     
-    // Ocultar rayo del sensor
-    if (elements.sensorBeam) {
-        elements.sensorBeam.style.height = '0px';
+    // Ocultar ondas del sensor
+    if (elements.sensorWaves) {
+        elements.sensorWaves.style.height = '0px';
     }
 }
 
-// Estado local de simulación (el frontend es la fuente de verdad)
-let simulacionActiva = false;
+// Estado de preview
+let previewActivo = false;
 
-// Función para simular lecturas
-function simular(distancia) {
-    // Activar modo simulación localmente PRIMERO
-    simulacionActiva = true;
-    mostrarOverlaySimulacion(true);
+// Función para preview de simulación
+function simularPreview(distancia) {
+    previewActivo = true;
+    mostrarOverlay(true);
     
     fetch(`/monitor/api/simular/${distancia}`)
         .then(response => response.json())
         .then(datos => {
-            console.log('🧪 Simulación:', datos);
+            console.log('🧪 Preview:', datos);
             actualizarUI(datos);
         })
         .catch(error => {
@@ -154,39 +155,22 @@ function simular(distancia) {
         });
 }
 
-// Función para desactivar simulación
-function desactivarSimulacion() {
-    // Desactivar localmente PRIMERO
-    simulacionActiva = false;
-    mostrarOverlaySimulacion(false);
-    
-    // Intentar desactivar en el servidor (con reintentos)
-    desactivarEnServidor(3);
+// Volver a datos reales
+function volverDatosReales() {
+    previewActivo = false;
+    mostrarOverlay(false);
+    cargarEstado();
 }
 
-// Desactivar en servidor con reintentos
-function desactivarEnServidor(intentos) {
-    fetch('/monitor/api/simular/desactivar')
-        .then(response => response.json())
-        .then(datos => {
-            console.log('✅ Simulación desactivada en servidor:', datos);
-        })
-        .catch(error => {
-            console.error('Error desactivando simulación:', error);
-            if (intentos > 1) {
-                console.log(`🔄 Reintentando... (${intentos - 1} intentos restantes)`);
-                setTimeout(() => desactivarEnServidor(intentos - 1), 500);
-            }
-        });
-}
-
-// Mostrar/ocultar overlay de modo simulación
-function mostrarOverlaySimulacion(activo) {
+// Mostrar/ocultar overlay
+function mostrarOverlay(activo) {
     const overlay = document.getElementById('simulation-overlay');
-    if (activo) {
-        overlay.classList.remove('hidden');
-    } else {
-        overlay.classList.add('hidden');
+    if (overlay) {
+        if (activo) {
+            overlay.classList.remove('hidden');
+        } else {
+            overlay.classList.add('hidden');
+        }
     }
 }
 
@@ -201,8 +185,8 @@ function cargarEstado() {
             // Mostrar estado de conexión MQTT
             setConnected(datos.mqtt_connected);
             
-            // NO sincronizar modo_simulacion desde el servidor
-            // El frontend es la fuente de verdad para el overlay
+            // No actualizar UI si está en modo preview
+            if (previewActivo) return;
             
             if (datos.porcentaje !== null) {
                 actualizarUI(datos);

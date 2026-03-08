@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/monitor.css') }}?v={{ version }}">
 </head>
 <body>
-    <!-- Overlay de modo simulación (fijo arriba a la derecha) -->
+    <!-- Overlay de modo simulación -->
     <div id="simulation-overlay" class="simulation-overlay hidden">
-        <span class="sim-overlay-indicator">🧪 MODO SIMULACIÓN</span>
-        <button onclick="desactivarSimulacion()" class="sim-overlay-btn">✕ Volver a Datos Reales</button>
+        <span class="sim-overlay-indicator">🧪 MODO PREVIEW</span>
+        <button onclick="volverDatosReales()" class="sim-overlay-btn">✕ Volver a Datos Reales</button>
     </div>
 
     <div class="container">
@@ -46,7 +46,10 @@
                         <!-- Indicadores de nivel con flechas -->
                         <div class="level-indicators">
                             <div class="level-indicator level-full">
-                                <span class="level-text">Lleno</span>
+                                <div class="level-label">
+                                    <span class="level-text">Lleno</span>
+                                    <span class="level-capacity">5.000 Lts</span>
+                                </div>
                                 <span class="level-arrow">→</span>
                             </div>
                             <div class="level-indicator level-medium">
@@ -65,7 +68,11 @@
                                     <div class="sensor-eye"></div>
                                     <div class="sensor-eye"></div>
                                 </div>
-                                <div class="sensor-beam" id="sensor-beam"></div>
+                                <div class="sensor-waves" id="sensor-waves">
+                                    <div class="ultrasonic-wave wave-1"></div>
+                                    <div class="ultrasonic-wave wave-2"></div>
+                                    <div class="ultrasonic-wave wave-3"></div>
+                                </div>
                             </div>
                             <div class="tank">
                                 <div class="tank-water" id="tank-water">
@@ -90,9 +97,6 @@
                                 <small>[Litros]</small>
                             </div>
                             </div>
-                        </div>
-                        <div class="tank-capacity">
-                            <small>Capacidad: {{ capacidad_litros }} L</small>
                         </div>
                     </div>
                     
@@ -181,17 +185,16 @@
                 </div>
             </div>
 
-            <!-- Panel de Simulación -->
+            <!-- Panel de Simulación (Preview) -->
             <div class="simulation-panel">
-                <h3>🧪 Simulador (Pruebas)</h3>
-                <p>Simula diferentes niveles de agua para probar la interfaz:</p>
+                <h3>🧪 Preview de Niveles</h3>
+                <p>Vista previa de diferentes niveles (los datos reales siguen actualizándose):</p>
                 <div class="simulation-buttons">
-                    <button onclick="simular(10)" class="sim-btn normal">Lleno (10cm)</button>
-                    <button onclick="simular(40)" class="sim-btn normal">Alto (40cm)</button>
-                    <button onclick="simular(80)" class="sim-btn normal">Medio (80cm)</button>
-                    <button onclick="simular(100)" class="sim-btn alerta">Bajo (100cm)</button>
-                    <button onclick="simular(140)" class="sim-btn alerta">Muy Bajo (140cm)</button>
-                    <button onclick="simular(155)" class="sim-btn peligro">Crítico (155cm)</button>
+                    <button onclick="simularPreview(10)" class="sim-btn normal">Lleno</button>
+                    <button onclick="simularPreview(50)" class="sim-btn normal">Alto</button>
+                    <button onclick="simularPreview(80)" class="sim-btn normal">Medio</button>
+                    <button onclick="simularPreview(120)" class="sim-btn alerta">Bajo</button>
+                    <button onclick="simularPreview(150)" class="sim-btn peligro">Crítico</button>
                 </div>
             </div>
 
