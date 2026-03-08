@@ -459,6 +459,11 @@ header {
     font-size: 0.85em;
 }
 
+/* Mini widgets móviles - ocultos en desktop */
+.mobile-widgets {
+    display: none;
+}
+
 /* Estado desconectado */
 .disconnected-state {
     filter: grayscale(70%);
@@ -942,25 +947,70 @@ footer {
         width: 100%;
         display: flex;
         justify-content: center;
-        padding: 15px;
+        padding: 10px;
     }
 
     .tank-container {
-        transform: scale(0.85);
+        transform: scale(0.8);
     }
 
+    /* Indicadores de nivel visibles pero compactos */
     .level-indicators {
-        display: none;
+        display: flex;
+        font-size: 0.75em;
+        gap: 0;
+        height: 250px;
+    }
+
+    .level-indicator {
+        gap: 3px;
+    }
+
+    .level-text {
+        font-size: 0.85em;
+    }
+
+    .level-arrow {
+        font-size: 1em;
     }
 
     .tank-stamp span {
-        font-size: 1.8em;
+        font-size: 1.6em;
     }
 
     /* Métricas como widgets */
     .metrics-panel {
         order: 2;
         width: 100%;
+    }
+
+    /* Mini widgets móviles (porcentaje y distancia) */
+    .mobile-widgets {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .mobile-widget {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--bg-card);
+        padding: 10px 15px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .mw-icon {
+        font-size: 1.2em;
+    }
+
+    .mw-value {
+        font-size: 1.1em;
+        font-weight: 600;
+        color: var(--color-agua-light);
     }
 
     .metric-card.main-metric {

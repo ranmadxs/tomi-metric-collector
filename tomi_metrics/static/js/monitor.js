@@ -12,7 +12,10 @@ const elements = {
     alturaValue: document.getElementById('altura-value'),
     distanciaValue: document.getElementById('distancia-value'),
     timestampValue: document.getElementById('timestamp-value'),
-    sensorBeam: document.getElementById('sensor-beam')
+    sensorBeam: document.getElementById('sensor-beam'),
+    // Mini widgets móviles
+    mobilePorcentaje: document.getElementById('mobile-porcentaje'),
+    mobileDistancia: document.getElementById('mobile-distancia')
 };
 
 // Estados y sus configuraciones
@@ -70,6 +73,14 @@ function actualizarUI(datos) {
     elements.litrosValue.textContent = `${Math.round(datos.litros)} [Litros]`;
     elements.alturaValue.textContent = `${datos.altura_agua.toFixed(1)} cm`;
     elements.distanciaValue.textContent = `${datos.distancia.toFixed(1)} cm`;
+
+    // Actualizar mini widgets móviles
+    if (elements.mobilePorcentaje) {
+        elements.mobilePorcentaje.textContent = `${datos.porcentaje.toFixed(1)}%`;
+    }
+    if (elements.mobileDistancia) {
+        elements.mobileDistancia.textContent = `${datos.distancia.toFixed(1)} cm`;
+    }
 
     // Actualizar timestamp
     if (datos.ultima_lectura) {
