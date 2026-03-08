@@ -12,6 +12,8 @@ from pathlib import Path
 import threading
 import time
 import tomllib
+import tempfile
+import os
 import paho.mqtt.client as mqtt
 
 # Blueprint para las rutas del monitor
@@ -52,9 +54,34 @@ MQTT_TOPIC = "yai-mqtt/YUS-0.2.8-COSTA/out"
 # Historial de mediciones (últimas 100)
 historial = deque(maxlen=100)
 
+# Buffer para promedio móvil de 10 lecturas (suaviza errores del sensor)
+lecturas_buffer = deque(maxlen=10)
+
 # Estado de conexión MQTT
 mqtt_connected = False
 mqtt_thread_started = False
+
+# Archivo para sincronizar modo simulación entre workers
+SIMULACION_FILE = os.path.join(tempfile.gettempdir(), 'monitor_simulacion.flag')
+
+def get_modo_simulacion():
+    """Lee el estado de simulación desde archivo (sincroniza entre workers)."""
+    try:
+        return os.path.exists(SIMULACION_FILE)
+    except:
+        return False
+
+def set_modo_simulacion(activo):
+    """Escribe el estado de simulación en archivo (sincroniza entre workers)."""
+    try:
+        if activo:
+            with open(SIMULACION_FILE, 'w') as f:
+                f.write('1')
+        else:
+            if os.path.exists(SIMULACION_FILE):
+                os.remove(SIMULACION_FILE)
+    except Exception as e:
+        print(f"Error guardando estado simulación: {e}")
 
 # Estado actual del monitor
 estado = {
@@ -120,7 +147,11 @@ def on_mqtt_disconnect(client, userdata, flags, reason_code, properties):
 
 def on_mqtt_message(client, userdata, msg):
     """Callback cuando llega un mensaje MQTT."""
-    global estado
+    global estado, lecturas_buffer
+    
+    # Ignorar mensajes MQTT si está en modo simulación
+    if get_modo_simulacion():
+        return
     
     try:
         payload = msg.payload.decode('utf-8').strip()
@@ -130,22 +161,34 @@ def on_mqtt_message(client, userdata, msg):
         partes = payload.split(',')
         
         if len(partes) >= 3 and "OKO" in partes[1]:
-            distancia = float(partes[2])
-            datos = calcular_nivel(distancia)
+            distancia_raw = float(partes[2])
+            
+            # Agregar al buffer de lecturas
+            lecturas_buffer.append(distancia_raw)
+            
+            # Calcular promedio de las últimas 10 lecturas (o las que haya)
+            distancia_promedio = sum(lecturas_buffer) / len(lecturas_buffer)
+            
+            # Usar el promedio para calcular el nivel
+            datos = calcular_nivel(distancia_promedio)
             datos["ultima_lectura"] = datetime.now(timezone.utc).isoformat()
             datos["raw"] = payload
+            datos["simulado"] = False
+            datos["distancia_raw"] = distancia_raw
+            datos["lecturas_en_buffer"] = len(lecturas_buffer)
             
             estado = datos
             
             historial.append({
                 "timestamp": datos["ultima_lectura"],
-                "distancia": distancia,
+                "distancia": distancia_promedio,
+                "distancia_raw": distancia_raw,
                 "litros": datos["litros"],
                 "porcentaje": datos["porcentaje"],
                 "estado": datos["estado"]
             })
             
-            print(f"💧 Nivel: {datos['litros']:.0f}L ({datos['porcentaje']:.1f}%) - {datos['estado'].upper()}")
+            print(f"💧 Nivel: {datos['litros']:.0f}L ({datos['porcentaje']:.1f}%) - Promedio de {len(lecturas_buffer)} lecturas")
             
     except Exception as e:
         print(f"❌ Error procesando mensaje MQTT: {e}")
@@ -238,6 +281,7 @@ def api_estado():
     """
     response = dict(estado)
     response["mqtt_connected"] = mqtt_connected
+    response["modo_simulacion"] = get_modo_simulacion()
     return jsonify(response)
 
 @monitor_bp.route('/api/historial')
@@ -273,7 +317,7 @@ def api_config():
         "mqtt_topic": MQTT_TOPIC
     })
 
-@monitor_bp.route('/api/simular/<float:distancia>')
+@monitor_bp.route('/api/simular/<int:distancia>')
 def api_simular(distancia):
     """
     Simular una lectura del sensor (para pruebas)
@@ -292,6 +336,9 @@ def api_simular(distancia):
     """
     global estado
     
+    # Activar modo simulación (sincronizado entre workers)
+    set_modo_simulacion(True)
+    
     datos = calcular_nivel(distancia)
     datos["ultima_lectura"] = datetime.now(timezone.utc).isoformat()
     datos["simulado"] = True
@@ -307,3 +354,23 @@ def api_simular(distancia):
     })
     
     return jsonify(datos)
+
+@monitor_bp.route('/api/simular/desactivar')
+def api_desactivar_simulacion():
+    """
+    Desactivar modo simulación y volver a escuchar datos reales
+    ---
+    tags:
+      - Monitor Estanque
+    responses:
+      200:
+        description: Modo simulación desactivado
+    """
+    # Desactivar modo simulación (sincronizado entre workers)
+    set_modo_simulacion(False)
+    
+    return jsonify({
+        "success": True,
+        "message": "Modo simulación desactivado. Escuchando datos reales.",
+        "modo_simulacion": False
+    })

@@ -5,16 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>💧 Monitor Estanque - {{ parcela_nombre }}</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/monitor.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/monitor.css') }}?v={{ version }}">
 </head>
 <body>
+    <!-- Overlay de modo simulación (fijo arriba a la derecha) -->
+    <div id="simulation-overlay" class="simulation-overlay hidden">
+        <span class="sim-overlay-indicator">🧪 MODO SIMULACIÓN</span>
+        <button onclick="desactivarSimulacion()" class="sim-overlay-btn">✕ Volver a Datos Reales</button>
+    </div>
+
     <div class="container">
         <header>
             <div class="header-content">
                 <div class="logo">💧</div>
                 <div class="title-group">
                     <h1>Monitor de Estanque <span class="version">v{{ version }}</span></h1>
-                    <p class="location">📍 {{ parcela_nombre }} - {{ parcela_ubicacion }}</p>
+                    <p class="location">
+                        <a href="https://airbnb.cl/h/posadaenelbosque" target="_blank" class="header-link airbnb-link" title="Reservar en Airbnb">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Airbnb_Logo_B%C3%A9lo.svg" alt="Airbnb" class="brand-icon">
+                        </a>
+                        <span class="posada-name">{{ parcela_nombre }} 🌲</span> - {{ parcela_ubicacion }}
+                        <a href="https://waze.com/ul/h66m0jv780" target="_blank" class="header-link waze-link" title="Cómo llegar">
+                            <img src="https://www.waze.com/favicon.ico" alt="Waze" class="brand-icon">
+                        </a>
+                    </p>
                 </div>
                 <div class="status-badge" id="connection-status">
                     <span class="status-dot"></span>
@@ -28,10 +42,26 @@
                 <!-- Panel del Tanque Visual -->
                 <div class="tank-panel">
                     <div class="tank-container">
+                        <!-- Indicadores de nivel con flechas -->
+                        <div class="level-indicators">
+                            <div class="level-indicator level-full">
+                                <span class="level-text">Lleno</span>
+                                <span class="level-arrow">→</span>
+                            </div>
+                            <div class="level-indicator level-medium">
+                                <span class="level-text">Medio</span>
+                                <span class="level-arrow">→</span>
+                            </div>
+                            <div class="level-indicator level-empty">
+                                <span class="level-text">Vacío</span>
+                                <span class="level-arrow">→</span>
+                            </div>
+                        </div>
                         <div class="tank">
                             <div class="tank-water" id="tank-water">
                                 <div class="wave"></div>
                                 <div class="wave wave2"></div>
+                                <div class="wave wave3"></div>
                             </div>
                             <div class="tank-reference-lines">
                                 <div class="reference-line line-50"></div>
@@ -44,10 +74,14 @@
                                 <span class="mark" style="bottom: 25%">25%</span>
                                 <span class="mark" style="bottom: 0%">0%</span>
                             </div>
+                            <!-- Etiqueta flotante de litros -->
+                            <div class="tank-stamp">
+                                <span id="litros-display">--</span>
+                                <small>[Litros]</small>
+                            </div>
                         </div>
-                        <div class="tank-label">
-                            <span id="litros-display">-- [Litros]</span>
-                            <small>de {{ capacidad_litros }} L</small>
+                        <div class="tank-capacity">
+                            <small>Capacidad: {{ capacidad_litros }} L</small>
                         </div>
                     </div>
                 </div>
@@ -138,25 +172,21 @@
                 </div>
             </div>
 
-            <!-- Links -->
-            <div class="api-link">
-                <a href="/">
-                    <span>🏠</span>
-                    <span>Volver al Home</span>
-                    <span>→</span>
-                </a>
-            </div>
-            <div class="api-link" style="margin-top: 10px;">
-                <a href="/apidocs/" target="_blank">
-                    <span>📖</span>
-                    <span>API Documentation (Swagger)</span>
-                    <span>→</span>
-                </a>
-            </div>
         </main>
 
         <footer>
-            <p>💧 Monitor de Estanque v1.0.0 | {{ parcela_nombre }}</p>
+            <p>💧 Monitor de Estanque v{{ version }} | {{ parcela_nombre }}</p>
+            <p class="footer-links">
+                <a href="https://airbnb.cl/h/posadaenelbosque" target="_blank" class="footer-link">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Airbnb_Logo_B%C3%A9lo.svg" alt="Airbnb" width="16" height="16">
+                    Airbnb
+                </a>
+                <span>•</span>
+                <a href="https://waze.com/ul/h66m0jv780" target="_blank" class="footer-link">
+                    <img src="https://www.waze.com/favicon.ico" alt="Waze" width="16" height="16">
+                    Waze
+                </a>
+            </p>
         </footer>
     </div>
 

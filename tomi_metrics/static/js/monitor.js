@@ -47,8 +47,8 @@ function actualizarUI(datos) {
     // Actualizar tanque visual (siempre azul)
     elements.tankWater.style.height = `${datos.porcentaje}%`;
 
-    // Actualizar litros en el tanque
-    elements.litrosDisplay.textContent = `${Math.round(datos.litros)} [Litros]`;
+    // Actualizar litros en el tanque (solo el número, "[Litros]" está en small)
+    elements.litrosDisplay.textContent = Math.round(datos.litros);
 
     // Actualizar card de estado
     elements.estadoCard.className = 'metric-card main-metric ' + config.class;
@@ -87,16 +87,60 @@ function setConnected(connected) {
     }
 }
 
+// Estado local de simulación (el frontend es la fuente de verdad)
+let simulacionActiva = false;
+
 // Función para simular lecturas
 function simular(distancia) {
+    // Activar modo simulación localmente PRIMERO
+    simulacionActiva = true;
+    mostrarOverlaySimulacion(true);
+    
     fetch(`/monitor/api/simular/${distancia}`)
         .then(response => response.json())
         .then(datos => {
             console.log('🧪 Simulación:', datos);
+            actualizarUI(datos);
         })
         .catch(error => {
             console.error('Error en simulación:', error);
         });
+}
+
+// Función para desactivar simulación
+function desactivarSimulacion() {
+    // Desactivar localmente PRIMERO
+    simulacionActiva = false;
+    mostrarOverlaySimulacion(false);
+    
+    // Intentar desactivar en el servidor (con reintentos)
+    desactivarEnServidor(3);
+}
+
+// Desactivar en servidor con reintentos
+function desactivarEnServidor(intentos) {
+    fetch('/monitor/api/simular/desactivar')
+        .then(response => response.json())
+        .then(datos => {
+            console.log('✅ Simulación desactivada en servidor:', datos);
+        })
+        .catch(error => {
+            console.error('Error desactivando simulación:', error);
+            if (intentos > 1) {
+                console.log(`🔄 Reintentando... (${intentos - 1} intentos restantes)`);
+                setTimeout(() => desactivarEnServidor(intentos - 1), 500);
+            }
+        });
+}
+
+// Mostrar/ocultar overlay de modo simulación
+function mostrarOverlaySimulacion(activo) {
+    const overlay = document.getElementById('simulation-overlay');
+    if (activo) {
+        overlay.classList.remove('hidden');
+    } else {
+        overlay.classList.add('hidden');
+    }
 }
 
 // Función para cargar estado
@@ -109,6 +153,9 @@ function cargarEstado() {
         .then(datos => {
             // Mostrar estado de conexión MQTT
             setConnected(datos.mqtt_connected);
+            
+            // NO sincronizar modo_simulacion desde el servidor
+            // El frontend es la fuente de verdad para el overlay
             
             if (datos.porcentaje !== null) {
                 actualizarUI(datos);
