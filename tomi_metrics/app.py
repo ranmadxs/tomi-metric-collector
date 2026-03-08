@@ -121,16 +121,20 @@ def check_datadog_connection():
             "api_key": mask_api_key(api_key)
         }
 
-def mask_uri(uri):
-    """Oculta credenciales en la URI de MongoDB"""
+def mask_uri(uri, max_length=25):
+    """Oculta credenciales en la URI de MongoDB y limita longitud"""
     if not uri:
         return "No configurado"
     try:
         if "@" in uri:
             parts = uri.split("@")
             host_part = parts[-1]
-            return f"mongodb://***:***@{host_part[:30]}..."
-        return uri[:40] + "..." if len(uri) > 40 else uri
+            if len(host_part) > max_length:
+                host_part = host_part[:max_length] + "..."
+            return f"***@{host_part}"
+        if len(uri) > max_length:
+            return uri[:max_length] + "..."
+        return uri
     except Exception:
         return "***"
 
@@ -297,13 +301,15 @@ def home():
     """
     mongo_status = check_mongodb_connection()
     datadog_status = check_datadog_connection()
+    mqtt_status = get_mqtt_status()
     
     return render_template(
         'home.html',
         app_name=APP_NAME,
         app_version=APP_VERSION,
         mongo_status=mongo_status,
-        datadog_status=datadog_status
+        datadog_status=datadog_status,
+        mqtt_status=mqtt_status
     ), 200
 
 @app.route('/metrics', methods=['POST'])
@@ -610,6 +616,16 @@ def send_log_to_datadog(log_entry):
             print("Log enviado a DataDog correctamente")
     except Exception as e:
         print(f"Error al enviar el log a DataDog: {e}")
+
+# ============================================================
+# MONITOR DE ESTANQUE (Blueprint)
+# ============================================================
+from tomi_metrics.monitor_estanque import monitor_bp, start_mqtt_thread, get_mqtt_status
+
+app.register_blueprint(monitor_bp)
+
+# Iniciar MQTT thread al cargar el módulo
+start_mqtt_thread()
 
 if __name__ == '__main__':
     app.run(debug=True)

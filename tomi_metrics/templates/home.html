@@ -42,6 +42,21 @@
                         API Key: <code>{{ datadog_status.api_key }}</code>
                     </div>
                 </div>
+                <div class="status-card">
+                    <div class="status-header">
+                        <span class="status-icon {{ 'connected' if mqtt_status.connected else 'disconnected' }}">
+                            {{ '🟢' if mqtt_status.connected else '🔴' }}
+                        </span>
+                        <span class="status-name">MQTT</span>
+                    </div>
+                    <div class="status-state">
+                        <span class="status-dot {{ '' if mqtt_status.connected else 'disconnected' }}"></span>
+                        {{ mqtt_status.status }}
+                    </div>
+                    <div class="status-info">
+                        Topic: <code>{{ mqtt_status.topic }}</code>
+                    </div>
+                </div>
             </div>
         </header>
         
@@ -62,6 +77,17 @@
                     <span class="swagger-text">
                         <strong>Swagger UI - Documentación Interactiva</strong>
                         <small>/apidocs/</small>
+                    </span>
+                    <span class="swagger-arrow">→</span>
+                </a>
+            </div>
+
+            <div class="swagger-link" style="margin-top: 15px;">
+                <a href="/monitor" style="background: linear-gradient(135deg, #3b82f6 0%, #1e3a5f 100%);">
+                    <span class="swagger-icon">💧</span>
+                    <span class="swagger-text">
+                        <strong>Monitor de Estanque - Posada en el Bosque</strong>
+                        <small>/monitor</small>
                     </span>
                     <span class="swagger-arrow">→</span>
                 </a>
