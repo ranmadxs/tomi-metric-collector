@@ -76,15 +76,37 @@ function actualizarUI(datos) {
     });
 }
 
-// Marcar como conectado
+// Marcar como conectado/desconectado
 function setConnected(connected) {
+    const dashboard = document.querySelector('.dashboard');
+    
     if (connected) {
         elements.connectionStatus.className = 'status-badge connected';
         elements.connectionStatus.querySelector('.status-text').textContent = 'MQTT Conectado';
+        dashboard.classList.remove('disconnected-state');
     } else {
         elements.connectionStatus.className = 'status-badge disconnected';
         elements.connectionStatus.querySelector('.status-text').textContent = 'MQTT Desconectado';
+        dashboard.classList.add('disconnected-state');
+        
+        // Mostrar estado desconectado
+        mostrarDesconectado();
     }
+}
+
+// Mostrar UI en estado desconectado
+function mostrarDesconectado() {
+    elements.tankWater.style.height = '0%';
+    elements.litrosDisplay.textContent = '🔌';
+    elements.porcentajeValue.textContent = '--%';
+    elements.litrosValue.textContent = '-- [Litros]';
+    elements.alturaValue.textContent = '-- cm';
+    elements.distanciaValue.textContent = '-- cm';
+    elements.porcentajeBar.style.width = '0%';
+    elements.estadoIcon.textContent = '🔌';
+    elements.estadoText.textContent = 'Sin conexión';
+    elements.estadoCard.className = 'metric-card main-metric disconnected';
+    elements.timestampValue.textContent = '--';
 }
 
 // Estado local de simulación (el frontend es la fuente de verdad)
