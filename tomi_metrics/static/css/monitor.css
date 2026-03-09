@@ -120,14 +120,21 @@ header {
     filter: drop-shadow(0 0 8px #33CCFF);
 }
 
-.status-badge {
+.status-badges {
     margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.status-badge {
     display: flex;
     align-items: center;
     gap: 8px;
     background: rgba(0,0,0,0.3);
-    padding: 10px 20px;
-    border-radius: 30px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85em;
 }
 
 .status-dot {
@@ -667,6 +674,56 @@ header {
     background: rgba(30, 41, 59, 0.5);
 }
 
+/* Timestamp + Historial Row */
+.timestamp-historial-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+/* Historial Card */
+.historial-card {
+    background: rgba(30, 41, 59, 0.5);
+    min-height: 200px;
+}
+
+.historial-card.disabled {
+    opacity: 0.5;
+    filter: grayscale(1);
+}
+
+.historial-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.historial-chart-container {
+    height: 150px;
+    position: relative;
+}
+
+.historial-disabled {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 120px;
+    color: var(--text-secondary);
+    text-align: center;
+    gap: 8px;
+}
+
+.historial-disabled span {
+    font-size: 1.2em;
+}
+
+.historial-disabled small {
+    opacity: 0.7;
+}
+
 /* Config Panel */
 .config-panel {
     background: var(--bg-card);
@@ -984,9 +1041,14 @@ footer {
         height: 24px;
     }
 
+    .status-badges {
+        flex-direction: row;
+        gap: 8px;
+    }
+    
     .status-badge {
-        padding: 6px 12px;
-        font-size: 0.8em;
+        padding: 5px 10px;
+        font-size: 0.7em;
     }
 
     /* Dashboard centrado en estanque */
@@ -1106,6 +1168,18 @@ footer {
 
     .timestamp-card {
         grid-column: span 2;
+    }
+    
+    .timestamp-historial-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .historial-card {
+        min-height: 180px;
+    }
+    
+    .historial-chart-container {
+        height: 120px;
     }
 
     /* Config compacto */

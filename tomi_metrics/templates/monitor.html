@@ -6,6 +6,7 @@
     <title>💧 Monitor Estanque - {{ parcela_nombre }}</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/monitor.css') }}?v={{ version }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <!-- Overlay de modo simulación -->
@@ -31,9 +32,15 @@
                     </p>
                     <p class="location-sub">{{ parcela_ubicacion }}</p>
                 </div>
-                <div class="status-badge" id="connection-status">
-                    <span class="status-dot"></span>
-                    <span class="status-text">Conectando...</span>
+                <div class="status-badges">
+                    <div class="status-badge" id="connection-status">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Conectando...</span>
+                    </div>
+                    <div class="status-badge" id="mongo-status">
+                        <span class="status-dot"></span>
+                        <span class="status-text">MongoDB...</span>
+                    </div>
                 </div>
             </div>
         </header>
@@ -160,11 +167,30 @@
                         </div>
                     </div>
 
-                    <div class="metric-card timestamp-card">
-                        <div class="metric-icon">🕐</div>
-                        <div class="metric-content">
-                            <span class="metric-label">Última Lectura</span>
-                            <span class="metric-value" id="timestamp-value">--</span>
+                    <div class="timestamp-historial-row">
+                        <div class="metric-card timestamp-card">
+                            <div class="metric-icon">🕐</div>
+                            <div class="metric-content">
+                                <span class="metric-label">Última Lectura</span>
+                                <span class="metric-value" id="timestamp-value">--</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-card historial-card" id="historial-card">
+                            <div class="historial-header">
+                                <div class="metric-icon">📈</div>
+                                <div class="metric-content">
+                                    <span class="metric-label">Historial del Mes</span>
+                                    <span class="metric-value" id="historial-status">Cargando...</span>
+                                </div>
+                            </div>
+                            <div class="historial-chart-container" id="historial-container">
+                                <canvas id="historial-chart"></canvas>
+                            </div>
+                            <div class="historial-disabled" id="historial-disabled">
+                                <span>📊 Historial no disponible</span>
+                                <small>MongoDB no conectado</small>
+                            </div>
                         </div>
                     </div>
                 </div>

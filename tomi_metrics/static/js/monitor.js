@@ -203,3 +203,155 @@ cargarEstado();
 
 // Actualizar cada 3 segundos para datos en tiempo real
 setInterval(cargarEstado, 3000);
+
+// ============================================================
+// HISTORIAL - Gráfico de consumo mensual
+// ============================================================
+
+let historialChart = null;
+
+function actualizarMongoStatus(conectado) {
+    const mongoBadge = document.getElementById('mongo-status');
+    if (!mongoBadge) return;
+    
+    if (conectado) {
+        mongoBadge.className = 'status-badge connected';
+        mongoBadge.querySelector('.status-text').textContent = 'MongoDB Conectado';
+    } else {
+        mongoBadge.className = 'status-badge disconnected';
+        mongoBadge.querySelector('.status-text').textContent = 'MongoDB Desconectado';
+    }
+}
+
+function cargarHistorial() {
+    fetch('/monitor/api/historial/status')
+        .then(response => response.json())
+        .then(status => {
+            const card = document.getElementById('historial-card');
+            const container = document.getElementById('historial-container');
+            const disabled = document.getElementById('historial-disabled');
+            const statusText = document.getElementById('historial-status');
+            
+            // Actualizar badge de MongoDB
+            actualizarMongoStatus(status.conectado);
+            
+            if (!status.conectado) {
+                // MongoDB no conectado - mostrar gris
+                card.classList.add('disabled');
+                container.style.display = 'none';
+                disabled.style.display = 'flex';
+                statusText.textContent = 'No disponible';
+                return;
+            }
+            
+            // MongoDB conectado - cargar datos
+            card.classList.remove('disabled');
+            container.style.display = 'block';
+            disabled.style.display = 'none';
+            
+            fetch('/monitor/api/historial/diario')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.datos && data.datos.length > 0) {
+                        statusText.textContent = `${data.total_dias} días`;
+                        renderizarGrafico(data.datos);
+                    } else {
+                        statusText.textContent = 'Sin datos';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error cargando historial:', error);
+                    statusText.textContent = 'Error';
+                });
+        })
+        .catch(error => {
+            console.error('Error verificando historial:', error);
+            const card = document.getElementById('historial-card');
+            card.classList.add('disabled');
+        });
+}
+
+function renderizarGrafico(datos) {
+    const ctx = document.getElementById('historial-chart');
+    if (!ctx) return;
+    
+    // Destruir gráfico anterior si existe
+    if (historialChart) {
+        historialChart.destroy();
+    }
+    
+    // Preparar datos
+    const labels = datos.map(d => {
+        const fecha = new Date(d.fecha);
+        return fecha.toLocaleDateString('es-CL', { day: '2-digit', month: 'short' });
+    });
+    const porcentajes = datos.map(d => d.porcentaje);
+    
+    // Crear gráfico
+    historialChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Nivel Promedio %',
+                data: porcentajes,
+                borderColor: '#3B82F6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 3,
+                pointBackgroundColor: '#3B82F6'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const idx = context.dataIndex;
+                            const d = datos[idx];
+                            return [
+                                `Nivel: ${d.porcentaje}%`,
+                                `Litros: ${d.litros} L`,
+                                `Muestras: ${d.muestras}`
+                            ];
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        },
+                        font: { size: 10 }
+                    },
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: { size: 9 },
+                        maxRotation: 45
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Cargar historial al inicio y cada 5 minutos
+cargarHistorial();
+setInterval(cargarHistorial, 300000);

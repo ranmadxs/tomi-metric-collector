@@ -5,11 +5,12 @@ Paraíso Los Quinquelles
 Módulo para monitorear el nivel de agua del estanque via MQTT.
 """
 
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, render_template, jsonify, request
 from datetime import datetime, timezone
 from collections import deque
 from pathlib import Path
 from dotenv import load_dotenv
+from pymongo import MongoClient
 import threading
 import time
 import tomllib
@@ -19,6 +20,12 @@ import paho.mqtt.client as mqtt
 
 # Cargar variables de entorno
 load_dotenv()
+
+# MongoDB configuración
+MONGO_URI = os.getenv("MONGODB_URI")
+ENABLE_MONGO_DB = os.getenv("ENABLE_MONGO_DB", "False").lower() == "true"
+mongo_client_estanque = None
+historial_collection = None
 
 # Limpiar archivo de simulación viejo al iniciar (evita quedarse en modo simulación)
 _SIM_FILE = os.path.join('/tmp', 'monitor_simulacion.flag')
@@ -59,6 +66,88 @@ MQTT_PORT = int(os.getenv('MQTT_PORT', '1883'))
 MQTT_USERNAME = os.getenv('MQTT_USERNAME', 'test')
 MQTT_PASSWORD = os.getenv('MQTT_PASSWORD', 'test')
 MQTT_TOPIC_OUT = os.getenv('MQTT_TOPIC_OUT', 'yai-mqtt/YUS-0.2.8-COSTA/out')
+
+# ============================================================
+# MONGODB - HISTORIAL
+# ============================================================
+
+def get_historial_collection():
+    """Obtiene la colección de historial de MongoDB."""
+    global mongo_client_estanque, historial_collection
+    
+    if not ENABLE_MONGO_DB or not MONGO_URI:
+        return None
+    
+    if mongo_client_estanque is None:
+        try:
+            mongo_client_estanque = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+            mongo_client_estanque.admin.command('ping')
+            db = mongo_client_estanque["tomi-db"]
+            historial_collection = db["estanque-historial"]
+            print("✅ MongoDB conectado para historial del estanque")
+        except Exception as e:
+            print(f"❌ Error conectando MongoDB para historial: {e}")
+            return None
+    
+    return historial_collection
+
+# Buffer para promediar datos por hora
+datos_hora_actual = []
+ultima_hora_guardada = None
+
+def guardar_historial_hora():
+    """Guarda el promedio de la hora actual en MongoDB."""
+    global datos_hora_actual, ultima_hora_guardada
+    
+    if not datos_hora_actual:
+        return
+    
+    collection = get_historial_collection()
+    if collection is None:
+        return
+    
+    # Calcular promedios
+    n = len(datos_hora_actual)
+    promedio = {
+        "timestamp": datetime.now(timezone.utc),
+        "hora_local": datetime.now().strftime("%Y-%m-%d %H:00"),
+        "distancia": round(sum(d["distancia"] for d in datos_hora_actual) / n, 2),
+        "altura_agua": round(sum(d["altura_agua"] for d in datos_hora_actual) / n, 2),
+        "litros": round(sum(d["litros"] for d in datos_hora_actual) / n, 2),
+        "porcentaje": round(sum(d["porcentaje"] for d in datos_hora_actual) / n, 2),
+        "estado": datos_hora_actual[-1]["estado"],
+        "muestras": n,
+        "sensor": MQTT_TOPIC_OUT,
+        "ubicacion": PARCELA_NOMBRE
+    }
+    
+    try:
+        collection.insert_one(promedio)
+        print(f"📊 Historial guardado: {promedio['hora_local']} - {promedio['porcentaje']}% ({n} muestras)")
+        datos_hora_actual.clear()
+    except Exception as e:
+        print(f"❌ Error guardando historial: {e}")
+
+def agregar_dato_historial(datos: dict):
+    """Agrega un dato al buffer de la hora actual y guarda si cambió la hora."""
+    global datos_hora_actual, ultima_hora_guardada
+    
+    hora_actual = datetime.now().strftime("%Y-%m-%d %H")
+    
+    # Si cambió la hora, guardar el promedio anterior
+    if ultima_hora_guardada and hora_actual != ultima_hora_guardada:
+        guardar_historial_hora()
+    
+    ultima_hora_guardada = hora_actual
+    
+    # Agregar dato al buffer
+    datos_hora_actual.append({
+        "distancia": datos.get("distancia", 0),
+        "altura_agua": datos.get("altura_agua", 0),
+        "litros": datos.get("litros", 0),
+        "porcentaje": datos.get("porcentaje", 0),
+        "estado": datos.get("estado", "sin_datos")
+    })
 
 # ============================================================
 # ESTADO Y DATOS
@@ -172,6 +261,9 @@ def on_mqtt_message(client, userdata, msg):
                 "porcentaje": datos["porcentaje"],
                 "estado": datos["estado"]
             })
+            
+            # Agregar al historial de MongoDB (promediado por hora)
+            agregar_dato_historial(datos)
             
             print(f"💧 Nivel: {datos['litros']:.0f}L ({datos['porcentaje']:.1f}%) - Promedio de {len(lecturas_buffer)} lecturas")
             
@@ -321,4 +413,159 @@ def api_simular(distancia):
     datos = calcular_nivel(distancia)
     datos["simulado"] = True
     return jsonify(datos)
+
+
+@monitor_bp.route('/api/historial')
+def api_historial():
+    """
+    Obtiene el historial de mediciones promediadas por hora desde MongoDB.
+    ---
+    tags:
+      - Monitor Estanque
+    parameters:
+      - name: dias
+        in: query
+        type: integer
+        required: false
+        default: 7
+        description: Cantidad de días hacia atrás a consultar
+    responses:
+      200:
+        description: Lista de mediciones promediadas por hora
+    """
+    from datetime import timedelta
+    
+    dias = int(request.args.get('dias', 7))
+    collection = get_historial_collection()
+    
+    if collection is None:
+        return jsonify({
+            "error": "MongoDB no disponible",
+            "historial": []
+        })
+    
+    fecha_inicio = datetime.now(timezone.utc) - timedelta(days=dias)
+    
+    try:
+        cursor = collection.find(
+            {"timestamp": {"$gte": fecha_inicio}},
+            {"_id": 0}
+        ).sort("timestamp", -1).limit(500)
+        
+        historial_db = list(cursor)
+        
+        # Convertir timestamps a string para JSON
+        for item in historial_db:
+            if "timestamp" in item:
+                item["timestamp"] = item["timestamp"].isoformat()
+        
+        return jsonify({
+            "dias": dias,
+            "total": len(historial_db),
+            "historial": historial_db
+        })
+    except Exception as e:
+        return jsonify({
+            "error": str(e),
+            "historial": []
+        })
+
+
+@monitor_bp.route('/api/historial/forzar-guardado', methods=['POST'])
+def forzar_guardado_historial():
+    """
+    Fuerza el guardado del buffer actual de historial en MongoDB.
+    ---
+    tags:
+      - Monitor Estanque
+    responses:
+      200:
+        description: Resultado del guardado
+    """
+    muestras_pendientes = len(datos_hora_actual)
+    guardar_historial_hora()
+    return jsonify({
+        "mensaje": "Historial guardado",
+        "muestras_guardadas": muestras_pendientes
+    })
+
+
+@monitor_bp.route('/api/historial/diario')
+def api_historial_diario():
+    """
+    Obtiene el historial agregado por día (promedio diario) del último mes.
+    ---
+    tags:
+      - Monitor Estanque
+    responses:
+      200:
+        description: Lista de promedios diarios
+    """
+    from datetime import timedelta
+    
+    collection = get_historial_collection()
+    
+    if collection is None:
+        return jsonify({
+            "habilitado": False,
+            "error": "MongoDB no disponible",
+            "datos": []
+        })
+    
+    fecha_inicio = datetime.now(timezone.utc) - timedelta(days=30)
+    
+    try:
+        # Agregación por día
+        pipeline = [
+            {"$match": {"timestamp": {"$gte": fecha_inicio}}},
+            {"$group": {
+                "_id": {"$dateToString": {"format": "%Y-%m-%d", "date": "$timestamp"}},
+                "porcentaje_promedio": {"$avg": "$porcentaje"},
+                "litros_promedio": {"$avg": "$litros"},
+                "distancia_promedio": {"$avg": "$distancia"},
+                "muestras": {"$sum": 1}
+            }},
+            {"$sort": {"_id": 1}},
+            {"$project": {
+                "_id": 0,
+                "fecha": "$_id",
+                "porcentaje": {"$round": ["$porcentaje_promedio", 1]},
+                "litros": {"$round": ["$litros_promedio", 0]},
+                "distancia": {"$round": ["$distancia_promedio", 1]},
+                "muestras": 1
+            }}
+        ]
+        
+        datos = list(collection.aggregate(pipeline))
+        
+        return jsonify({
+            "habilitado": True,
+            "total_dias": len(datos),
+            "datos": datos
+        })
+    except Exception as e:
+        return jsonify({
+            "habilitado": True,
+            "error": str(e),
+            "datos": []
+        })
+
+
+@monitor_bp.route('/api/historial/status')
+def api_historial_status():
+    """
+    Verifica si el historial de MongoDB está habilitado y conectado.
+    ---
+    tags:
+      - Monitor Estanque
+    responses:
+      200:
+        description: Estado de la conexión a MongoDB
+    """
+    collection = get_historial_collection()
+    
+    return jsonify({
+        "habilitado": ENABLE_MONGO_DB,
+        "conectado": collection is not None
+    })
 
