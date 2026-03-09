@@ -90,11 +90,31 @@ def get_historial_collection():
     
     return historial_collection
 
-def guardar_en_mongodb(datos: dict, origin: str = "mqtt-10"):
+def get_audit_info(source: str = "system"):
+    """Obtiene información de auditoría del request actual o del sistema."""
+    try:
+        from flask import request as flask_request
+        user_origin = flask_request.remote_addr or flask_request.headers.get('X-Forwarded-For', 'unknown')
+        user_agent = flask_request.headers.get('User-Agent', 'unknown')
+        return {
+            "user_origin": user_origin,
+            "user_agent": user_agent
+        }
+    except:
+        return {
+            "user_origin": source,
+            "user_agent": source
+        }
+
+def guardar_en_mongodb(datos: dict, origin: str = "mqtt-10", audit: dict = None):
     """Guarda un registro directamente en MongoDB."""
     collection = get_historial_collection()
     if collection is None:
         return False
+    
+    # Obtener audit info si no se proporciona
+    if audit is None:
+        audit = get_audit_info(origin)
     
     registro = {
         "timestamp": datetime.now(timezone.utc),
@@ -107,7 +127,9 @@ def guardar_en_mongodb(datos: dict, origin: str = "mqtt-10"):
         "muestras": datos.get("lecturas_en_buffer", 1),
         "sensor": MQTT_TOPIC_OUT,
         "ubicacion": PARCELA_NOMBRE,
-        "origin": origin
+        "origin": origin,
+        "user_origin": audit.get("user_origin"),
+        "user_agent": audit.get("user_agent")
     }
     
     try:
