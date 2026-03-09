@@ -13,4 +13,4 @@ COPY . .
 RUN poetry add gunicorn && poetry install
 
 # Comando para ejecutar la aplicación con Gunicorn
-CMD ["poetry", "run", "gunicorn", "-w", "4", "-b", "0.0.0.0:80", "tomi_metrics.app:app"]
+CMD ["poetry", "run", "gunicorn", "-w", "1", "--threads", "4", "-b", "0.0.0.0:80", "tomi_metrics.app:app"]
