@@ -91,63 +91,33 @@ def get_historial_collection():
     
     return historial_collection
 
-# Buffer para promediar datos por hora
-datos_hora_actual = []
-ultima_hora_guardada = None
-
-def guardar_historial_hora():
-    """Guarda el promedio de la hora actual en MongoDB."""
-    global datos_hora_actual, ultima_hora_guardada
-    
-    if not datos_hora_actual:
-        return
-    
+def guardar_en_mongodb(datos: dict, origin: str = "mqtt-10"):
+    """Guarda un registro directamente en MongoDB."""
     collection = get_historial_collection()
     if collection is None:
-        return
+        return False
     
-    # Calcular promedios
-    n = len(datos_hora_actual)
-    promedio = {
+    registro = {
         "timestamp": datetime.now(timezone.utc),
-        "hora_local": datetime.now().strftime("%Y-%m-%d %H:00"),
-        "distancia": round(sum(d["distancia"] for d in datos_hora_actual) / n, 2),
-        "altura_agua": round(sum(d["altura_agua"] for d in datos_hora_actual) / n, 2),
-        "litros": round(sum(d["litros"] for d in datos_hora_actual) / n, 2),
-        "porcentaje": round(sum(d["porcentaje"] for d in datos_hora_actual) / n, 2),
-        "estado": datos_hora_actual[-1]["estado"],
-        "muestras": n,
+        "hora_local": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "distancia": round(datos.get("distancia", 0), 2),
+        "altura_agua": round(datos.get("altura_agua", 0), 2),
+        "litros": round(datos.get("litros", 0), 2),
+        "porcentaje": round(datos.get("porcentaje", 0), 2),
+        "estado": datos.get("estado", ""),
+        "muestras": datos.get("lecturas_en_buffer", 1),
         "sensor": MQTT_TOPIC_OUT,
-        "ubicacion": PARCELA_NOMBRE
+        "ubicacion": PARCELA_NOMBRE,
+        "origin": origin
     }
     
     try:
-        collection.insert_one(promedio)
-        print(f"📊 Historial guardado: {promedio['hora_local']} - {promedio['porcentaje']}% ({n} muestras)")
-        datos_hora_actual.clear()
+        collection.insert_one(registro)
+        print(f"📊 MongoDB [{origin}]: {registro['hora_local']} - {registro['porcentaje']}% ({registro['muestras']} muestras)")
+        return True
     except Exception as e:
-        print(f"❌ Error guardando historial: {e}")
-
-def agregar_dato_historial(datos: dict):
-    """Agrega un dato al buffer de la hora actual y guarda si cambió la hora."""
-    global datos_hora_actual, ultima_hora_guardada
-    
-    hora_actual = datetime.now().strftime("%Y-%m-%d %H")
-    
-    # Si cambió la hora, guardar el promedio anterior
-    if ultima_hora_guardada and hora_actual != ultima_hora_guardada:
-        guardar_historial_hora()
-    
-    ultima_hora_guardada = hora_actual
-    
-    # Agregar dato al buffer
-    datos_hora_actual.append({
-        "distancia": datos.get("distancia", 0),
-        "altura_agua": datos.get("altura_agua", 0),
-        "litros": datos.get("litros", 0),
-        "porcentaje": datos.get("porcentaje", 0),
-        "estado": datos.get("estado", "sin_datos")
-    })
+        print(f"❌ Error guardando en MongoDB: {e}")
+        return False
 
 # ============================================================
 # ESTADO Y DATOS
@@ -262,8 +232,9 @@ def on_mqtt_message(client, userdata, msg):
                 "estado": datos["estado"]
             })
             
-            # Agregar al historial de MongoDB (promediado por hora)
-            agregar_dato_historial(datos)
+            # Guardar en MongoDB cuando el buffer tiene 10 lecturas
+            if len(lecturas_buffer) == 10:
+                guardar_en_mongodb(datos, "mqtt-10")
             
             print(f"💧 Nivel: {datos['litros']:.0f}L ({datos['porcentaje']:.1f}%) - Promedio de {len(lecturas_buffer)} lecturas")
             
@@ -482,11 +453,15 @@ def forzar_guardado_historial():
       200:
         description: Resultado del guardado
     """
-    muestras_pendientes = len(datos_hora_actual)
-    guardar_historial_hora()
+    if estado:
+        resultado = guardar_en_mongodb(estado, "manual")
+        return jsonify({
+            "mensaje": "Registro guardado" if resultado else "Error al guardar",
+            "guardado": resultado
+        })
     return jsonify({
-        "mensaje": "Historial guardado",
-        "muestras_guardadas": muestras_pendientes
+        "mensaje": "No hay datos para guardar",
+        "guardado": False
     })
 
 
