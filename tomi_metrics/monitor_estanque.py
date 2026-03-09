@@ -9,12 +9,16 @@ from flask import Blueprint, render_template, jsonify
 from datetime import datetime, timezone
 from collections import deque
 from pathlib import Path
+from dotenv import load_dotenv
 import threading
 import time
 import tomllib
 import random
 import os
 import paho.mqtt.client as mqtt
+
+# Cargar variables de entorno
+load_dotenv()
 
 # Limpiar archivo de simulación viejo al iniciar (evita quedarse en modo simulación)
 _SIM_FILE = os.path.join('/tmp', 'monitor_simulacion.flag')
@@ -49,12 +53,12 @@ PARCELA_UBICACION = "Paraíso Los Quinquelles"
 ALTURA_SENSOR = 160  # cm desde el fondo del estanque
 CAPACIDAD_LITROS = 5000  # litros cuando está lleno
 
-# Configuración MQTT
-MQTT_HOST = "broker.mqttdashboard.com"
-MQTT_PORT = 1883
-MQTT_USERNAME = "test"
-MQTT_PASSWORD = "test"
-MQTT_TOPIC = "yai-mqtt/YUS-0.2.8-COSTA/out"
+# Configuración MQTT (desde variables de entorno)
+MQTT_HOST = os.getenv('MQTT_HOST', 'broker.mqttdashboard.com')
+MQTT_PORT = int(os.getenv('MQTT_PORT', '1883'))
+MQTT_USERNAME = os.getenv('MQTT_USERNAME', 'test')
+MQTT_PASSWORD = os.getenv('MQTT_PASSWORD', 'test')
+MQTT_TOPIC_OUT = os.getenv('MQTT_TOPIC_OUT', 'yai-mqtt/YUS-0.2.8-COSTA/out')
 
 # ============================================================
 # ESTADO Y DATOS
@@ -120,8 +124,8 @@ def on_mqtt_connect(client, userdata, flags, reason_code, properties):
     if reason_code == 0:
         mqtt_connected = True
         print(f"✅ MQTT Conectado a {MQTT_HOST}")
-        client.subscribe(MQTT_TOPIC)
-        print(f"📡 Suscrito a: {MQTT_TOPIC}")
+        client.subscribe(MQTT_TOPIC_OUT)
+        print(f"📡 Suscrito a: {MQTT_TOPIC_OUT}")
     else:
         mqtt_connected = False
         print(f"❌ Error MQTT: {reason_code}")
@@ -294,7 +298,7 @@ def api_config():
         "altura_sensor": ALTURA_SENSOR,
         "capacidad_litros": CAPACIDAD_LITROS,
         "mqtt_host": MQTT_HOST,
-        "mqtt_topic": MQTT_TOPIC
+        "mqtt_topic": MQTT_TOPIC_OUT
     })
 
 @monitor_bp.route('/api/simular/<int:distancia>')
