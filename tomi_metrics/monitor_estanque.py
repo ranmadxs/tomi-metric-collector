@@ -415,8 +415,8 @@ def api_simular(distancia):
     return jsonify(datos)
 
 
-@monitor_bp.route('/api/historial')
-def api_historial():
+@monitor_bp.route('/api/historial/hora')
+def api_historial_hora():
     """
     Obtiene el historial de mediciones promediadas por hora desde MongoDB.
     ---
