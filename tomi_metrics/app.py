@@ -36,21 +36,11 @@ def get_readme_content():
 def check_mongodb_connection():
     """Verifica si MongoDB está conectado y retorna info de conexión"""
     mongo_uri = os.getenv("MONGODB_URI", "")
-    enabled = os.getenv("ENABLE_MONGO_DB", "False").lower() == "true"
-    
-    if not enabled:
-        return {
-            "connected": False,
-            "enabled": False,
-            "status": "Deshabilitado",
-            "uri": mask_uri(mongo_uri) if mongo_uri else "No configurado"
-        }
     
     if not mongo_uri:
         return {
             "connected": False,
-            "enabled": True,
-            "status": "URI no configurada",
+            "status": "No configurado",
             "uri": "No configurado"
         }
     
@@ -60,14 +50,12 @@ def check_mongodb_connection():
         test_client.close()
         return {
             "connected": True,
-            "enabled": True,
             "status": "Conectado",
             "uri": mask_uri(mongo_uri)
         }
     except Exception as e:
         return {
             "connected": False,
-            "enabled": True,
             "status": "Error de conexión",
             "uri": mask_uri(mongo_uri)
         }
@@ -188,9 +176,8 @@ logs = []
 # Configuración de DataDog y MongoDB desde variables de entorno
 DATADOG_API_URL = "https://api.datadoghq.com/api/v1/series?api_key="
 DATADOG_API_KEY = os.getenv("DATADOG_API_KEY")  # API Key de DataDog desde variables de entorno
-MONGO_URI = os.getenv("MONGODB_URI")  # URI de MongoDB desde variables de entorno
+MONGO_URI = os.getenv("MONGODB_URI", "")  # URI de MongoDB desde variables de entorno
 ENABLE_SEND_LOG_TO_DATADOG = os.getenv("ENABLE_SEND_LOG_TO_DATADOG", "False").lower() == "true"
-ENABLE_MONGO_DB = os.getenv("ENABLE_MONGO_DB", "False").lower() == "true"  # Default False para métricas y logs
 
 # Conexión lazy a MongoDB
 mongo_client = None
@@ -202,7 +189,7 @@ def get_mongo_collections():
     """Inicializa la conexión a MongoDB de forma lazy (solo cuando se necesita)"""
     global mongo_client, db, logs_collection, dmMetrics
     
-    if not ENABLE_MONGO_DB:
+    if not MONGO_URI:
         return None, None
     
     if mongo_client is None:
@@ -239,8 +226,8 @@ def send_metric_to_datadog(series):
         return 500, {"error": str(e)}
 
 def send_metric_to_mongodb(series):
-    if not ENABLE_MONGO_DB:
-        return  # Salir si el almacenamiento en MongoDB está deshabilitado
+    if not MONGO_URI:
+        return  # Salir si MongoDB no está configurado
 
     _, metrics_collection = get_mongo_collections()
     if metrics_collection is None:
@@ -558,8 +545,8 @@ def save_logs():
     return jsonify({"message": "Todos los logs han sido recibidos y estan en proceso"}), 202
 
 def save_log_to_mongodb(message, level, log_date, service, ddsource, hostname, tags):
-    if not ENABLE_MONGO_DB:
-        return  # Salir si el almacenamiento de logs en MongoDB está deshabilitado
+    if not MONGO_URI:
+        return  # Salir si MongoDB no está configurado
 
     logs_col, _ = get_mongo_collections()
     if logs_col is None:

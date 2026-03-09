@@ -22,8 +22,7 @@ import paho.mqtt.client as mqtt
 load_dotenv()
 
 # MongoDB configuración
-MONGO_URI = os.getenv("MONGODB_URI")
-ENABLE_MONGO_DB = os.getenv("ENABLE_MONGO_DB", "False").lower() == "true"
+MONGO_URI = os.getenv("MONGODB_URI", "")
 mongo_client_estanque = None
 historial_collection = None
 
@@ -75,7 +74,7 @@ def get_historial_collection():
     """Obtiene la colección de historial de MongoDB."""
     global mongo_client_estanque, historial_collection
     
-    if not ENABLE_MONGO_DB or not MONGO_URI:
+    if not MONGO_URI:
         return None
     
     if mongo_client_estanque is None:
@@ -540,7 +539,7 @@ def api_historial_status():
     collection = get_historial_collection()
     
     return jsonify({
-        "habilitado": ENABLE_MONGO_DB,
+        "configurado": bool(MONGO_URI),
         "conectado": collection is not None
     })
 
