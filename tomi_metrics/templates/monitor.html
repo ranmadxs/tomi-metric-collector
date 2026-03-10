@@ -11,7 +11,7 @@
 <body>
     <!-- Overlay de modo simulación -->
     <div id="simulation-overlay" class="simulation-overlay hidden">
-        <span class="sim-overlay-indicator">🧪 MODO PREVIEW</span>
+        <span class="sim-overlay-indicator">🧪 MODO SIMULADOR</span>
         <button onclick="volverDatosReales()" class="sim-overlay-btn">✕ Volver a Datos Reales</button>
     </div>
 
@@ -41,6 +41,11 @@
                         <span class="status-dot"></span>
                         <span class="status-text">MongoDB...</span>
                     </div>
+                    {% if is_logged_in %}
+                    <a href="/logout?next=/monitor" class="logout-btn" title="Cerrar sesión">🚪 Salir</a>
+                    {% else %}
+                    <a href="/login?next=/monitor" class="login-btn" title="Iniciar sesión">🔑 Login</a>
+                    {% endif %}
                 </div>
             </div>
         </header>
@@ -183,6 +188,9 @@
                                     <span class="metric-label">Historial del Mes</span>
                                     <span class="metric-value" id="historial-status">Cargando...</span>
                                 </div>
+                                {% if is_logged_in %}
+                                <button class="expand-btn" onclick="abrirHistorialDetallado()" title="Ver detalle por horas">🔍</button>
+                                {% endif %}
                             </div>
                             <div class="historial-chart-container" id="historial-container">
                                 <canvas id="historial-chart"></canvas>
@@ -211,9 +219,10 @@
                 </div>
             </div>
 
-            <!-- Panel de Simulación (Preview) -->
+            {% if is_logged_in %}
+            <!-- Panel de Simulación (Preview) - Solo Admin -->
             <div class="simulation-panel">
-                <h3>🧪 Preview de Niveles</h3>
+                <h3>🧪 Simulador de Niveles</h3>
                 <p>Vista previa de diferentes niveles (los datos reales siguen actualizándose):</p>
                 <div class="simulation-buttons">
                     <button onclick="simularPreview(10)" class="sim-btn normal">Lleno</button>
@@ -223,6 +232,7 @@
                     <button onclick="simularPreview(150)" class="sim-btn peligro">Crítico</button>
                 </div>
             </div>
+            {% endif %}
 
         </main>
 
@@ -240,6 +250,28 @@
                 </a>
             </p>
         </footer>
+    </div>
+
+    <!-- Modal Historial Detallado -->
+    <div id="historial-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📊 Historial Detallado - <span id="modal-mes-titulo"></span></h2>
+                <div class="modal-header-actions">
+                    <button id="btn-volver-mes" class="btn-volver hidden" onclick="volverVistaCompleta()">← Volver al mes</button>
+                    <button class="modal-close" onclick="cerrarHistorialDetallado()">✕</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-chart-container">
+                    <canvas id="historial-detallado-chart"></canvas>
+                </div>
+                <div class="modal-loading" id="modal-loading">
+                    <span>Cargando datos...</span>
+                </div>
+                <p class="modal-hint">💡 Haz clic en cualquier punto para ver el detalle por hora de ese día</p>
+            </div>
+        </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/monitor.js') }}"></script>

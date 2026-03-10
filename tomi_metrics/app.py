@@ -1,8 +1,10 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, session, redirect, url_for
 from flasgger import Swagger, swag_from
 import requests
 from pymongo import MongoClient
 import os
+import secrets
+from functools import wraps
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import datetime, timezone
@@ -137,6 +139,24 @@ def mask_api_key(key):
 app = Flask(__name__, 
             template_folder='templates',
             static_folder='static')
+
+# Secret key para sesiones
+app.secret_key = os.getenv('SECRET_KEY', secrets.token_hex(32))
+
+# Autenticación
+AUTH_USERNAME = os.getenv('AUTH_USERNAME', 'admin')
+AUTH_PASSWORD = os.getenv('AUTH_PASSWORD', 'admin')
+
+
+def login_required(f):
+    """Decorador para proteger rutas que requieren autenticación."""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 
 # Configuración de Swagger
 swagger_config = {
@@ -275,7 +295,49 @@ def process_log_entry_safe(data):
     except Exception as e:
         print(f"Error inesperado al procesar el log: {e}")
 
+# ============================================================
+# AUTENTICACIÓN
+# ============================================================
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Página de login."""
+    error = None
+    next_url = request.args.get('next', '')
+    
+    if request.method == 'POST':
+        username = request.form.get('username', '')
+        password = request.form.get('password', '')
+        next_url = request.form.get('next', '')
+        
+        if username == AUTH_USERNAME and password == AUTH_PASSWORD:
+            session['logged_in'] = True
+            session['username'] = username
+            if next_url:
+                return redirect(next_url)
+            return redirect(url_for('home'))
+        else:
+            error = 'Usuario o contraseña incorrectos'
+    
+    return render_template('login.html', error=error, version=APP_VERSION, next_url=next_url)
+
+
+@app.route('/logout')
+def logout():
+    """Cerrar sesión."""
+    session.clear()
+    next_url = request.args.get('next', '')
+    if next_url and next_url != '/':
+        return redirect(next_url)
+    return redirect(url_for('login'))
+
+
+# ============================================================
+# ENDPOINTS
+# ============================================================
+
 @app.route('/')
+@login_required
 def home():
     """
     Home - Documentación y estado de la API
@@ -290,13 +352,16 @@ def home():
     datadog_status = check_datadog_connection()
     mqtt_status = get_mqtt_status()
     
+    is_logged_in = session.get('logged_in', False)
+    
     return render_template(
         'home.html',
         app_name=APP_NAME,
         app_version=APP_VERSION,
         mongo_status=mongo_status,
         datadog_status=datadog_status,
-        mqtt_status=mqtt_status
+        mqtt_status=mqtt_status,
+        is_logged_in=is_logged_in
     ), 200
 
 @app.route('/metrics', methods=['POST'])

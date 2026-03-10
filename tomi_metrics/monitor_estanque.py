@@ -5,7 +5,8 @@ Paraíso Los Quinquelles
 Módulo para monitorear el nivel de agua del estanque via MQTT.
 """
 
-from flask import Blueprint, render_template, jsonify, request
+from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for
+from functools import wraps
 from datetime import datetime, timezone
 from collections import deque
 from pathlib import Path
@@ -37,6 +38,26 @@ if os.path.exists(_SIM_FILE):
 
 # Blueprint para las rutas del monitor
 monitor_bp = Blueprint('monitor', __name__, url_prefix='/monitor')
+
+
+def login_required(f):
+    """Decorador para proteger rutas que requieren autenticación."""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+def login_required_api(f):
+    """Decorador para APIs que requieren autenticación (retorna JSON)."""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            return jsonify({"error": "No autorizado", "login_required": True}), 401
+        return f(*args, **kwargs)
+    return decorated_function
 
 # ============================================================
 # CONFIGURACIÓN
@@ -318,12 +339,15 @@ def home():
       200:
         description: Dashboard del monitor de estanque
     """
+    is_logged_in = session.get('logged_in', False)
+    
     return render_template('monitor.html',
                          parcela_nombre=PARCELA_NOMBRE,
                          parcela_ubicacion=PARCELA_UBICACION,
                          altura_sensor=ALTURA_SENSOR,
                          capacidad_litros=CAPACIDAD_LITROS,
-                         version=APP_VERSION)
+                         version=APP_VERSION,
+                         is_logged_in=is_logged_in)
 
 @monitor_bp.route('/api/estado')
 def api_estado():
@@ -564,4 +588,78 @@ def api_historial_status():
         "configurado": bool(MONGO_URI),
         "conectado": collection is not None
     })
+
+
+@monitor_bp.route('/api/historial/mensual-horas')
+@login_required_api
+def api_historial_mensual_horas():
+    """
+    Obtiene el historial del mes actual agrupado por día y hora.
+    ---
+    tags:
+      - Monitor Estanque
+    responses:
+      200:
+        description: Lista de promedios por hora del mes actual
+    """
+    from datetime import timedelta
+    import calendar
+    
+    collection = get_historial_collection()
+    
+    if collection is None:
+        return jsonify({
+            "habilitado": False,
+            "error": "MongoDB no disponible",
+            "datos": []
+        })
+    
+    # Obtener primer y último día del mes actual
+    ahora = datetime.now(timezone.utc)
+    primer_dia = ahora.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    ultimo_dia_num = calendar.monthrange(ahora.year, ahora.month)[1]
+    
+    try:
+        # Zona horaria de Chile
+        tz_chile = "America/Santiago"
+        
+        # Agregación por día y hora (en hora local de Chile)
+        pipeline = [
+            {"$match": {"timestamp": {"$gte": primer_dia}}},
+            {"$group": {
+                "_id": {
+                    "fecha": {"$dateToString": {"format": "%Y-%m-%d", "date": "$timestamp", "timezone": tz_chile}},
+                    "hora": {"$hour": {"date": "$timestamp", "timezone": tz_chile}}
+                },
+                "porcentaje_promedio": {"$avg": "$porcentaje"},
+                "litros_promedio": {"$avg": "$litros"},
+                "muestras": {"$sum": 1}
+            }},
+            {"$sort": {"_id.fecha": 1, "_id.hora": 1}},
+            {"$project": {
+                "_id": 0,
+                "fecha": "$_id.fecha",
+                "hora": "$_id.hora",
+                "porcentaje": {"$round": ["$porcentaje_promedio", 1]},
+                "litros": {"$round": ["$litros_promedio", 0]},
+                "muestras": 1
+            }}
+        ]
+        
+        datos = list(collection.aggregate(pipeline))
+        
+        return jsonify({
+            "habilitado": True,
+            "mes": ahora.month,
+            "anio": ahora.year,
+            "dias_mes": ultimo_dia_num,
+            "total_registros": len(datos),
+            "datos": datos
+        })
+    except Exception as e:
+        return jsonify({
+            "habilitado": True,
+            "error": str(e),
+            "datos": []
+        })
 

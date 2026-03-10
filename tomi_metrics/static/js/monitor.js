@@ -280,9 +280,9 @@ function renderizarGrafico(datos) {
         historialChart.destroy();
     }
     
-    // Preparar datos
+    // Preparar datos (agregar T12:00:00 para evitar problemas de zona horaria)
     const labels = datos.map(d => {
-        const fecha = new Date(d.fecha);
+        const fecha = new Date(d.fecha + 'T12:00:00');
         return fecha.toLocaleDateString('es-CL', { day: '2-digit', month: 'short' });
     });
     const porcentajes = datos.map(d => d.porcentaje);
@@ -296,11 +296,12 @@ function renderizarGrafico(datos) {
                 label: 'Nivel Promedio %',
                 data: porcentajes,
                 borderColor: '#3B82F6',
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                backgroundColor: 'rgba(200, 210, 220, 0.4)',
                 fill: true,
                 tension: 0.4,
-                pointRadius: 3,
-                pointBackgroundColor: '#3B82F6'
+                pointRadius: 4,
+                pointBackgroundColor: '#3B82F6',
+                borderWidth: 2
             }]
         },
         options: {
@@ -332,16 +333,18 @@ function renderizarGrafico(datos) {
                         callback: function(value) {
                             return value + '%';
                         },
-                        font: { size: 10 }
+                        font: { size: 10 },
+                        color: '#ffffff'
                     },
                     grid: {
-                        color: 'rgba(0,0,0,0.05)'
+                        color: 'rgba(148, 163, 184, 0.3)'
                     }
                 },
                 x: {
                     ticks: {
                         font: { size: 9 },
-                        maxRotation: 45
+                        maxRotation: 45,
+                        color: '#ffffff'
                     },
                     grid: {
                         display: false
@@ -355,3 +358,329 @@ function renderizarGrafico(datos) {
 // Cargar historial al inicio y cada 5 minutos
 cargarHistorial();
 setInterval(cargarHistorial, 300000);
+
+// ============================================================
+// MODAL HISTORIAL DETALLADO
+// ============================================================
+
+let historialDetalladoChart = null;
+let datosHistorialMes = null; // Guardar datos del mes para zoom
+
+const MESES_ES = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+function abrirHistorialDetallado() {
+    const modal = document.getElementById('historial-modal');
+    const loading = document.getElementById('modal-loading');
+    const titulo = document.getElementById('modal-mes-titulo');
+    
+    modal.classList.remove('hidden');
+    loading.classList.remove('hidden');
+    
+    fetch('/monitor/api/historial/mensual-horas')
+        .then(response => {
+            if (response.status === 401) {
+                throw new Error('Debes iniciar sesión para ver el historial detallado');
+            }
+            return response.json();
+        })
+        .then(data => {
+            loading.classList.add('hidden');
+            
+            if (data.error) {
+                if (data.login_required) {
+                    alert('Debes iniciar sesión para ver el historial detallado');
+                    cerrarHistorialDetallado();
+                    window.location.href = '/login?next=/monitor';
+                } else {
+                    alert('Error: ' + data.error);
+                }
+                return;
+            }
+            
+            titulo.textContent = `${MESES_ES[data.mes]} ${data.anio}`;
+            renderizarGraficoDetallado(data);
+        })
+        .catch(error => {
+            loading.classList.add('hidden');
+            console.error('Error cargando historial detallado:', error);
+            alert(error.message || 'Error al cargar los datos');
+            cerrarHistorialDetallado();
+        });
+}
+
+function cerrarHistorialDetallado() {
+    const modal = document.getElementById('historial-modal');
+    modal.classList.add('hidden');
+    
+    if (historialDetalladoChart) {
+        historialDetalladoChart.destroy();
+        historialDetalladoChart = null;
+    }
+}
+
+function renderizarGraficoDetallado(data) {
+    // Guardar datos para zoom
+    datosHistorialMes = data;
+    renderizarVistaCompleta(data);
+}
+
+function renderizarVistaCompleta(data) {
+    const ctx = document.getElementById('historial-detallado-chart');
+    if (!ctx) return;
+    
+    if (historialDetalladoChart) {
+        historialDetalladoChart.destroy();
+    }
+    
+    // Ocultar botón volver
+    const btnVolver = document.getElementById('btn-volver-mes');
+    if (btnVolver) btnVolver.classList.add('hidden');
+    
+    // Crear labels para todos los días y horas del mes
+    const labels = [];
+    const valores = [];
+    const datosMap = {};
+    
+    // Crear mapa de datos recibidos
+    data.datos.forEach(d => {
+        const key = `${d.fecha}-${d.hora}`;
+        datosMap[key] = d;
+    });
+    
+    // Nombre del mes para el título del eje
+    const nombreMes = MESES_ES[data.mes];
+    
+    // Generar todos los días del mes con sus horas
+    for (let dia = 1; dia <= data.dias_mes; dia++) {
+        const fechaStr = `${data.anio}-${String(data.mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+        
+        for (let hora = 0; hora < 24; hora++) {
+            const key = `${fechaStr}-${hora}`;
+            const dato = datosMap[key];
+            
+            // Label: mostrar solo el día a las 12h (centro del día)
+            if (hora === 12) {
+                labels.push(`${dia}`);
+            } else {
+                labels.push('');
+            }
+            
+            valores.push(dato ? dato.litros : null);
+        }
+    }
+    
+    historialDetalladoChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Litros',
+                data: valores,
+                borderColor: '#3B82F6',
+                backgroundColor: 'rgba(200, 210, 220, 0.3)',
+                fill: true,
+                tension: 0.2,
+                pointRadius: 0,
+                borderWidth: 1.5,
+                spanGaps: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            onClick: function(evt, elements) {
+                if (elements.length > 0) {
+                    const idx = elements[0].index;
+                    const dia = Math.floor(idx / 24) + 1;
+                    zoomDia(dia);
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(context) {
+                            const idx = context[0].dataIndex;
+                            const dia = Math.floor(idx / 24) + 1;
+                            const hora = idx % 24;
+                            return `Día ${dia}, ${hora}:00 hrs (clic para zoom)`;
+                        },
+                        label: function(context) {
+                            if (context.raw === null) return 'Sin datos';
+                            return `${context.raw} L`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 5000,
+                    ticks: {
+                        callback: function(value) {
+                            return value + ' L';
+                        },
+                        font: { size: 11 },
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(148, 163, 184, 0.2)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: nombreMes,
+                        color: '#ffffff',
+                        font: { size: 12, weight: 'bold' },
+                        align: 'end'
+                    },
+                    ticks: {
+                        font: { size: 10 },
+                        color: '#ffffff',
+                        maxRotation: 0,
+                        autoSkip: false
+                    },
+                    grid: {
+                        color: 'rgba(148, 163, 184, 0.1)'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function zoomDia(dia) {
+    if (!datosHistorialMes) return;
+    
+    const data = datosHistorialMes;
+    const ctx = document.getElementById('historial-detallado-chart');
+    if (!ctx) return;
+    
+    if (historialDetalladoChart) {
+        historialDetalladoChart.destroy();
+    }
+    
+    // Mostrar botón volver
+    const btnVolver = document.getElementById('btn-volver-mes');
+    if (btnVolver) btnVolver.classList.remove('hidden');
+    
+    // Crear mapa de datos
+    const datosMap = {};
+    data.datos.forEach(d => {
+        const key = `${d.fecha}-${d.hora}`;
+        datosMap[key] = d;
+    });
+    
+    const nombreMes = MESES_ES[data.mes];
+    const fechaStr = `${data.anio}-${String(data.mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+    
+    // Generar las 24 horas del día
+    const labels = [];
+    const valores = [];
+    
+    for (let hora = 0; hora < 24; hora++) {
+        const key = `${fechaStr}-${hora}`;
+        const dato = datosMap[key];
+        
+        labels.push(`${hora}:00`);
+        valores.push(dato ? dato.litros : null);
+    }
+    
+    historialDetalladoChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Litros',
+                data: valores,
+                borderColor: '#3B82F6',
+                backgroundColor: 'rgba(200, 210, 220, 0.3)',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 4,
+                pointBackgroundColor: '#3B82F6',
+                borderWidth: 2,
+                spanGaps: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(context) {
+                            const hora = context[0].dataIndex;
+                            return `${hora}:00 hrs`;
+                        },
+                        label: function(context) {
+                            if (context.raw === null) return 'Sin datos';
+                            return `${context.raw} L`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 5000,
+                    ticks: {
+                        callback: function(value) {
+                            return value + ' L';
+                        },
+                        font: { size: 11 },
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(148, 163, 184, 0.2)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: `${dia} - ${nombreMes}`,
+                        color: '#ffffff',
+                        font: { size: 12, weight: 'bold' },
+                        align: 'end'
+                    },
+                    ticks: {
+                        font: { size: 10 },
+                        color: '#ffffff',
+                        maxRotation: 45
+                    },
+                    grid: {
+                        color: 'rgba(148, 163, 184, 0.1)'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function volverVistaCompleta() {
+    if (datosHistorialMes) {
+        renderizarVistaCompleta(datosHistorialMes);
+    }
+}
+
+// Cerrar modal con Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        cerrarHistorialDetallado();
+    }
+});
