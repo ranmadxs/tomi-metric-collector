@@ -203,6 +203,10 @@ estado = {
 
 def calcular_nivel(distancia_sensor: float) -> dict:
     """Calcula los litros y porcentaje basándose en la distancia del sensor."""
+    # Corrección: sensor no ve < 21cm, si distancia <= 20 restar 15 a la medición
+    if distancia_sensor <= 20:
+        distancia_sensor = max(0, distancia_sensor - 15)
+    
     altura_agua = ALTURA_SENSOR - distancia_sensor
     if altura_agua < 0:
         altura_agua = 0
