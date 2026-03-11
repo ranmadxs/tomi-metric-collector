@@ -17,7 +17,7 @@ Este documento describe el endpoint **Forzar Guardado** del Monitor de Estanque 
 | **URL completa** | `https://tomicolector.cl/monitor/api/historial/forzar-guardado` |
 | **Método HTTP** | `POST` |
 | **Autenticación** | No requiere |
-| **Header** | `aia_origin` — valor = nombre de la base de datos MongoDB destino. Si no viene, se usa `dump` |
+| **Header** | `aia_origin` — valor = nombre de la base de datos MongoDB destino. Si no viene, se usa `tomi-db` |
 | **Content-Type** | No aplica (sin body) |
 
 ### Descripción
@@ -26,7 +26,7 @@ El colector mantiene en memoria el estado actual del estanque, alimentado princi
 
 **Caso de uso típico:** Un sensor o cron programado llama a este endpoint en horarios específicos (ej: cada hora, cada 6 horas) para asegurar que haya un registro en la base de datos en ese momento, aunque no se hayan acumulado 10 lecturas MQTT.
 
-**Base de datos destino:** El valor del header `aia_origin` define el **nombre de la base de datos MongoDB** donde se guardan los datos. Si no se envía el header, se usa la base de datos `dump`. Los datos siempre se guardan en la colección `estanque-historial` dentro de esa base.
+**Base de datos destino:** El valor del header `aia_origin` define el **nombre de la base de datos MongoDB** donde se guardan los datos. Si no se envía el header, se usa la base de datos `tomi-db` (por defecto). Los datos siempre se guardan en la colección `estanque-historial` dentro de esa base.
 
 ### Request
 
@@ -36,7 +36,7 @@ POST https://tomicolector.cl/monitor/api/historial/forzar-guardado
 
 - **Body:** No se envía body. El request puede estar vacío.
 - **Headers:**
-  - `aia_origin` — **Nombre de la base de datos MongoDB** donde guardar. Ej: `YUS-001`, `YUS-ESTANQUE1`, `parcela-costa`. Si no se envía, se usa `dump`.
+  - `aia_origin` — **Nombre de la base de datos MongoDB** donde guardar. Ej: `YUS-001`, `YUS-ESTANQUE1`, `parcela-costa`. Si no se envía, se usa `tomi-db`.
   - Opcionalmente `Content-Type: application/json` si el cliente lo envía por defecto.
 
 ### Response
@@ -187,7 +187,7 @@ El registro en MongoDB incluye (calculados a partir del estado en memoria):
 | `estado` | string | `normal`, `alerta`, `peligro` |
 | `origin` | string | `"manual"` cuando se usa este endpoint |
 
-**Ubicación en MongoDB:** Los datos se guardan en `{aia_origin}/estanque-historial` (o `dump/estanque-historial` si no viene el header).
+**Ubicación en MongoDB:** Los datos se guardan en `{aia_origin}/estanque-historial` (o `tomi-db/estanque-historial` si no viene el header).
 
 ---
 
@@ -214,7 +214,7 @@ Si el sensor **envía sus propios datos** (distancia, litros, porcentaje) en lug
 }
 ```
 
-Cada lectura con `status: "OKO"` se guarda directamente en MongoDB. También usa el header `aia_origin` para determinar la base de datos destino (o `dump` si no viene).
+Cada lectura con `status: "OKO"` se guarda directamente en MongoDB. También usa el header `aia_origin` para determinar la base de datos destino (o `tomi-db` si no viene).
 
 ---
 
@@ -222,9 +222,9 @@ Cada lectura con `status: "OKO"` se guarda directamente en MongoDB. También usa
 
 1. **URL:** `https://tomicolector.cl/monitor/api/historial/forzar-guardado`
 2. **Método:** `POST`
-3. **Header:** `aia_origin` = nombre de la base de datos MongoDB (si no viene → `dump`)
+3. **Header:** `aia_origin` = nombre de la base de datos MongoDB (si no viene → `tomi-db`)
 4. **Body:** vacío
 5. **Auth:** ninguna
 6. **Respuesta:** JSON con `guardado` (boolean) y `mensaje` (string)
 7. **Propósito:** Forzar que el colector guarde en MongoDB el estado actual del estanque que tiene en memoria.
-8. **Base de datos:** Los datos se guardan en `{aia_origin}/estanque-historial` o `dump/estanque-historial` si no hay header.
+8. **Base de datos:** Los datos se guardan en `{aia_origin}/estanque-historial` o `tomi-db/estanque-historial` si no hay header.

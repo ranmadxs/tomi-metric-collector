@@ -94,23 +94,23 @@ MQTT_TOPIC_OUT = os.getenv('MQTT_TOPIC_OUT', 'yai-mqtt/YUS-0.2.8-COSTA/out')
 def _sanitize_db_name(name: str) -> str:
     """Sanitiza el nombre de base de datos para MongoDB (no permite / \\ . \" $)."""
     if not name or not isinstance(name, str):
-        return "dump"
+        return "tomi-db"
     # Reemplazar caracteres no permitidos
     invalid = '/\\."$'
     for c in invalid:
         name = name.replace(c, "_")
-    return name.strip()[:64] or "dump"
+    return name.strip()[:64] or "tomi-db"
 
 def get_db_name_from_request() -> str:
     """
     Obtiene el nombre de la base de datos desde el header aia_origin.
-    Si no viene el header, retorna 'dump'.
+    Si no viene el header, retorna 'tomi-db' (base por defecto).
     """
     try:
         aia_origin = request.headers.get("aia_origin", "").strip()
-        return _sanitize_db_name(aia_origin) if aia_origin else "dump"
+        return _sanitize_db_name(aia_origin) if aia_origin else "tomi-db"
     except Exception:
-        return "dump"
+        return "tomi-db"
 
 def get_historial_collection(db_name: str = "tomi-db"):
     """Obtiene la colección de historial de MongoDB para la base de datos indicada."""
@@ -611,7 +611,7 @@ def forzar_guardado_historial():
     """
     Fuerza el guardado del buffer actual de historial en MongoDB.
     Lee el header aia_origin para determinar la base de datos destino.
-    Si no viene aia_origin, usa la base de datos 'dump'.
+    Si no viene aia_origin, usa la base de datos 'tomi-db' (por defecto).
     ---
     tags:
       - Monitor Estanque
