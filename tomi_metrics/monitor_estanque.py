@@ -77,7 +77,7 @@ except Exception:
 # Configuración del estanque
 PARCELA_NOMBRE = "Posada en el Bosque"
 PARCELA_UBICACION = "Paraíso Los Quinquelles"
-ALTURA_SENSOR = 160  # cm desde el fondo del estanque
+ALTURA_SENSOR = 145  # cm desde el fondo del estanque
 CAPACIDAD_LITROS = 5000  # litros cuando está lleno
 
 # Configuración MQTT (desde variables de entorno)
@@ -128,7 +128,7 @@ def get_audit_info(source: str = "system"):
         }
 
 def guardar_en_mongodb(datos: dict, origin: str = "mqtt-10", audit: dict = None):
-    """Guarda un registro directamente en MongoDB."""
+    """Guarda un registro en MongoDB (hora_local como clave única)."""
     collection = get_historial_collection()
     if collection is None:
         return False
@@ -137,9 +137,12 @@ def guardar_en_mongodb(datos: dict, origin: str = "mqtt-10", audit: dict = None)
     if audit is None:
         audit = get_audit_info(origin)
     
+    # Truncar a minuto para la clave (evita duplicados en el mismo minuto)
+    hora_local = datetime.now().strftime("%Y-%m-%d %H:%M")
+    
     registro = {
         "timestamp": datetime.now(timezone.utc),
-        "hora_local": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "hora_local": hora_local,
         "distancia": round(datos.get("distancia", 0), 2),
         "altura_agua": round(datos.get("altura_agua", 0), 2),
         "litros": round(datos.get("litros", 0), 2),
@@ -154,8 +157,17 @@ def guardar_en_mongodb(datos: dict, origin: str = "mqtt-10", audit: dict = None)
     }
     
     try:
-        collection.insert_one(registro)
-        print(f"📊 MongoDB [{origin}]: {registro['hora_local']} - {registro['porcentaje']}% ({registro['muestras']} muestras)")
+        # Upsert: actualiza si existe hora_local, inserta si no existe
+        result = collection.update_one(
+            {"hora_local": hora_local},
+            {"$set": registro},
+            upsert=True
+        )
+        
+        if result.upserted_id:
+            print(f"📊 MongoDB [{origin}] nuevo: {hora_local} - {registro['porcentaje']}%")
+        else:
+            print(f"📊 MongoDB [{origin}] actualizado: {hora_local} - {registro['porcentaje']}%")
         return True
     except Exception as e:
         print(f"❌ Error guardando en MongoDB: {e}")

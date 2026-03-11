@@ -1,0 +1,33 @@
+# Render Blueprint - Tomi Metric Collector
+# https://render.com/docs/blueprint-spec
+
+services:
+  # Web Service (API + Monitor)
+  - type: web
+    name: tomi-metric-collector
+    runtime: python
+    buildCommand: pip install poetry && poetry install
+    startCommand: poetry run gunicorn -w 1 --threads 4 -b 0.0.0.0:$PORT tomi_metrics.app:app
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: DATADOG_API_KEY
+        sync: false
+      - key: ENABLE_SEND_LOG_TO_DATADOG
+        value: "false"
+      - key: AUTH_USERNAME
+        sync: false
+      - key: AUTH_PASSWORD
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: MQTT_HOST
+        value: broker.mqttdashboard.com
+      - key: MQTT_PORT
+        value: "1883"
+      - key: MQTT_USERNAME
+        sync: false
+      - key: MQTT_PASSWORD
+        sync: false
+      - key: MQTT_TOPIC_OUT
+        value: yai-mqtt/YUS-0.2.8-COSTA/out
