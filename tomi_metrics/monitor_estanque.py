@@ -12,6 +12,7 @@ from collections import deque
 from pathlib import Path
 from dotenv import load_dotenv
 from pymongo import MongoClient
+import re
 import threading
 import time
 import tomllib
@@ -92,14 +93,14 @@ MQTT_TOPIC_OUT = os.getenv('MQTT_TOPIC_OUT', 'yai-mqtt/YUS-0.2.8-COSTA/out')
 # ============================================================
 
 def _sanitize_db_name(name: str) -> str:
-    """Sanitiza el nombre de base de datos para MongoDB (no permite / \\ . \" $)."""
+    """Sanitiza el nombre de base de datos para MongoDB.
+    Solo permite [a-zA-Z0-9_-]. Reemplaza el resto por _.
+    Ej: YUS-0.2.8-COSTA -> YUS-0_2_8-COSTA
+    """
     if not name or not isinstance(name, str):
         return "tomi-db"
-    # Reemplazar caracteres no permitidos
-    invalid = '/\\."$'
-    for c in invalid:
-        name = name.replace(c, "_")
-    return name.strip()[:64] or "tomi-db"
+    safe = re.sub(r"[^a-zA-Z0-9_-]", "_", name.strip())
+    return safe[:64] or "tomi-db"
 
 def get_db_name_from_request() -> str:
     """
@@ -625,11 +626,13 @@ def forzar_guardado_historial():
         resultado = guardar_en_mongodb(estado, "manual", db_name=db_name)
         return jsonify({
             "mensaje": "Registro guardado" if resultado else "Error al guardar",
-            "guardado": resultado
+            "guardado": resultado,
+            "db": db_name
         })
     return jsonify({
         "mensaje": "No hay datos para guardar",
-        "guardado": False
+        "guardado": False,
+        "db": db_name
     })
 
 
