@@ -157,9 +157,10 @@ def get_audit_info(source: str = "system"):
             "user_agent": source
         }
 
-def guardar_en_mongodb(datos: dict, origin: str = "mqtt-10", audit: dict = None, db_name: str = None):
+def guardar_en_mongodb(datos: dict, origin: str = "mqtt-10", audit: dict = None, db_name: str = None, channel_id: str = None, device_id: str = None):
     """Guarda un registro en MongoDB (hora_local como clave única).
     db_name: base de datos destino. Si None, usa 'tomi-db' (compatibilidad MQTT/interno).
+    channel_id, device_id: opcionales, desde body JSON (channelId, deviceId).
     """
     db = db_name if db_name is not None else "tomi-db"
     collection = get_historial_collection(db)
@@ -188,6 +189,10 @@ def guardar_en_mongodb(datos: dict, origin: str = "mqtt-10", audit: dict = None,
         "user_origin": audit.get("user_origin"),
         "user_agent": audit.get("user_agent")
     }
+    if channel_id:
+        registro["channelId"] = channel_id
+    if device_id:
+        registro["deviceId"] = device_id
     
     try:
         # Upsert: actualiza si existe hora_local, inserta si no existe
@@ -626,8 +631,19 @@ def forzar_guardado_historial():
         description: Resultado del guardado
     """
     db_name = get_db_name_from_request()
+    body = request.get_json(silent=True) or {}
+    channel_id = body.get("channelId")
+    device_id = body.get("deviceId")
+    if isinstance(channel_id, str):
+        channel_id = channel_id.strip() or None
+    else:
+        channel_id = None
+    if isinstance(device_id, str):
+        device_id = device_id.strip() or None
+    else:
+        device_id = None
     if estado:
-        resultado = guardar_en_mongodb(estado, "manual", db_name=db_name)
+        resultado = guardar_en_mongodb(estado, "manual", db_name=db_name, channel_id=channel_id, device_id=device_id)
         return jsonify({
             "mensaje": "Registro guardado" if resultado else "Error al guardar",
             "guardado": resultado,
