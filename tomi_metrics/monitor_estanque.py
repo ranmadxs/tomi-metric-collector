@@ -104,12 +104,16 @@ def _sanitize_db_name(name: str) -> str:
 
 def get_db_name_from_request() -> str:
     """
-    Obtiene el nombre de la base de datos desde el header aia_origin.
+    Obtiene el nombre de la base de datos desde el header X-Aia-Origin.
     Si no viene el header, retorna 'tomi-db' (base por defecto).
     """
     try:
-        aia_origin = request.headers.get("aia_origin", "").strip()
-        return _sanitize_db_name(aia_origin) if aia_origin else "tomi-db"
+        # X-Aia-Origin (preferido, proxies no lo filtran) o aia_origin (fallback)
+        value = (
+            request.headers.get("X-Aia-Origin", "").strip()
+            or request.headers.get("aia_origin", "").strip()
+        )
+        return _sanitize_db_name(value) if value else "tomi-db"
     except Exception:
         return "tomi-db"
 
@@ -612,8 +616,8 @@ def api_historial_hora():
 def forzar_guardado_historial():
     """
     Fuerza el guardado del buffer actual de historial en MongoDB.
-    Lee el header aia_origin para determinar la base de datos destino.
-    Si no viene aia_origin, usa la base de datos 'tomi-db' (por defecto).
+    Lee el header X-Aia-Origin para determinar la base de datos destino.
+    Si no viene, usa la base de datos 'tomi-db' (por defecto).
     ---
     tags:
       - Monitor Estanque
