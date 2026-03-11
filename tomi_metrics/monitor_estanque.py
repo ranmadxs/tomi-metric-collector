@@ -88,6 +88,11 @@ MQTT_USERNAME = os.getenv('MQTT_USERNAME', 'test')
 MQTT_PASSWORD = os.getenv('MQTT_PASSWORD', 'test')
 MQTT_TOPIC_OUT = os.getenv('MQTT_TOPIC_OUT', 'yai-mqtt/YUS-0.2.8-COSTA/out')
 
+def _device_from_mqtt_topic(topic: str) -> str:
+    """Extrae el deviceId del topic MQTT. Ej: yai-mqtt/YUS-0.2.8-COSTA/out -> YUS-0.2.8-COSTA"""
+    parts = topic.strip().split("/")
+    return parts[-2] if len(parts) >= 2 else topic
+
 # ============================================================
 # MONGODB - HISTORIAL
 # ============================================================
@@ -174,6 +179,7 @@ def guardar_en_mongodb(datos: dict, origin: str = "mqtt-10", audit: dict = None,
     # Truncar a minuto para la clave (evita duplicados en el mismo minuto)
     hora_local = datetime.now().strftime("%Y-%m-%d %H:%M")
     
+    sensor = device_id or datos.get("device_id") or _device_from_mqtt_topic(MQTT_TOPIC_OUT) or "YUS-0.2.8-COSTA"
     registro = {
         "timestamp": datetime.now(timezone.utc),
         "hora_local": hora_local,
@@ -183,7 +189,7 @@ def guardar_en_mongodb(datos: dict, origin: str = "mqtt-10", audit: dict = None,
         "porcentaje": round(datos.get("porcentaje", 0), 2),
         "estado": datos.get("estado", ""),
         "muestras": datos.get("lecturas_en_buffer", 1),
-        "sensor": MQTT_TOPIC_OUT,
+        "sensor": sensor,
         "ubicacion": PARCELA_NOMBRE,
         "origin": origin,
         "user_origin": audit.get("user_origin"),
@@ -300,6 +306,7 @@ def on_mqtt_message(client, userdata, msg):
         partes = payload.split(',')
         
         if len(partes) >= 3 and "OKO" in partes[1]:
+            device_id_mqtt = partes[0].strip()  # Ej: YUS-0.2.8-COSTA
             distancia_raw = float(partes[2])
             # Corrección: si lectura < 21, restar 15 a la distancia
             if distancia_raw < 21:
@@ -317,6 +324,7 @@ def on_mqtt_message(client, userdata, msg):
             datos["raw"] = payload
             datos["distancia_raw"] = distancia_raw
             datos["lecturas_en_buffer"] = len(lecturas_buffer)
+            datos["device_id"] = device_id_mqtt
             
             estado = datos
             
@@ -531,7 +539,7 @@ def api_lecturas():
                 "device_id": device_id,
                 "channel_id": channel_id
             }
-            if guardar_en_mongodb(datos, f"http-batch-{channel_id or device_id}", db_name=db_name):
+            if guardar_en_mongodb(datos, f"http-batch-{channel_id or device_id}", db_name=db_name, device_id=device_id, channel_id=channel_id or None):
                 guardadas += 1
         except Exception:
             pass
