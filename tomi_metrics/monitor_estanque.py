@@ -230,11 +230,9 @@ estado = {
 # ============================================================
 
 def calcular_nivel(distancia_sensor: float) -> dict:
-    """Calcula los litros y porcentaje basándose en la distancia del sensor."""
-    # Corrección: sensor no ve < 21cm, si distancia <= 20 restar 15 a la medición
-    if distancia_sensor <= 20:
-        distancia_sensor = max(0, distancia_sensor - 15)
-    
+    """Calcula los litros y porcentaje basándose en la distancia del sensor.
+    Nota: La corrección (< 21 → restar 15) se aplica en el listener MQTT.
+    """
     altura_agua = ALTURA_SENSOR - distancia_sensor
     if altura_agua < 0:
         altura_agua = 0
@@ -293,7 +291,10 @@ def on_mqtt_message(client, userdata, msg):
         
         if len(partes) >= 3 and "OKO" in partes[1]:
             distancia_raw = float(partes[2])
-            
+            # Corrección: si lectura < 21, restar 15 a la distancia
+            if distancia_raw < 21:
+                distancia_raw = max(0, distancia_raw - 15)
+
             # Agregar al buffer de lecturas
             lecturas_buffer.append(distancia_raw)
             
