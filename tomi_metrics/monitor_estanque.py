@@ -25,7 +25,7 @@ load_dotenv()
 # MongoDB configuración
 MONGO_URI = os.getenv("MONGODB_URI", "")
 mongo_client_estanque = None
-historial_collection = None
+_historial_collections = {}  # cache por db_name
 
 # Limpiar archivo de simulación viejo al iniciar (evita quedarse en modo simulación)
 _SIM_FILE = os.path.join('/tmp', 'monitor_simulacion.flag')
@@ -91,25 +91,50 @@ MQTT_TOPIC_OUT = os.getenv('MQTT_TOPIC_OUT', 'yai-mqtt/YUS-0.2.8-COSTA/out')
 # MONGODB - HISTORIAL
 # ============================================================
 
-def get_historial_collection():
-    """Obtiene la colección de historial de MongoDB."""
-    global mongo_client_estanque, historial_collection
-    
+def _sanitize_db_name(name: str) -> str:
+    """Sanitiza el nombre de base de datos para MongoDB (no permite / \\ . \" $)."""
+    if not name or not isinstance(name, str):
+        return "dump"
+    # Reemplazar caracteres no permitidos
+    invalid = '/\\."$'
+    for c in invalid:
+        name = name.replace(c, "_")
+    return name.strip()[:64] or "dump"
+
+def get_db_name_from_request() -> str:
+    """
+    Obtiene el nombre de la base de datos desde el header aia_origin.
+    Si no viene el header, retorna 'dump'.
+    """
+    try:
+        aia_origin = request.headers.get("aia_origin", "").strip()
+        return _sanitize_db_name(aia_origin) if aia_origin else "dump"
+    except Exception:
+        return "dump"
+
+def get_historial_collection(db_name: str = "tomi-db"):
+    """Obtiene la colección de historial de MongoDB para la base de datos indicada."""
+    global mongo_client_estanque, _historial_collections
+
     if not MONGO_URI:
         return None
-    
+
+    db_name = _sanitize_db_name(db_name) or "tomi-db"
+
     if mongo_client_estanque is None:
         try:
             mongo_client_estanque = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
             mongo_client_estanque.admin.command('ping')
-            db = mongo_client_estanque["tomi-db"]
-            historial_collection = db["estanque-historial"]
             print("✅ MongoDB conectado para historial del estanque")
         except Exception as e:
             print(f"❌ Error conectando MongoDB para historial: {e}")
             return None
-    
-    return historial_collection
+
+    if db_name not in _historial_collections:
+        db = mongo_client_estanque[db_name]
+        _historial_collections[db_name] = db["estanque-historial"]
+
+    return _historial_collections[db_name]
 
 def get_audit_info(source: str = "system"):
     """Obtiene información de auditoría del request actual o del sistema."""
@@ -127,9 +152,12 @@ def get_audit_info(source: str = "system"):
             "user_agent": source
         }
 
-def guardar_en_mongodb(datos: dict, origin: str = "mqtt-10", audit: dict = None):
-    """Guarda un registro en MongoDB (hora_local como clave única)."""
-    collection = get_historial_collection()
+def guardar_en_mongodb(datos: dict, origin: str = "mqtt-10", audit: dict = None, db_name: str = None):
+    """Guarda un registro en MongoDB (hora_local como clave única).
+    db_name: base de datos destino. Si None, usa 'tomi-db' (compatibilidad MQTT/interno).
+    """
+    db = db_name if db_name is not None else "tomi-db"
+    collection = get_historial_collection(db)
     if collection is None:
         return False
     
@@ -425,6 +453,81 @@ def api_config():
         "mqtt_topic": MQTT_TOPIC_OUT
     })
 
+@monitor_bp.route('/api/lecturas', methods=['POST'])
+def api_lecturas():
+    """
+    Recibir batch de lecturas del sensor (lista JSON).
+    El ESP32 acumula lecturas y envía cada ~1 minuto.
+    ---
+    tags:
+      - Monitor Estanque
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required: [lecturas]
+          properties:
+            lecturas:
+              type: array
+              items:
+                type: object
+                properties:
+                  deviceId: { type: string }
+                  channelId: { type: string }
+                  status: { type: string }
+                  distanceCm: { type: number }
+                  litros: { type: number }
+                  fillLevelPercent: { type: number }
+                  timestamp: { type: string }
+    responses:
+      202:
+        description: Batch recibido
+      400:
+        description: Formato incorrecto
+    """
+    data = request.json
+    if not data or not isinstance(data, dict):
+        return jsonify({"error": "JSON inválido"}), 400
+
+    lecturas = data.get("lecturas", [])
+    if not isinstance(lecturas, list):
+        return jsonify({"error": "lecturas debe ser un array"}), 400
+
+    db_name = get_db_name_from_request()
+    guardadas = 0
+    for item in lecturas:
+        if not isinstance(item, dict):
+            continue
+        if item.get("status") != "OKO":
+            continue
+        try:
+            distancia = float(item.get("distanceCm", 0))
+            litros = float(item.get("litros", 0))
+            porcentaje = float(item.get("fillLevelPercent", 0))
+            device_id = item.get("deviceId", "unknown")
+            channel_id = item.get("channelId", "")
+            datos = {
+                "distancia": distancia,
+                "litros": litros,
+                "porcentaje": porcentaje,
+                "altura_agua": ALTURA_SENSOR - distancia if distancia <= ALTURA_SENSOR else 0,
+                "estado": "peligro" if distancia > 140 else ("alerta" if distancia > 80 else "normal"),
+                "lecturas_en_buffer": 1,
+                "device_id": device_id,
+                "channel_id": channel_id
+            }
+            if guardar_en_mongodb(datos, f"http-batch-{channel_id or device_id}", db_name=db_name):
+                guardadas += 1
+        except Exception:
+            pass
+
+    return jsonify({"message": "Batch recibido", "guardadas": guardadas, "total": len(lecturas)}), 202
+
+
 @monitor_bp.route('/api/simular/<int:distancia>')
 def api_simular(distancia):
     """
@@ -507,6 +610,8 @@ def api_historial_hora():
 def forzar_guardado_historial():
     """
     Fuerza el guardado del buffer actual de historial en MongoDB.
+    Lee el header aia_origin para determinar la base de datos destino.
+    Si no viene aia_origin, usa la base de datos 'dump'.
     ---
     tags:
       - Monitor Estanque
@@ -514,8 +619,9 @@ def forzar_guardado_historial():
       200:
         description: Resultado del guardado
     """
+    db_name = get_db_name_from_request()
     if estado:
-        resultado = guardar_en_mongodb(estado, "manual")
+        resultado = guardar_en_mongodb(estado, "manual", db_name=db_name)
         return jsonify({
             "mensaje": "Registro guardado" if resultado else "Error al guardar",
             "guardado": resultado
