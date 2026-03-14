@@ -30,4 +30,4 @@ services:
       - key: MQTT_PASSWORD
         sync: false
       - key: MQTT_TOPIC_OUT
-        value: yai-mqtt/YUS-0.2.8-COSTA/out
+        value: yai-mqtt/01C40A24/out

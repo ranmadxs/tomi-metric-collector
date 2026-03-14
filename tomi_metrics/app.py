@@ -140,12 +140,11 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 
-# Secret key para sesiones
-app.secret_key = os.getenv('SECRET_KEY', secrets.token_hex(32))
-
-# Autenticación
+# Secret key para sesiones (derivada de usuario/clave)
+# Esto evita depender de una variable de entorno separada.
 AUTH_USERNAME = os.getenv('AUTH_USERNAME', 'admin')
 AUTH_PASSWORD = os.getenv('AUTH_PASSWORD', 'admin')
+app.secret_key = f"{AUTH_USERNAME}:{AUTH_PASSWORD}"
 
 
 def login_required(f):

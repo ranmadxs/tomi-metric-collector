@@ -13,6 +13,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from pymongo import MongoClient
 import re
+import json
 import threading
 import time
 import tomllib
@@ -86,7 +87,7 @@ MQTT_HOST = os.getenv('MQTT_HOST', 'broker.mqttdashboard.com')
 MQTT_PORT = int(os.getenv('MQTT_PORT', '1883'))
 MQTT_USERNAME = os.getenv('MQTT_USERNAME', 'test')
 MQTT_PASSWORD = os.getenv('MQTT_PASSWORD', 'test')
-MQTT_TOPIC_OUT = os.getenv('MQTT_TOPIC_OUT', 'yai-mqtt/YUS-0.2.8-COSTA/out')
+MQTT_TOPIC_OUT = os.getenv('MQTT_TOPIC_OUT', 'yai-mqtt/01C40A24/out')
 
 def _device_from_mqtt_topic(topic: str) -> str:
     """Extrae el deviceId del topic MQTT. Ej: yai-mqtt/YUS-0.2.8-COSTA/out -> YUS-0.2.8-COSTA"""
@@ -230,6 +231,8 @@ lecturas_buffer = deque(maxlen=10)
 # Estado de conexión MQTT
 mqtt_connected = False
 mqtt_thread_started = False
+# Timestamp de la última lectura recibida (UTC)
+last_mqtt_message_ts = None
 
 # Estado actual del monitor
 estado = {
@@ -245,18 +248,20 @@ estado = {
 # FUNCIONES DE CÁLCULO
 # ============================================================
 
-def calcular_nivel(distancia_sensor: float) -> dict:
+def calcular_nivel(distancia_sensor: float, altura_sensor: float = ALTURA_SENSOR) -> dict:
     """Calcula los litros y porcentaje basándose en la distancia del sensor.
     Nota: La corrección (< 21 → restar 15) se aplica en el listener MQTT.
+
+    altura_sensor: altura total (cm) desde el sensor hasta el fondo del estanque.
     """
-    altura_agua = ALTURA_SENSOR - distancia_sensor
+    altura_agua = altura_sensor - distancia_sensor
     if altura_agua < 0:
         altura_agua = 0
-    if altura_agua > ALTURA_SENSOR:
-        altura_agua = ALTURA_SENSOR
+    if altura_agua > altura_sensor:
+        altura_agua = altura_sensor
     
-    porcentaje = (altura_agua / ALTURA_SENSOR) * 100
-    litros = (altura_agua / ALTURA_SENSOR) * CAPACIDAD_LITROS
+    porcentaje = (altura_agua / altura_sensor) * 100 if altura_sensor else 0
+    litros = (altura_agua / altura_sensor) * CAPACIDAD_LITROS if altura_sensor else 0
     
     if distancia_sensor > 140:
         estado_nivel = "peligro"
@@ -301,33 +306,62 @@ def on_mqtt_message(client, userdata, msg):
     
     try:
         payload = msg.payload.decode('utf-8').strip()
-        
-        # Formato: YUS-0.2.8-COSTA,OKO,88.75,2026-03-07...
-        partes = payload.split(',')
-        
-        if len(partes) >= 3 and "OKO" in partes[1]:
-            device_id_mqtt = partes[0].strip()  # Ej: YUS-0.2.8-COSTA
-            distancia_raw = float(partes[2])
+
+        # Intentar leer JSON (nuevo formato)
+        device_id_mqtt = None
+        channel_id = None
+        distancia_raw = None
+        altura_sensor = ALTURA_SENSOR
+        fill_level = None
+        status = None
+
+        try:
+            payload_json = json.loads(payload)
+            device_id_mqtt = payload_json.get("deviceId") or payload_json.get("device_id")
+            channel_id = payload_json.get("channelId") or payload_json.get("channel_id")
+            status = payload_json.get("status")
+            distancia_raw = float(payload_json.get("distanceCm") or payload_json.get("distancia") or 0)
+            altura_sensor = float(payload_json.get("tankDepthCm") or altura_sensor)
+            fill_level = payload_json.get("fillLevelPercent")
+            if fill_level is not None:
+                fill_level = float(fill_level)
+        except Exception:
+            payload_json = None
+
+        # Manejar ambos formatos: JSON (nuevo) y CSV (viejo)
+        if payload_json and status == "OKO":
             # Corrección: si lectura < 21, restar 15 a la distancia
-            if distancia_raw < 21:
+            if distancia_raw is not None and distancia_raw < 21:
                 distancia_raw = max(0, distancia_raw - 15)
 
             # Agregar al buffer de lecturas
             lecturas_buffer.append(distancia_raw)
-            
+
             # Calcular promedio de las últimas 10 lecturas (o las que haya)
             distancia_promedio = sum(lecturas_buffer) / len(lecturas_buffer)
             
-            # Usar el promedio para calcular el nivel
-            datos = calcular_nivel(distancia_promedio)
+            # Usar el promedio para calcular el nivel (puede venir con altura de tanque)
+            datos = calcular_nivel(distancia_promedio, altura_sensor=altura_sensor)
+
+            # Si el payload nos provee fillLevelPercent, usarlo como referencia
+            if fill_level is not None:
+                datos["porcentaje"] = fill_level
+                datos["litros"] = round((fill_level / 100.0) * CAPACIDAD_LITROS, 2)
+                datos["altura_agua"] = round((fill_level / 100.0) * altura_sensor, 2)
+
             datos["ultima_lectura"] = datetime.now(timezone.utc).isoformat()
             datos["raw"] = payload
             datos["distancia_raw"] = distancia_raw
             datos["lecturas_en_buffer"] = len(lecturas_buffer)
             datos["device_id"] = device_id_mqtt
-            
+            if channel_id:
+                datos["channel_id"] = channel_id
+
             estado = datos
-            
+            # Registrar timestamp de última lectura MQTT
+            global last_mqtt_message_ts
+            last_mqtt_message_ts = datetime.now(timezone.utc)
+
             historial.append({
                 "timestamp": datos["ultima_lectura"],
                 "distancia": distancia_promedio,
@@ -336,13 +370,53 @@ def on_mqtt_message(client, userdata, msg):
                 "porcentaje": datos["porcentaje"],
                 "estado": datos["estado"]
             })
-            
+
             # Guardar en MongoDB cuando el buffer tiene 10 lecturas
             if len(lecturas_buffer) == 10:
-                guardar_en_mongodb(datos, "mqtt-10")
-            
+                guardar_en_mongodb(datos, "mqtt-10", channel_id=channel_id, device_id=device_id_mqtt)
+
             print(f"💧 Nivel: {datos['litros']:.0f}L ({datos['porcentaje']:.1f}%) - Promedio de {len(lecturas_buffer)} lecturas")
-            
+        else:
+            # Formato antiguo: YUS-0.2.8-COSTA,OKO,88.75,...
+            partes = payload.split(',')
+            if len(partes) >= 3 and "OKO" in partes[1]:
+                device_id_mqtt = partes[0].strip()  # Ej: YUS-0.2.8-COSTA
+                distancia_raw = float(partes[2])
+                # Corrección: si lectura < 21, restar 15 a la distancia
+                if distancia_raw < 21:
+                    distancia_raw = max(0, distancia_raw - 15)
+
+                # Agregar al buffer de lecturas
+                lecturas_buffer.append(distancia_raw)
+                
+                # Calcular promedio de las últimas 10 lecturas (o las que haya)
+                distancia_promedio = sum(lecturas_buffer) / len(lecturas_buffer)
+                
+                # Usar el promedio para calcular el nivel
+                datos = calcular_nivel(distancia_promedio)
+                datos["ultima_lectura"] = datetime.now(timezone.utc).isoformat()
+                datos["raw"] = payload
+                datos["distancia_raw"] = distancia_raw
+                datos["lecturas_en_buffer"] = len(lecturas_buffer)
+                datos["device_id"] = device_id_mqtt
+
+                estado = datos
+                
+                historial.append({
+                    "timestamp": datos["ultima_lectura"],
+                    "distancia": distancia_promedio,
+                    "distancia_raw": distancia_raw,
+                    "litros": datos["litros"],
+                    "porcentaje": datos["porcentaje"],
+                    "estado": datos["estado"]
+                })
+                
+                # Guardar en MongoDB cada vez que llega una lectura (upsert por minuto)
+                # Se fuerza la base de datos a tomi-db para evitar que se escriba en otra.
+                guardar_en_mongodb(datos, "mqtt", db_name="tomi-db")
+                
+                print(f"💧 Nivel: {datos['litros']:.0f}L ({datos['porcentaje']:.1f}%) - Promedio de {len(lecturas_buffer)} lecturas")
+
     except Exception as e:
         print(f"❌ Error procesando mensaje MQTT: {e}")
 
@@ -379,12 +453,25 @@ def start_mqtt_thread():
     print("🚀 Thread MQTT iniciado")
 
 def get_mqtt_status():
-    """Retorna el estado de conexión MQTT para mostrar en el home."""
-    global mqtt_connected
+    """Retorna el estado de conexión MQTT para mostrar en el home.
+
+    Si no llega ninguna lectura en 60s, marca como desconectado.
+    """
+    global mqtt_connected, last_mqtt_message_ts
+
+    connected = mqtt_connected
+    status = "Conectado" if mqtt_connected else "Desconectado"
+
+    if mqtt_connected and last_mqtt_message_ts is not None:
+        elapsed = (datetime.now(timezone.utc) - last_mqtt_message_ts).total_seconds()
+        if elapsed > 60:
+            connected = False
+            status = "Desconectado (sin mensajes)"
+
     return {
-        "connected": mqtt_connected,
+        "connected": connected,
         "info": MQTT_HOST,
-        "status": "Conectado" if mqtt_connected else "Desconectado"
+        "status": status
     }
 
 # ============================================================
