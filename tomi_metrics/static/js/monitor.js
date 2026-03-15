@@ -253,8 +253,8 @@ function cargarHistorial() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.datos && data.datos.length > 0) {
-                        statusText.textContent = `${data.total_dias} días`;
-                        renderizarGrafico(data.datos);
+                        statusText.textContent = '';
+                        renderizarGrafico(data);
                     } else {
                         statusText.textContent = 'Sin datos';
                     }
@@ -271,21 +271,31 @@ function cargarHistorial() {
         });
 }
 
-function renderizarGrafico(datos) {
+function renderizarGrafico(data) {
     const ctx = document.getElementById('historial-chart');
     if (!ctx) return;
-    
+
+    const datos = data.datos || [];
+
     // Destruir gráfico anterior si existe
     if (historialChart) {
         historialChart.destroy();
     }
-    
-    // Preparar datos (agregar T12:00:00 para evitar problemas de zona horaria)
-    const labels = datos.map(d => {
-        const fecha = new Date(d.fecha + 'T12:00:00');
-        return fecha.toLocaleDateString('es-CL', { day: '2-digit', month: 'short' });
+
+    // Cantidad de días del mes (para mostrar siempre todos los días)
+    const diasMes = data.dias_mes || 30;
+
+    // Preparar array con todos los días del mes y valores nulos
+    const labels = Array.from({ length: diasMes }, (_, i) => String(i + 1).padStart(2, '0'));
+    const porcentajes = Array(diasMes).fill(null);
+
+    // Rellenar valores según los datos recibidos
+    datos.forEach(d => {
+        const dia = parseInt(d.fecha.split('-')[2], 10);
+        if (!isNaN(dia) && dia >= 1 && dia <= diasMes) {
+            porcentajes[dia - 1] = d.porcentaje;
+        }
     });
-    const porcentajes = datos.map(d => d.porcentaje);
     
     // Crear gráfico
     historialChart = new Chart(ctx, {

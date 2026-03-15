@@ -753,8 +753,7 @@ def forzar_guardado_historial():
 
 @monitor_bp.route('/api/historial/diario')
 def api_historial_diario():
-    """
-    Obtiene el historial agregado por día (promedio diario) del último mes.
+    """Obtiene el historial agregado por día (promedio diario) del mes actual.
     ---
     tags:
       - Monitor Estanque
@@ -762,23 +761,25 @@ def api_historial_diario():
       200:
         description: Lista de promedios diarios
     """
-    from datetime import timedelta
-    
+    import calendar
+
     collection = get_historial_collection()
-    
+
     if collection is None:
         return jsonify({
             "habilitado": False,
             "error": "MongoDB no disponible",
             "datos": []
         })
-    
-    fecha_inicio = datetime.now(timezone.utc) - timedelta(days=30)
-    
+
+    ahora = datetime.now(timezone.utc)
+    primer_dia = ahora.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    dias_mes = calendar.monthrange(ahora.year, ahora.month)[1]
+
     try:
-        # Agregación por día
+        # Agregación por día (mes actual)
         pipeline = [
-            {"$match": {"timestamp": {"$gte": fecha_inicio}}},
+            {"$match": {"timestamp": {"$gte": primer_dia}}},
             {"$group": {
                 "_id": {"$dateToString": {"format": "%Y-%m-%d", "date": "$timestamp"}},
                 "porcentaje_promedio": {"$avg": "$porcentaje"},
@@ -796,11 +797,14 @@ def api_historial_diario():
                 "muestras": 1
             }}
         ]
-        
+
         datos = list(collection.aggregate(pipeline))
-        
+
         return jsonify({
             "habilitado": True,
+            "mes": ahora.month,
+            "anio": ahora.year,
+            "dias_mes": dias_mes,
             "total_dias": len(datos),
             "datos": datos
         })

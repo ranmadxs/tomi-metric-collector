@@ -735,9 +735,19 @@ header {
 
 .historial-header {
     display: flex;
-    align-items: center;
-    gap: 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
     margin-bottom: 15px;
+    width: 100%;
+}
+
+.historial-header .metric-content {
+    width: 100%;
+}
+
+.historial-header .expand-btn {
+    align-self: flex-end;
 }
 
 .historial-chart-container {
@@ -1212,6 +1222,20 @@ footer {
     
     .timestamp-historial-row {
         grid-template-columns: 1fr;
+    }
+
+    .historial-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .historial-header .metric-content {
+        width: 100%;
+    }
+
+    .historial-header .expand-btn {
+        align-self: flex-end;
+        margin-top: 8px;
     }
     
     .historial-card {
