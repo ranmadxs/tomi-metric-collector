@@ -3,17 +3,17 @@
   <defs>
     <style type="text/css">
       @keyframes popupShow {
-        0%, 35% { opacity: 0; }
-        36%, 62% { opacity: 1; }
-        63%, 100% { opacity: 0; }
+        0%, 29% { opacity: 0; }
+        29%, 80% { opacity: 1; }
+        80%, 100% { opacity: 0; }
       }
-      .popup-alerts { animation: popupShow 24s linear infinite; }
+      .popup-alerts { animation: popupShow 24s steps(1) infinite; }
       @keyframes chartHide {
-        0%, 35% { opacity: 1; }
-        36%, 62% { opacity: 0; }
-        63%, 100% { opacity: 1; }
+        0%, 29% { opacity: 1; }
+        29%, 80% { opacity: 0; }
+        80%, 100% { opacity: 1; }
       }
-      .chart-phone { animation: chartHide 24s linear infinite; }
+      .chart-phone { animation: chartHide 24s steps(1) infinite; }
     </style>
     <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
       <stop offset="0%" style="stop-color:#0ea5e9"/>
@@ -140,7 +140,7 @@
         <rect x="-2.5" y="28" width="5" height="6" rx="1" fill="#94a3b8" stroke="#64748b"/>
         <!-- Manija para abrir/cerrar (gira visiblemente al cerrar cuando baja nivel) -->
         <g transform="translate(8, 4)">
-          <animateTransform attributeName="transform" type="rotate" values="-45 0 4;-45 0 4;0 0 4;0 0 4;-45 0 4;-45 0 4" keyTimes="0;0.32;0.38;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
+          <animateTransform attributeName="transform" type="rotate" values="-45 0 4;-45 0 4;0 0 4;0 0 4;-45 0 4;-45 0 4" keyTimes="0;0.28;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
           <!-- Brazo de la manija -->
           <rect x="0" y="2" width="14" height="4" rx="2" fill="#64748b" stroke="#475569" stroke-width="0.8"/>
           <!-- Volante/rueda de la manija -->
@@ -255,36 +255,36 @@
     <!-- Conexion horizontal casa -> tuberia vertical (sale de la pared) -->
     <rect x="-87" y="430" width="52" height="20" rx="5" fill="#57534e" stroke="#44403c" stroke-width="1"/>
     <rect x="-86" y="432" width="49" height="16" rx="3" fill="#38bdf8" fill-opacity="0.5">
-      <animate attributeName="opacity" values="1;1;0.2;0.2;1;1" keyTimes="0;0.35;0.38;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;1;0.2;0.2;1;1" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
     </rect>
     <!-- Tuberia vertical casa -> tuberia soterrada (desde cimentacion) -->
     <rect x="-87" y="435" width="22" height="22" rx="4" fill="#78716c" stroke="#57534e"/>
     <rect x="-83" y="400" width="18" height="52" rx="4" fill="#57534e" stroke="#44403c" stroke-width="1"/>
     <rect x="-81" y="402" width="14" height="48" rx="3" fill="#38bdf8" fill-opacity="0.4">
-      <animate attributeName="opacity" values="1;1;0.2;0.2;1;1" keyTimes="0;0.35;0.38;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;1;0.2;0.2;1;1" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
     </rect>
     <!-- Tuberia horizontal soterrada (casa al estanque, diametro +10) -->
     <rect x="-75" y="395" width="198" height="22" rx="6" fill="#57534e" stroke="#44403c" stroke-width="1"/>
     <!-- Agua dentro de la tuberia soterrada (se corta cuando nivel rojo) -->
     <rect x="-72" y="398" width="192" height="16" rx="4" fill="#38bdf8" fill-opacity="0.7">
-      <animate attributeName="opacity" values="0.7;0.7;0.15;0.15;0.7;0.7" keyTimes="0;0.35;0.38;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.7;0.7;0.15;0.15;0.7;0.7" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
     </rect>
     <!-- Flujo animado de agua (solo cuando nivel OK, no rojo) -->
     <g clip-path="url(#pipeClip)">
       <line x1="-72" y1="406" x2="120" y2="406" stroke="#7dd3fc" stroke-width="4" stroke-dasharray="8 12">
         <animate attributeName="stroke-dashoffset" from="0" to="20" dur="1.5s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="1;1;0;0;1;1" keyTimes="0;0.35;0.38;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1;1;0;0;1;1" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
       </line>
       <line x1="-72" y1="406" x2="120" y2="406" stroke="#bae6fd" stroke-width="3" stroke-dasharray="6 14" opacity="0.7">
         <animate attributeName="stroke-dashoffset" from="14" to="0" dur="1.5s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="0.7;0.7;0;0;0.7;0.7" keyTimes="0;0.35;0.38;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.7;0.7;0;0;0.7;0.7" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
       </line>
     </g>
     <!-- Llave de paso (valvula con cruz que gira: cerrada=nivel rojo, abierta=agua pasa) -->
     <rect x="-45" y="382" width="22" height="36" rx="4" fill="#475569" stroke="#64748b" stroke-width="1"/>
     <g transform="translate(-34, 392)">
       <g>
-        <animateTransform attributeName="transform" type="rotate" values="0 0 0;0 0 0;90 0 0;90 0 0;0 0 0;0 0 0" keyTimes="0;0.35;0.38;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="rotate" values="0 0 0;0 0 0;90 0 0;90 0 0;0 0 0;0 0 0" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
         <rect x="-4" y="-6" width="8" height="12" rx="2" fill="#94a3b8" stroke="#64748b"/>
         <rect x="-6" y="-4" width="12" height="8" rx="2" fill="#94a3b8" stroke="#64748b"/>
       </g>
@@ -303,7 +303,7 @@
     <!-- Flujo agua en tuberia vertical (se corta cuando nivel rojo) -->
     <line x1="119" y1="402" x2="119" y2="498" stroke="#38bdf8" stroke-width="6" stroke-dasharray="4 8">
       <animate attributeName="stroke-dashoffset" from="0" to="12" dur="1.2s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" values="1;1;0;0;1;1" keyTimes="0;0.35;0.38;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;1;0;0;1;1" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
     </line>
   </g>
   <!-- Tierra (linea mas abajo - mas cielo arriba, recorte jardinera y estanque) -->
@@ -312,7 +312,7 @@
   <g transform="translate(80, 0) translate(-217.5, 0) scale(-1, 1) translate(217.5, 0)">
     <g transform="translate(-183, 338) scale(2.5)">
       <g>
-        <animate attributeName="opacity" values="1;0;0;0;1;1" keyTimes="0;0.35;0.38;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1;0;0;0;1;1" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
         <path d="M 0 12 Q 2 25 0 40 Q 3 80 0 120 Q -2 160 0 180" fill="none" stroke="#0ea5e9" stroke-width="8" stroke-linecap="round" stroke-dasharray="8 12">
           <animate attributeName="stroke-dashoffset" from="0" to="20" dur="0.4s" repeatCount="indefinite"/>
         </path>
@@ -332,7 +332,7 @@
   <g font-family="sans-serif" font-size="11" fill="#1e293b">
     <!-- Globo 1: a la izquierda del telefono - visible solo cuando agua sobre linea roja -->
     <g transform="translate(320, 40)">
-      <animate attributeName="opacity" values="0.92;0.92;0;0;0.92;0.92" keyTimes="0;0.35;0.38;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.92;0.92;0;0;0.92;0.92" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
       <rect x="0" y="0" width="224" height="92" rx="12" ry="12" fill="#fefce8" stroke="#eab308" stroke-width="1.5" stroke-dasharray="4 3"/>
       <path d="M 205 92 L 225 110 L 215 92 Z" fill="#fefce8" stroke="#eab308" stroke-width="1" stroke-dasharray="2 2"/>
       <text x="112" y="38" text-anchor="middle" fill="#1e293b" font-weight="500" font-size="18">Monitorea 24x7</text>
@@ -340,7 +340,7 @@
     </g>
     <!-- Globo 2: al lado del telefono a la derecha - nivel rojo (alertas) -->
     <g transform="translate(640, -50) scale(1.2)">
-      <animate attributeName="opacity" values="0;0;0.92;0.92;0;0" keyTimes="0;0.34;0.35;0.62;0.63;1" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0;0.92;0.92;0;0" keyTimes="0;0.28;0.29;0.75;0.6;1" dur="24s" repeatCount="indefinite"/>
       <rect x="0" y="0" width="160" height="69" rx="12" ry="12" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4 3"/>
       <path d="M 0 44 L -18 67 L 0 61 Z" fill="#fef2f2" stroke="#dc2626" stroke-width="1" stroke-dasharray="2 2"/>
       <text x="80" y="28" text-anchor="middle" fill="#1e293b" font-weight="500" font-size="14">Alertas por correo o</text>
@@ -348,20 +348,19 @@
       <use xlink:href="#whatsappIcon" x="77" y="46" width="18" height="18"/>
     </g>
     <!-- Globo 3: cierres automatizados - nivel rojo (valvula cerrada) -->
-    <g transform="translate(-105, 255) scale(1.2)">
-      <animate attributeName="opacity" values="0;0;0.92;0.92;0;0" keyTimes="0;0.34;0.35;0.62;0.63;1" dur="24s" repeatCount="indefinite"/>
-      <rect x="0" y="0" width="180" height="56" rx="12" ry="12" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="4 3"/>
-      <path d="M 158 56 L 178 74 L 168 56 Z" fill="#f0fdf4" stroke="#22c55e" stroke-width="1" stroke-dasharray="2 2"/>
-      <text x="90" y="24" text-anchor="middle" fill="#1e293b" font-weight="500">Ejecuta cierres automatizados</text>
-      <text x="90" y="40" text-anchor="middle" fill="#1e293b" font-weight="500">en llaves y tuber&#xED;as.</text>
+    <g transform="translate(-105, 255) scale(1.44)">
+      <animate attributeName="opacity" values="0;0;0.92;0.92;0;0" keyTimes="0;0.28;0.29;0.75;0.6;1" dur="24s" repeatCount="indefinite"/>
+      <rect x="0" y="0" width="180" height="40" rx="12" ry="12" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <path d="M 158 40 L 178 58 L 168 40 Z" fill="#f0fdf4" stroke="#22c55e" stroke-width="1" stroke-dasharray="2 2"/>
+      <text x="90" y="26" text-anchor="middle" fill="#1e293b" font-weight="500">Ejecuta cierres automatizados</text>
     </g>
   </g>
-  <!-- Camion repartidor: solo cuando nivel en rojo (35-60%), en movimiento, manguera se extiende -->
+  <!-- Camion repartidor: llega cuando nivel en rojo (29%), llena hasta 58%, se va a 59% -->
   <g>
-    <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.35;0.36;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;1;1;1;0;0" keyTimes="0;0.29;0.30;0.75;0.80;0.84;1" dur="24s" repeatCount="indefinite"/>
     <g transform="translate(460, 60)">
-      <!-- Llega cuando agua baja linea roja (35%), se va (60%) -->
-      <animateTransform attributeName="transform" type="translate" additive="sum" values="210 0;210 0;0 0;0 0;0 0;210 0" keyTimes="0;0.35;0.36;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
+      <!-- Llega cuando alerta/agua en rojo (29%), retira manguera (59%), se va en 2s -->
+      <animateTransform attributeName="transform" type="translate" additive="sum" values="210 0;210 0;0 0;0 0;0 0;210 0;210 0" keyTimes="0;0.29;0.30;0.75;0.80;0.84;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
       <g>
         <animateTransform attributeName="transform" type="translate" values="0 0;0 2;0 0" keyTimes="0;0.5;1" dur="1.2s" repeatCount="indefinite"/>
         <g transform="translate(0, 480) scale(2.4) translate(0, -480)">
@@ -370,21 +369,21 @@
           <rect x="5" y="385" width="80" height="50" rx="2" fill="#1e293b" stroke="#64748b"/>
           <rect x="8" y="388" width="35" height="44" rx="1" fill="#475569"/>
           <rect x="48" y="388" width="35" height="44" rx="1" fill="#475569"/>
-          <!-- Agua en cisterna del camion: empieza a vaciarse al conectar (36%), visible a medida que llena el estanque -->
+          <!-- Agua en cisterna del camion: empieza a vaciarse al conectar (30%), visible a medida que llena el estanque -->
           <rect x="10" y="390" width="31" height="40" rx="1" fill="url(#waterGrad)" opacity="0.95">
-            <animate attributeName="height" values="40;40;28;14;0;0;0" keyTimes="0;0.36;0.42;0.50;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
-            <animate attributeName="y" values="390;390;402;416;430;430;430" keyTimes="0;0.36;0.42;0.50;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+            <animate attributeName="height" values="40;40;28;14;0;0;40" keyTimes="0;0.30;0.42;0.54;0.75;0.78;1" keySplines="0.4 0 0.2 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+            <animate attributeName="y" values="390;390;402;416;430;430;390" keyTimes="0;0.30;0.42;0.54;0.75;0.78;1" keySplines="0.4 0 0.2 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
           </rect>
           <rect x="50" y="390" width="31" height="40" rx="1" fill="url(#waterGrad)" opacity="0.95">
-            <animate attributeName="height" values="40;40;28;14;0;0;0" keyTimes="0;0.36;0.42;0.50;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
-            <animate attributeName="y" values="390;390;402;416;430;430;430" keyTimes="0;0.36;0.42;0.50;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+            <animate attributeName="height" values="40;40;28;14;0;0;40" keyTimes="0;0.30;0.42;0.54;0.75;0.78;1" keySplines="0.4 0 0.2 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+            <animate attributeName="y" values="390;390;402;416;430;430;390" keyTimes="0;0.30;0.42;0.54;0.75;0.78;1" keySplines="0.4 0 0.2 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
           </rect>
           <text x="45" y="415" font-size="12" fill="#94a3b8" text-anchor="middle">AGUA</text>
           <!-- Cabina delantera (estilo camion aljibe) -->
           <path d="M 90 480 L 90 408 L 96 398 L 138 398 L 144 408 L 144 480 Z" fill="#1e293b" stroke="#475569" stroke-width="1"/>
           <rect x="94" y="405" width="22" height="30" rx="2" fill="#64748b" fill-opacity="0.5"/>
           <rect x="118" y="405" width="22" height="30" rx="2" fill="#64748b" fill-opacity="0.5"/>
-          <rect x="144" y="408" width="5" height="72" fill="#0f172a" stroke="#475569" stroke-width="0.6"/>
+          <rect x="144" y="422" width="5" height="58" fill="#0f172a" stroke="#475569" stroke-width="0.6"/>
           <rect x="145" y="418" width="2" height="5" rx="0.5" fill="#64748b" fill-opacity="0.6"/>
           <rect x="145" y="430" width="2" height="5" rx="0.5" fill="#64748b" fill-opacity="0.6"/>
           <rect x="145" y="442" width="2" height="5" rx="0.5" fill="#64748b" fill-opacity="0.6"/>
@@ -398,12 +397,12 @@
           <circle cx="115" cy="480" r="12" fill="#334155"/>
           <!-- Manguera: se extiende en movimiento desde camion al estanque -->
           <g>
-            <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.35;0.36;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
             <path d="M 0 420 Q -90 450 -160 430" fill="none" stroke="#64748b" stroke-width="6" stroke-linecap="round" pathLength="200" stroke-dasharray="200 200">
-            <animate attributeName="stroke-dashoffset" values="200;200;0;0;200;200" keyTimes="0;0.35;0.42;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
+            <animate attributeName="stroke-dashoffset" values="200;200;0;0;200;200" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
           </path>
             <path d="M 0 420 Q -90 450 -160 430" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" pathLength="200" stroke-dasharray="200 200" opacity="0.85">
-            <animate attributeName="stroke-dashoffset" values="200;200;0;0;200;200" keyTimes="0;0.35;0.42;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
+            <animate attributeName="stroke-dashoffset" values="200;200;0;0;200;200" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
           </path>
           </g>
         </g>
@@ -415,16 +414,16 @@
   <rect x="123" y="303" width="174" height="12" rx="6" fill="#64748b" fill-opacity="0.5"/>
   <!-- Linea de nivel maximo (segmentada como la roja) -->
   <line x1="115" y1="340" x2="305" y2="340" stroke="#38bdf8" stroke-width="2" stroke-dasharray="8 6"/>
-  <!-- Agua animada: baja (0-35%), camion llena (38-58%), lleno->camion se va (60%), vacia cuando se va (60-100%) -->
+  <!-- Agua animada: baja (0-29%), camion llena (30-58%), lleno->camion se va (59%), vacia cuando se va (59-100%) -->
   <rect id="water" x="128" y="340" width="164" height="152" rx="16" fill="#38bdf8">
-    <animate attributeName="height" values="152;45;45;152;152;45" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
-    <animate attributeName="y" values="340;455;455;340;340;455" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+    <animate attributeName="height" values="152;152;45;45;152;152;152" keyTimes="0;0.042;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+    <animate attributeName="y" values="340;340;455;455;340;340;340" keyTimes="0;0.042;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
   </rect>
   <!-- Linea de nivel critico -->
   <line x1="115" y1="435" x2="305" y2="435" stroke="#ef4444" stroke-width="2" stroke-dasharray="8 6"/>
   <!-- Ondulacion superficie del agua (sigue el nivel) -->
   <g clip-path="url(#waterClip)">
-    <animateTransform attributeName="transform" type="translate" values="0 0;0 115;0 115;0 0;0 0;0 115" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 115;0 115;0 0;0 0;0 0" keyTimes="0;0.042;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
     <path d="M128 340 Q165 338 210 341 Q255 339 292 340" fill="none" stroke="#7dd3fc" stroke-width="2" stroke-opacity="0.7">
       <animate attributeName="d" values="M128 340 Q165 338 210 341 Q255 339 292 340;M128 341 Q165 339 210 342 Q255 340 292 341;M128 340 Q165 342 210 339 Q255 341 292 340" dur="2.5s" repeatCount="indefinite"/>
     </path>
@@ -444,15 +443,15 @@
   <!-- Senales verdes hacia abajo (ultrasonido - se alargan cuando baja el nivel) -->
   <g opacity="0.9">
     <line x1="205" y1="298" x2="205" y2="338" stroke="#4ade80" stroke-width="2" stroke-dasharray="6 6">
-      <animate attributeName="y2" values="340;455;455;340;340;455" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="340;340;455;455;340;340;340" keyTimes="0;0.042;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
       <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="0.8s" repeatCount="indefinite"/>
     </line>
     <line x1="210" y1="298" x2="210" y2="338" stroke="#4ade80" stroke-width="2" stroke-dasharray="6 6">
-      <animate attributeName="y2" values="340;455;455;340;340;455" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="340;340;455;455;340;340;340" keyTimes="0;0.042;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
       <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="0.8s" repeatCount="indefinite" begin="0.2s"/>
     </line>
     <line x1="215" y1="298" x2="215" y2="338" stroke="#4ade80" stroke-width="2" stroke-dasharray="6 6">
-      <animate attributeName="y2" values="340;455;455;340;340;455" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="340;340;455;455;340;340;340" keyTimes="0;0.042;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
       <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="0.8s" repeatCount="indefinite" begin="0.4s"/>
     </line>
   </g>
@@ -543,12 +542,12 @@
       <path d="M15.384 6.115a.485.485 0 0 0-.047-.736A12.44 12.44 0 0 0 8 3C5.259 3 2.723 3.882 .663 5.379a.485.485 0 0 0-.048.736.52.52 0 0 0 .668.05A11.45 11.45 0 0 1 8 4c2.507 0 4.827.802 6.716 2.164.205.148.49.13.668-.049"/>
       <path d="M13.229 8.271a.482.482 0 0 0-.063-.745A9.46 9.46 0 0 0 8 6c-1.905 0-3.68.56-5.166 1.526a.48.48 0 0 0-.063.745.525.525 0 0 0 .652.065A8.46 8.46 0 0 1 8 7a8.46 8.46 0 0 1 4.576 1.336c.206.132.48.108.653-.065m-2.183 2.183c.226-.226.185-.605-.1-.75A6.5 6.5 0 0 0 8 9c-1.06 0-2.062.254-2.946.704-.285.145-.326.524-.1.75l.015.015c.16.16.407.19.611.09A5.5 5.5 0 0 1 8 10c.868 0 1.69.201 2.42.56.203.1.45.07.61-.091zM9.06 12.44c.196-.196.198-.52-.04-.66A2 2 0 0 0 8 11.5a2 2 0 0 0-1.02.28c-.238.14-.236.464-.04.66l.706.706a.5.5 0 0 0 .707 0l.707-.707z"/>
     </g>
-    <!-- Grafico de linea (nivel agua) - se oculta cuando aparecen las apps -->
+    <!-- Grafico de linea (nivel agua) - coordinado con el estanque: baja (0-29%), sube (30-58%), baja (59-100%) -->
     <g class="chart-phone" transform="translate(569, 68)">
       <line x1="0" y1="68" x2="92" y2="68" stroke="#64748b" stroke-width="1" marker-end="url(#arrowX)"/>
       <line x1="0" y1="68" x2="0" y2="0" stroke="#64748b" stroke-width="1" marker-end="url(#arrowY)"/>
       <path d="M 0 8 L 23 8 L 46 8 L 69 8 L 92 8" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <animate attributeName="d" values="M 0 8 L 23 8 L 46 8 L 69 8 L 92 8;M 0 8 L 23 28 L 46 48 L 69 64 L 92 64;M 0 8 L 23 28 L 46 48 L 69 64 L 92 64;M 0 8 L 23 8 L 46 8 L 69 8 L 92 8" keyTimes="0;0.35;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+        <animate attributeName="d" values="M 0 8 L 23 8 L 46 8 L 69 8 L 92 8;M 0 8 L 23 8 L 46 8 L 69 8 L 92 8;M 0 8 L 23 28 L 46 48 L 69 64 L 92 64;M 0 8 L 23 28 L 46 48 L 69 64 L 92 64;M 0 8 L 23 8 L 46 8 L 69 8 L 92 8;M 0 8 L 23 8 L 46 8 L 69 8 L 92 8;M 0 8 L 23 8 L 46 8 L 69 8 L 92 8" keyTimes="0;0.042;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
       </path>
       <line x1="0" y1="52" x2="92" y2="52" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4 4"/>
     </g>
@@ -574,7 +573,7 @@
       <rect x="4" y="44" width="36" height="14" rx="4" fill="#2a3942"/>
       <text x="8" y="53" font-size="4" fill="#e9edef">hay que solicitar agua</text>
       <rect x="4" y="44" width="36" height="14" rx="4" fill="#2a3942">
-        <animate attributeName="width" values="36;36;0;0" keyTimes="0;0.36;0.5;0.62;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+        <animate attributeName="width" values="36;36;0;0;36" keyTimes="0;0.30;0.5;0.75;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
       </rect>
     </g>
     <g transform="translate(619, 128)">
@@ -593,19 +592,19 @@
   </g>
   <!-- Alerta -->
   <g opacity="0">
-    <animate attributeName="opacity" values="0;0;0.95;0.95;0;0" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;0.95;0.95;0;0" keyTimes="0;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
     <circle cx="620" cy="170" r="35" fill="#ef4444"/>
     <text x="620" y="178" text-anchor="middle" fill="white" font-size="28" font-weight="bold">!</text>
   </g>
   <!-- Email WhatsApp -->
   <g opacity="0">
-    <animate attributeName="opacity" values="0;0;0.95;0.95;0;0" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;0.95;0.95;0;0" keyTimes="0;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
     <text x="210" y="65" text-anchor="middle" fill="#94a3b8" font-size="14">Email / WhatsApp</text>
   </g>
   <!-- Camion -->
   <g opacity="0">
-    <animate attributeName="opacity" values="0;0;0.95;0.95;0;0" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
-    <animateTransform attributeName="transform" type="translate" values="-90 0;-90 0;0 0;0 0;-90 0;-90 0" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;0.95;0.95;0;0" keyTimes="0;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="translate" values="-90 0;-90 0;0 0;0 0;-90 0;-90 0" keyTimes="0;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
     <rect x="80" y="250" width="70" height="50" rx="8" fill="#475569"/>
     <rect x="120" y="235" width="80" height="25" rx="6" fill="#64748b"/>
     <text x="115" y="280" text-anchor="middle" fill="#94a3b8" font-size="20">Camion</text>
