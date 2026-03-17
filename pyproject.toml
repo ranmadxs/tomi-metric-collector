@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tomi-metric-collector"
-version = "1.9.2"
+version = "1.9.4"
 description = ""
 authors = ["Edgar"]
 readme = "README.md"
