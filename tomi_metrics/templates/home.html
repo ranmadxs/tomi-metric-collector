@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CL Chile Robotics - Sensores para un mundo en constante cambio.</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon-chip.svg') }}" type="image/svg+xml">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/animation.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,22 +56,13 @@
                                 <span class="product-seal-frame-corner br"></span>
                                 <img src="{{ url_for('static', filename='images/ultraSSEstandar.svg') }}" alt="NodeMCU ESP8266 + Sensor HC-SR04 integrados" class="product-seal-svg">
                             </div>
-                            <!-- UltraSS Pro: ESP32 + sensor sumergible (sin cambios) -->
-                            <div class="product-seal-images product-seal-pro-panel" id="product-panel-pro">
-                                <div class="product-seal-img-wrap">
-                                    <span class="product-seal-frame-corner tl"></span>
-                                    <span class="product-seal-frame-corner tr"></span>
-                                    <span class="product-seal-frame-corner bl"></span>
-                                    <span class="product-seal-frame-corner br"></span>
-                                    <img id="product-img-micro" src="{{ url_for('static', filename='images/esp32.png') }}" alt="ESP32" class="product-seal-img">
-                                </div>
-                                <div class="product-seal-img-wrap">
-                                    <span class="product-seal-frame-corner tl"></span>
-                                    <span class="product-seal-frame-corner tr"></span>
-                                    <span class="product-seal-frame-corner bl"></span>
-                                    <span class="product-seal-frame-corner br"></span>
-                                    <img id="product-img-sensor" src="{{ url_for('static', filename='images/jsn-sr04t.png') }}" alt="Sensor ultrasonido sumergible JSN-SR04T" class="product-seal-img">
-                                </div>
+                            <!-- UltraSS Pro: diagrama integrado ESP32 + JSN-SR04T -->
+                            <div class="product-seal-img-wrap product-seal-svg-wrap" id="product-panel-pro">
+                                <span class="product-seal-frame-corner tl"></span>
+                                <span class="product-seal-frame-corner tr"></span>
+                                <span class="product-seal-frame-corner bl"></span>
+                                <span class="product-seal-frame-corner br"></span>
+                                <img src="{{ url_for('static', filename='images/ultraSSPro.svg') }}" alt="ESP32 + Sensor JSN-SR04T sumergible integrados" class="product-seal-svg">
                             </div>
                         </div>
                         <button type="button" class="product-seal-btn-compra" id="btn-compra" aria-haspopup="dialog" aria-controls="popup-compra">Compra</button>
@@ -337,7 +328,7 @@
                     if (panelPro) panelPro.style.display = 'none';
                 } else {
                     if (panelEstandar) panelEstandar.style.display = 'none';
-                    if (panelPro) panelPro.style.display = 'flex';
+                    if (panelPro) panelPro.style.display = '';
                 }
                 updateKitContent(t);
                 updatePopupContent(t);

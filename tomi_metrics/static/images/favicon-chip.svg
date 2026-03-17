@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <defs>
+    <linearGradient id="chipGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a78bfa"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <!-- Chip body -->
+  <rect x="5" y="5" width="14" height="14" rx="2" fill="url(#chipGrad)"/>
+  <!-- Pins: top (2) -->
+  <rect x="8" y="2" width="2.5" height="3" rx="0.5" fill="#c4b5fd"/>
+  <rect x="13.5" y="2" width="2.5" height="3" rx="0.5" fill="#c4b5fd"/>
+  <!-- Pins: bottom -->
+  <rect x="8" y="19" width="2.5" height="3" rx="0.5" fill="#c4b5fd"/>
+  <rect x="13.5" y="19" width="2.5" height="3" rx="0.5" fill="#c4b5fd"/>
+  <!-- Pins: left -->
+  <rect x="2" y="8" width="3" height="2.5" rx="0.5" fill="#c4b5fd"/>
+  <rect x="2" y="13.5" width="3" height="2.5" rx="0.5" fill="#c4b5fd"/>
+  <!-- Pins: right -->
+  <rect x="19" y="8" width="3" height="2.5" rx="0.5" fill="#c4b5fd"/>
+  <rect x="19" y="13.5" width="3" height="2.5" rx="0.5" fill="#c4b5fd"/>
+</svg>

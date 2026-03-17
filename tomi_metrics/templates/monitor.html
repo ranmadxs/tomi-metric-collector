@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>💧 Monitor Estanque - {{ parcela_nombre }}</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon-chip.svg') }}" type="image/svg+xml">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/monitor.css') }}?v={{ version }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>

@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 0 370 200" fill="none">
+  <defs>
+    <style>
+      .conn-pulse { stroke-dasharray: 15 400; animation: connPulse 2.5s linear infinite; }
+      @keyframes connPulse { 0% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 415; } }
+      .probe-wave { animation: probeWave 1s ease-out infinite; }
+      @keyframes probeWave {
+        0% { opacity: 1; stroke-width: 2; }
+        100% { opacity: 0; stroke-width: 1; }
+      }
+    </style>
+    <linearGradient id="probeTipGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#9ca3af"/>
+      <stop offset="30%" stop-color="#6b7280"/>
+      <stop offset="70%" stop-color="#4b5563"/>
+      <stop offset="100%" stop-color="#374151"/>
+    </linearGradient>
+    <filter id="connGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- ESP32 - pines estilo DevKit -->
+  <g id="esp32-group">
+    <g transform="translate(0,0)">
+      <style>
+        .esp-trace { animation: espGlow 3s ease-in-out infinite; }
+        .esp-node { animation: espNode 2s ease-in-out infinite; }
+        .esp-pulse { stroke-dasharray: 20 400; animation: espPulse 2.5s linear infinite; }
+        @keyframes espGlow { 0%, 100% { opacity: 0.85; } 50% { opacity: 1; } }
+        @keyframes espNode { 0%, 100% { opacity: 0.9; } 50% { opacity: 1; } }
+        @keyframes espPulse { 0% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 420; } }
+      </style>
+      <defs>
+        <filter id="esp-traceGlow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="esp-nodeGlow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="esp-chipGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <linearGradient id="esp-chipGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#1e1b4b"/><stop offset="50%" stop-color="#312e81"/><stop offset="100%" stop-color="#1e1b4b"/>
+        </linearGradient>
+        <radialGradient id="esp-nodeRadial" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#e9d5ff"/><stop offset="50%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#7c3aed"/>
+        </radialGradient>
+      </defs>
+      <g filter="url(#esp-traceGlow)" class="esp-trace">
+        <path d="M 35 22 L 35 65 L 118 82" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 55 22 L 55 70 L 118 86" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 75 22 L 75 68 L 118 90" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 95 22 L 95 72 L 118 94" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 115 22 L 115 70 L 118 98" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 135 22 L 135 68 L 118 102" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 155 22 L 155 65 L 160 106" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 175 22 L 175 68 L 202 102" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 195 22 L 195 70 L 202 98" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 215 22 L 215 72 L 202 94" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 235 22 L 235 68 L 202 90" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 255 22 L 255 70 L 202 86" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 275 22 L 275 65 L 202 82" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 285 22 L 285 68 L 202 78" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 305 22 L 305 65 L 202 75" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 35 178 L 35 135 L 118 118" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 55 178 L 55 130 L 118 122" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 75 178 L 75 132 L 118 126" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 95 178 L 95 128 L 118 130" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 115 178 L 115 130 L 118 134" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 135 178 L 135 132 L 118 138" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 155 178 L 155 135 L 160 100" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 175 178 L 175 132 L 202 98" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 195 178 L 195 130 L 202 102" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 215 178 L 215 128 L 202 106" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 235 178 L 235 132 L 202 110" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 255 178 L 255 130 L 202 114" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 275 178 L 275 135 L 202 118" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 285 178 L 285 132 L 202 122" stroke="#a78bfa" stroke-width="1" fill="none"/>
+        <path d="M 305 178 L 305 135 L 202 126" stroke="#a78bfa" stroke-width="1" fill="none"/>
+      </g>
+      <g stroke="#e9d5ff" stroke-width="2" fill="none" opacity="0.95" filter="url(#esp-traceGlow)">
+        <path class="esp-pulse" d="M 35 22 L 35 65 L 118 82"/>
+        <path class="esp-pulse" d="M 55 22 L 55 70 L 118 86" style="animation-delay: 0.07s"/>
+        <path class="esp-pulse" d="M 75 22 L 75 68 L 118 90" style="animation-delay: 0.14s"/>
+        <path class="esp-pulse" d="M 95 22 L 95 72 L 118 94" style="animation-delay: 0.21s"/>
+        <path class="esp-pulse" d="M 115 22 L 115 70 L 118 98" style="animation-delay: 0.28s"/>
+        <path class="esp-pulse" d="M 135 22 L 135 68 L 118 102" style="animation-delay: 0.35s"/>
+        <path class="esp-pulse" d="M 155 22 L 155 65 L 160 106" style="animation-delay: 0.42s"/>
+        <path class="esp-pulse" d="M 175 22 L 175 68 L 202 102" style="animation-delay: 0.49s"/>
+        <path class="esp-pulse" d="M 195 22 L 195 70 L 202 98" style="animation-delay: 0.56s"/>
+        <path class="esp-pulse" d="M 215 22 L 215 72 L 202 94" style="animation-delay: 0.63s"/>
+        <path class="esp-pulse" d="M 235 22 L 235 68 L 202 90" style="animation-delay: 0.70s"/>
+        <path class="esp-pulse" d="M 255 22 L 255 70 L 202 86" style="animation-delay: 0.77s"/>
+        <path class="esp-pulse" d="M 275 22 L 275 65 L 202 82" style="animation-delay: 0.84s"/>
+        <path class="esp-pulse" d="M 285 22 L 285 68 L 202 78" style="animation-delay: 0.91s"/>
+        <path class="esp-pulse" d="M 305 22 L 305 65 L 202 75" style="animation-delay: 0.98s"/>
+        <path class="esp-pulse" d="M 35 178 L 35 135 L 118 118" style="animation-delay: 0.04s"/>
+        <path class="esp-pulse" d="M 55 178 L 55 130 L 118 122" style="animation-delay: 0.11s"/>
+        <path class="esp-pulse" d="M 75 178 L 75 132 L 118 126" style="animation-delay: 0.18s"/>
+        <path class="esp-pulse" d="M 95 178 L 95 128 L 118 130" style="animation-delay: 0.25s"/>
+        <path class="esp-pulse" d="M 115 178 L 115 130 L 118 134" style="animation-delay: 0.32s"/>
+        <path class="esp-pulse" d="M 135 178 L 135 132 L 118 138" style="animation-delay: 0.39s"/>
+        <path class="esp-pulse" d="M 155 178 L 155 135 L 160 100" style="animation-delay: 0.46s"/>
+        <path class="esp-pulse" d="M 175 178 L 175 132 L 202 98" style="animation-delay: 0.53s"/>
+        <path class="esp-pulse" d="M 195 178 L 195 130 L 202 102" style="animation-delay: 0.60s"/>
+        <path class="esp-pulse" d="M 215 178 L 215 128 L 202 106" style="animation-delay: 0.67s"/>
+        <path class="esp-pulse" d="M 235 178 L 235 132 L 202 110" style="animation-delay: 0.74s"/>
+        <path class="esp-pulse" d="M 255 178 L 255 130 L 202 114" style="animation-delay: 0.81s"/>
+        <path class="esp-pulse" d="M 275 178 L 275 135 L 202 118" style="animation-delay: 0.88s"/>
+        <path class="esp-pulse" d="M 285 178 L 285 132 L 202 122" style="animation-delay: 0.95s"/>
+        <path class="esp-pulse" d="M 305 178 L 305 135 L 202 126" style="animation-delay: 1.02s"/>
+      </g>
+      <g filter="url(#esp-nodeGlow)">
+        <circle class="esp-node" cx="35" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="55" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="75" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="95" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="115" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="135" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="155" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="175" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="195" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="215" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="235" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="255" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="275" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="285" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="305" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="35" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="55" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="75" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="95" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="115" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="135" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="155" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="175" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="195" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="215" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="235" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="255" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="275" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="285" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+        <circle class="esp-node" cx="305" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#c4b5fd" stroke-width="0.5"/>
+      </g>
+      <!-- ESP32 pin labels - Top -->
+      <text x="35" y="18" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">3V3</text>
+      <text x="55" y="18" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">EN</text>
+      <text x="75" y="18" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">VP</text>
+      <text x="95" y="18" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">VN</text>
+      <text x="115" y="18" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">34</text>
+      <text x="135" y="18" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">35</text>
+      <text x="155" y="18" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">32</text>
+      <text x="175" y="18" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">33</text>
+      <text x="195" y="18" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">25</text>
+      <text x="215" y="18" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">26</text>
+      <text x="235" y="18" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">27</text>
+      <text x="255" y="18" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">14</text>
+      <text x="275" y="18" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">12</text>
+      <text x="285" y="18" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">GND</text>
+      <text x="305" y="18" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">13</text>
+      <!-- ESP32 pin labels - Bottom -->
+      <text x="35" y="185" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">2</text>
+      <text x="55" y="185" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">4</text>
+      <text x="75" y="185" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">5</text>
+      <text x="95" y="185" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">18</text>
+      <text x="115" y="185" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">19</text>
+      <text x="135" y="185" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">21</text>
+      <text x="155" y="185" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">3</text>
+      <text x="175" y="185" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">1</text>
+      <text x="195" y="185" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">22</text>
+      <text x="215" y="185" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">GND</text>
+      <text x="235" y="185" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">23</text>
+      <text x="255" y="185" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">VIN</text>
+      <text x="275" y="185" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">9</text>
+      <text x="285" y="185" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">10</text>
+      <text x="305" y="185" font-family="monospace" font-size="5" fill="#c4b5fd" font-weight="600" text-anchor="middle">11</text>
+      <g filter="url(#esp-chipGlow)">
+        <rect x="118" y="75" width="84" height="50" rx="2" fill="url(#esp-chipGrad)" stroke="#a78bfa" stroke-width="1.5"/>
+        <rect x="120" y="72" width="5" height="3" rx="0.5" fill="#312e81" stroke="#a78bfa" stroke-width="0.4"/>
+        <rect x="130" y="72" width="5" height="3" rx="0.5" fill="#312e81" stroke="#a78bfa" stroke-width="0.4"/>
+        <rect x="140" y="72" width="5" height="3" rx="0.5" fill="#312e81" stroke="#a78bfa" stroke-width="0.4"/>
+        <rect x="150" y="72" width="5" height="3" rx="0.5" fill="#312e81" stroke="#a78bfa" stroke-width="0.4"/>
+        <rect x="160" y="72" width="5" height="3" rx="0.5" fill="#312e81" stroke="#a78bfa" stroke-width="0.4"/>
+        <rect x="170" y="72" width="5" height="3" rx="0.5" fill="#312e81" stroke="#a78bfa" stroke-width="0.4"/>
+        <rect x="180" y="72" width="5" height="3" rx="0.5" fill="#312e81" stroke="#a78bfa" stroke-width="0.4"/>
+        <rect x="190" y="72" width="5" height="3" rx="0.5" fill="#312e81" stroke="#a78bfa" stroke-width="0.4"/>
+        <rect x="120" y="125" width="5" height="3" rx="0.5" fill="#312e81" stroke="#a78bfa" stroke-width="0.4"/>
+        <rect x="130" y="125" width="5" height="3" rx="0.5" fill="#312e81" stroke="#a78bfa" stroke-width="0.4"/>
+        <rect x="140" y="125" width="5" height="3" rx="0.5" fill="#312e81" stroke="#a78bfa" stroke-width="0.4"/>
+        <rect x="150" y="125" width="5" height="3" rx="0.5" fill="#312e81" stroke="#a78bfa" stroke-width="0.4"/>
+        <rect x="160" y="125" width="5" height="3" rx="0.5" fill="#312e81" stroke="#a78bfa" stroke-width="0.4"/>
+        <rect x="170" y="125" width="5" height="3" rx="0.5" fill="#312e81" stroke="#a78bfa" stroke-width="0.4"/>
+        <rect x="180" y="125" width="5" height="3" rx="0.5" fill="#312e81" stroke="#a78bfa" stroke-width="0.4"/>
+        <rect x="190" y="125" width="5" height="3" rx="0.5" fill="#312e81" stroke="#a78bfa" stroke-width="0.4"/>
+        <circle cx="124" cy="74" r="0.8" fill="#a78bfa" opacity="0.8"/>
+      </g>
+      <text x="160" y="98" text-anchor="middle" font-family="Space Grotesk, system-ui" font-size="11" font-weight="700" fill="#c4b5fd">ESP32</text>
+      <text x="160" y="107" text-anchor="middle" font-family="Space Grotesk, system-ui" font-size="6" fill="#a78bfa" opacity="0.9">240 MHz - 4 MB Flash</text>
+      <text x="160" y="114" text-anchor="middle" font-family="Space Grotesk, system-ui" font-size="6" fill="#a78bfa" opacity="0.9">520 KB RAM</text>
+    </g>
+  </g>
+
+  <!-- JSN-SR04T - sensor sumergible, forma cilindrica/waterproof -->
+  <g id="jsn-group" transform="translate(10, 62) scale(0.386)">
+    <style>
+      .jsn-trace { animation: jsnGlow 3s ease-in-out infinite; }
+      .jsn-node { animation: jsnNode 2s ease-in-out infinite; }
+      .jsn-pulse { stroke-dasharray: 15 300; animation: jsnPulse 2s linear infinite; }
+      .jsn-transducer { animation: jsnPing 1.5s ease-in-out infinite; }
+      @keyframes jsnGlow { 0%, 100% { opacity: 0.85; } 50% { opacity: 1; } }
+      @keyframes jsnNode { 0%, 100% { opacity: 0.9; } 50% { opacity: 1; } }
+      @keyframes jsnPulse { 0% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 300; } }
+      @keyframes jsnPing { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+    </style>
+    <defs>
+      <filter id="jsn-traceGlow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="jsn-nodeGlow" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="jsn-sensorGlow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <linearGradient id="jsn-pcbGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1e1b4b"/><stop offset="50%" stop-color="#312e81"/><stop offset="100%" stop-color="#1e1b4b"/>
+      </linearGradient>
+      <radialGradient id="jsn-nodeRadial" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#ddd6fe"/><stop offset="50%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#6d28d9"/>
+      </radialGradient>
+      <radialGradient id="jsn-transducerGrad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#3b3d5c"/><stop offset="70%" stop-color="#2a2b42"/><stop offset="100%" stop-color="#1e1b4b"/>
+      </radialGradient>
+    </defs>
+    <g filter="url(#jsn-nodeGlow)">
+      <circle class="jsn-node" cx="70" cy="130" r="3.5" fill="url(#jsn-nodeRadial)" stroke="#a78bfa" stroke-width="0.6"/>
+      <circle class="jsn-node" cx="110" cy="130" r="3.5" fill="url(#jsn-nodeRadial)" stroke="#a78bfa" stroke-width="0.6"/>
+      <circle class="jsn-node" cx="150" cy="130" r="3.5" fill="url(#jsn-nodeRadial)" stroke="#a78bfa" stroke-width="0.6"/>
+      <circle class="jsn-node" cx="190" cy="130" r="3.5" fill="url(#jsn-nodeRadial)" stroke="#a78bfa" stroke-width="0.6"/>
+    </g>
+    <g filter="url(#jsn-traceGlow)" class="jsn-trace">
+      <path d="M 70 130 L 70 115 L 100 95" stroke="#8b5cf6" stroke-width="1.2" fill="none"/>
+      <path d="M 110 130 L 110 115 L 120 95" stroke="#8b5cf6" stroke-width="1.2" fill="none"/>
+      <path d="M 150 130 L 150 115 L 160 95" stroke="#8b5cf6" stroke-width="1.2" fill="none"/>
+      <path d="M 190 130 L 190 115 L 180 95" stroke="#8b5cf6" stroke-width="1.2" fill="none"/>
+    </g>
+    <g stroke="#c4b5fd" stroke-width="2" fill="none" opacity="0.95" filter="url(#jsn-traceGlow)">
+      <path class="jsn-pulse" d="M 70 130 L 70 115 L 100 95"/>
+      <path class="jsn-pulse" d="M 110 130 L 110 115 L 120 95" style="animation-delay: 0.25s"/>
+      <path class="jsn-pulse" d="M 150 130 L 150 115 L 160 95" style="animation-delay: 0.5s"/>
+      <path class="jsn-pulse" d="M 190 130 L 190 115 L 180 95" style="animation-delay: 0.75s"/>
+    </g>
+    <!-- Carcasa waterproof cilindrica -->
+    <g filter="url(#jsn-sensorGlow)">
+      <rect x="62" y="55" width="156" height="55" rx="8" fill="#1e1b4b" stroke="#8b5cf6" stroke-width="1.5"/>
+      <line x1="70" y1="110" x2="190" y2="110" stroke="#8b5cf6" stroke-width="1.5"/>
+      <rect x="63.98" y="110" width="12" height="8.5" rx="2" fill="#0f0d1a" stroke="#8b5cf6" stroke-width="0.8"/>
+      <rect x="104" y="110" width="12" height="8.5" rx="2" fill="#0f0d1a" stroke="#8b5cf6" stroke-width="0.8"/>
+      <rect x="144" y="110" width="12" height="8.5" rx="2" fill="#0f0d1a" stroke="#8b5cf6" stroke-width="0.8"/>
+      <rect x="184" y="110" width="12" height="8.5" rx="2" fill="#0f0d1a" stroke="#8b5cf6" stroke-width="0.8"/>
+      <!-- Transductores - forma mas redondeada (waterproof) -->
+      <ellipse class="jsn-transducer" cx="105" cy="75" rx="5" ry="3.5" fill="url(#jsn-transducerGrad)" stroke="#8b5cf6" stroke-width="1"/>
+      <ellipse class="jsn-transducer" cx="175" cy="75" rx="5" ry="3.5" fill="url(#jsn-transducerGrad)" stroke="#8b5cf6" stroke-width="1"/>
+      <ellipse cx="105" cy="75" rx="2" ry="1.4" fill="#2a2b42" stroke="#a78bfa" stroke-width="0.5" opacity="0.8"/>
+      <ellipse cx="175" cy="75" rx="2" ry="1.4" fill="#2a2b42" stroke="#a78bfa" stroke-width="0.5" opacity="0.8"/>
+      <!-- Indicador IP65 -->
+      <rect x="125" y="58" width="30" height="8" rx="2" fill="#312e81" stroke="#8b5cf6" stroke-width="0.5"/>
+      <text x="140" y="64" font-family="monospace" font-size="6" fill="#a78bfa" font-weight="600" text-anchor="middle">IP65</text>
+    </g>
+    <text x="140" y="78" text-anchor="middle" font-family="Space Grotesk, system-ui" font-size="20" font-weight="700" fill="#a78bfa">JSN-SR04T</text>
+    <text x="140" y="97" text-anchor="middle" font-family="Space Grotesk, system-ui" font-size="12" fill="#8b5cf6" opacity="0.9">40 kHz - 25-450 cm</text>
+    <text x="140" y="108" text-anchor="middle" font-family="Space Grotesk, system-ui" font-size="9" fill="#7c3aed" opacity="0.8">Sumergible</text>
+    <text x="70" y="142" font-family="monospace" font-size="10" fill="#a78bfa" font-weight="600" text-anchor="middle">VCC</text>
+    <text x="110" y="142" font-family="monospace" font-size="10" fill="#a78bfa" font-weight="600" text-anchor="middle">Trig</text>
+    <text x="150" y="142" font-family="monospace" font-size="10" fill="#a78bfa" font-weight="600" text-anchor="middle">Echo</text>
+    <text x="190" y="142" font-family="monospace" font-size="10" fill="#a78bfa" font-weight="600" text-anchor="middle">GND</text>
+  </g>
+
+  <!-- Punta del sensor (probe sumergible) - 40% mas grande, ondas verdes tipo monitor -->
+  <g id="sensor-tip" transform="translate(8, 39) rotate(90, 6, 25) translate(6, 25) scale(1.4) translate(-6, -25)">
+    <!-- Punta cilindrica del sensor (probe waterproof) - agrandado 10% en todos los lados -->
+    <ellipse cx="6" cy="20.5" rx="6.6" ry="3.3" fill="url(#probeTipGrad)" stroke="#6b7280" stroke-width="1"/>
+    <rect x="-0.6" y="18.5" width="13.2" height="17" fill="url(#probeTipGrad)" stroke="#6b7280" stroke-width="0.8"/>
+    <ellipse cx="6" cy="35.5" rx="6.6" ry="3.3" fill="#374151" stroke="#6b7280" stroke-width="0.8"/>
+    <!-- Ondas ultrasonicas verdes - delante del sensor, arcos hacia abajo (tras rotate 90 = izquierda) -->
+    <g transform="translate(2, 16)">
+      <path class="probe-wave" d="M 4 25 A 4 4 0 0 1 -4 25" stroke="rgba(34, 197, 94, 0.9)" stroke-width="1.5" fill="none"/>
+      <path class="probe-wave" d="M 6 25 A 6 6 0 0 1 -6 25" stroke="rgba(34, 197, 94, 0.7)" stroke-width="1.2" fill="none" style="animation-delay: 0.33s"/>
+      <path class="probe-wave" d="M 10 25 A 10 10 0 0 1 -10 25" stroke="rgba(34, 197, 94, 0.5)" stroke-width="1" fill="none" style="animation-delay: 0.66s"/>
+    </g>
+  </g>
+
+  <!-- Cable multicolor (negro, rojo, verde) - desde JSN, angulo 90 grados, linea recta hasta sensor -->
+  <g id="probe-cable">
+    <path d="M 65 83 L 65 69 L 22 69" stroke="#1f2937" stroke-width="0.8" fill="none"/>
+    <path d="M 64.5 83.5 L 64.5 69.5 L 21.5 69.5" stroke="#dc2626" stroke-width="0.8" fill="none"/>
+    <path d="M 65.5 82.5 L 65.5 68.5 L 22.5 68.5" stroke="#16a34a" stroke-width="0.8" fill="none"/>
+  </g>
+
+  <!-- Conexiones: ESP32 (3V3, GND, 5, 18) -> JSN (VCC, GND, Trig, Echo) -->
+  <g filter="url(#connGlow)" stroke="#8b5cf6" stroke-width="1.5" fill="none">
+    <path d="M 35 22 L 35 160 L 37 160 L 37 112"/>
+    <path d="M 215 178 L 215 160 L 83 160 L 83 112"/>
+    <path d="M 75 178 L 75 160 L 68 160 L 68 112"/>
+    <path d="M 95 178 L 95 160 L 53 160 L 53 112"/>
+  </g>
+  <g stroke="#c4b5fd" stroke-width="2" fill="none" opacity="0.95" filter="url(#connGlow)">
+    <path class="conn-pulse" d="M 37 112 L 37 160 L 35 160 L 35 22"/>
+    <path class="conn-pulse" d="M 83 112 L 83 160 L 215 160 L 215 178" style="animation-delay: 0.25s"/>
+    <path class="conn-pulse" d="M 68 112 L 68 160 L 75 160 L 75 178" style="animation-delay: 0.5s"/>
+    <path class="conn-pulse" d="M 53 112 L 53 160 L 95 160 L 95 178" style="animation-delay: 0.75s"/>
+  </g>
+</svg>

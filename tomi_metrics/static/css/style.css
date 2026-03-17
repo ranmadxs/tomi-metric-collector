@@ -304,6 +304,10 @@ body {
     z-index: 0;
 }
 
+#product-panel-pro .product-seal-svg {
+    transform: translate(calc(-50% - 35px), -50%) scale(1.2);
+}
+
 .product-seal-btn-compra {
     display: block;
     margin-top: 14px;
