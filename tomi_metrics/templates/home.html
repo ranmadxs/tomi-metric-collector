@@ -3,287 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ app_name }} v{{ app_version }}</title>
+    <title>CLRobotics - Sensores para la I,A</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animation.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="header-top">
-                <h1>{{ app_name }}</h1>
-                <span class="version">v{{ app_version }}</span>
+    <div class="home-wrapper">
+        <!-- Hero con imagen de sensor ultrasónico en estanque -->
+        <section class="hero">
+            <div class="hero-overlay"></div>
+            <img class="hero-image" src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1920&q=80" alt="Sensor ultrasónico en estanque - monitoreo de nivel de agua">
+            <div class="hero-content">
+                <h1 class="hero-title">CLRobotics</h1>
+                <p class="hero-subtitle">Sensores para la I,A</p>
+                <span class="hero-version-badge">
+                    <span class="hero-version-package">{{ app_name }}</span><span class="hero-version-num">@{{ app_version }}</span>
+                </span>
                 {% if is_logged_in %}
-                <a href="/logout" class="logout-btn">🚪 Salir</a>
+                <a href="/logout" class="hero-logout">🚪 Salir</a>
                 {% endif %}
             </div>
-            <div class="status">
-                <div class="status-card">
-                    <div class="status-header">
-                        <span class="status-icon {{ 'connected' if mongo_status.connected else 'disconnected' }}">
-                            {{ '🟢' if mongo_status.connected else '🔴' }}
-                        </span>
-                        <span class="status-name">MongoDB</span>
+        </section>
+
+        <!-- Animación: sensor, estanque y flujo de datos - SVG animado 2025 -->
+        <section class="animation-section">
+            <div class="animation-container">
+                <div class="anim-scene anim-zoom">
+                    <object type="image/svg+xml" data="{{ url_for('static', filename='images/sensor-animation.svg') }}?v=2" class="anim-svg-img" aria-label="Sensor ultrasónico - monitoreo de nivel de agua"></object>
+                </div>
+            </div>
+        </section>
+
+        <!-- Integraciones -->
+        <section class="integrations">
+            <div class="integrations-watermark" aria-hidden="true">
+                <svg viewBox="0 0 120 180" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="dropGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#38bdf8;stop-opacity:0.15" />
+                            <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:0.08" />
+                        </linearGradient>
+                        <filter id="watermarkGlow">
+                            <feGaussianBlur stdDeviation="2" result="blur"/>
+                            <feMerge>
+                                <feMergeNode in="blur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <path fill="url(#dropGrad)" filter="url(#watermarkGlow)" d="M60 10c-22 40-60 70-60 100 0 33 27 60 60 60s60-27 60-60c0-30-38-60-60-100z"/>
+                </svg>
+            </div>
+            <h2 class="integrations-title">Integraciones</h2>
+            <div class="integrations-grid">
+                <div class="integration-card">
+                    <div class="integration-header">
+                        <img src="https://cdn.simpleicons.org/mongodb/47A248" alt="MongoDB" class="integration-logo-img">
+                        <span class="integration-name">Base de datos en la nube · Datos persistentes en tiempo real</span>
                     </div>
-                    <div class="status-state">
+                    <div class="integration-state">
                         <span class="status-dot {{ '' if mongo_status.connected else 'disconnected' }}"></span>
                         {{ mongo_status.status }}
                     </div>
-                    <div class="status-info">
+                    <div class="integration-info">
                         <code>MongoDB Atlas</code>
                     </div>
                 </div>
-                <div class="status-card">
-                    <div class="status-header">
-                        <span class="status-icon {{ 'connected' if datadog_status.connected else 'disconnected' }}">
-                            {{ '🟢' if datadog_status.connected else '🔴' }}
-                        </span>
-                        <span class="status-name">DataDog</span>
+                <div class="integration-card">
+                    <div class="integration-header">
+                        <img src="https://cdn.simpleicons.org/datadog/632CA6" alt="Datadog" class="integration-logo-img">
+                        <span class="integration-name">Observabilidad · Métricas y logs en tiempo real</span>
                     </div>
-                    <div class="status-state">
+                    <div class="integration-state">
                         <span class="status-dot {{ '' if datadog_status.connected else 'disconnected' }}"></span>
                         {{ datadog_status.status }}
                     </div>
-                    <div class="status-info">
-                        <code>api.datadoghq.com</code>
+                    <div class="integration-info">
+                        <code>Datadog</code>
                     </div>
                 </div>
-                <div class="status-card">
-                    <div class="status-header">
-                        <span class="status-icon {{ 'connected' if mqtt_status.connected else 'disconnected' }}">
-                            {{ '🟢' if mqtt_status.connected else '🔴' }}
+                <div class="integration-card">
+                    <div class="integration-header">
+                        <span class="integration-logo-img integration-logo-svg" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                                <circle cx="16" cy="16" r="12" fill="#6366f1"/>
+                                <circle cx="16" cy="16" r="2" fill="#ffffff"/>
+                                <ellipse cx="16" cy="16" rx="5" ry="1.5" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.9" transform="rotate(-30 16 16)"/>
+                                <ellipse cx="16" cy="16" rx="5" ry="1.5" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.9" transform="rotate(30 16 16)"/>
+                                <ellipse cx="16" cy="16" rx="5" ry="1.5" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.9" transform="rotate(90 16 16)"/>
+                                <circle cx="21" cy="14" r="0.8" fill="#ffffff"/>
+                                <circle cx="11" cy="17" r="0.8" fill="#ffffff"/>
+                                <circle cx="16" cy="11" r="0.8" fill="#ffffff"/>
+                            </svg>
                         </span>
-                        <span class="status-name">MQTT</span>
+                        <span class="integration-name">Sensores Inteligentes · Alexa y Google Home</span>
                     </div>
-                    <div class="status-state">
+                    <div class="integration-state">
                         <span class="status-dot {{ '' if mqtt_status.connected else 'disconnected' }}"></span>
                         {{ mqtt_status.status }}
                     </div>
-                    <div class="status-info">
+                    <div class="integration-info">
                         <code>{{ mqtt_status.info }}</code>
                     </div>
-                </div>
-            </div>
-        </header>
-        
-        <div class="content">
-            <div class="description">
-                <p><strong>Colector centralizado de métricas y logs</strong> que actúa como intermediario entre tus aplicaciones y servicios de monitoreo.</p>
-                <div class="features">
-                    <div class="feature">Procesamiento asíncrono</div>
-                    <div class="feature">Conexión lazy a MongoDB</div>
-                    <div class="feature">Envío a DataDog</div>
-                    <div class="feature">Respuestas inmediatas (HTTP 202)</div>
-                </div>
-            </div>
-
-            <div class="swagger-link">
-                <a href="/apidocs/" target="_blank">
-                    <span class="swagger-icon">📖</span>
-                    <span class="swagger-text">
-                        <strong>Swagger UI - Documentación Interactiva</strong>
-                        <small>/apidocs/</small>
-                    </span>
-                    <span class="swagger-arrow">→</span>
-                </a>
-            </div>
-
-            <div class="swagger-link" style="margin-top: 15px;">
-                <a href="/monitor" style="background: linear-gradient(135deg, #3b82f6 0%, #1e3a5f 100%);">
-                    <span class="swagger-icon">💧</span>
-                    <span class="swagger-text">
-                        <strong>Monitor de Estanque - Posada en el Bosque</strong>
-                        <small>/monitor</small>
-                    </span>
-                    <span class="swagger-arrow">→</span>
-                </a>
-            </div>
-
-            <div class="section">
-                <h2>API Endpoints</h2>
-                
-                <div class="endpoint-card">
-                    <div class="endpoint-header">
-                        <span class="method get">GET</span>
-                        <span class="endpoint-path">/</span>
-                        <span class="endpoint-desc">Documentación y estado de la API</span>
+                    <div class="integration-logos">
+                        <img src="{{ url_for('static', filename='images/alexa.svg') }}" alt="" class="iot-logo" aria-hidden="true">
+                        <img src="{{ url_for('static', filename='images/google-home.svg') }}" alt="Google Home" class="iot-logo iot-logo-light" title="Google Home">
+                        <img src="{{ url_for('static', filename='images/mqtt.svg') }}" alt="MQTT" class="iot-logo iot-logo-light" title="MQTT">
+                        <span class="iot-label">Compatible</span>
                     </div>
                 </div>
-
-                <div class="endpoint-card">
-                    <div class="endpoint-header">
-                        <span class="method post">POST</span>
-                        <span class="endpoint-path">/metrics</span>
-                        <span class="endpoint-desc">Enviar métricas</span>
-                    </div>
-                    <div class="endpoint-body">
-                        <div class="code-block">
-                            <label>Request Body</label>
-                            <div class="code-container">
-                                <pre><code id="metrics-code">{
-  "series": [
-    {
-      "metric": "mi.metrica.contador",
-      "points": [[1730745173, 2]],
-      "tags": ["host:localhost", "environment:develop"],
-      "host": "localhost"
-    }
-  ]
-}</code></pre>
-                                <button class="copy-btn" onclick="copyCode('metrics-code', this)">📋 Copiar</button>
-                            </div>
-                        </div>
-                        <div class="response-info">
-                            <strong>Response:</strong> <code>202 Accepted</code> — {"message": "Metric recibido y en proceso"}
-                        </div>
+                <div class="integration-card integration-card-highlight">
+                    <a href="/apidocs/" target="_blank" class="integration-link">
+                        <img src="https://cdn.simpleicons.org/swagger/85EA2D" alt="Swagger" class="integration-logo-img">
+                        <span class="integration-name">Documentación interactiva · API del sensor</span>
+                        <span class="integration-arrow">→</span>
+                    </a>
+                    <div class="integration-info">
+                        <code>Swagger UI</code> — /apidocs/
                     </div>
                 </div>
-
-                <div class="endpoint-card">
-                    <div class="endpoint-header">
-                        <span class="method post">POST</span>
-                        <span class="endpoint-path">/log</span>
-                        <span class="endpoint-desc">Enviar un log individual</span>
+                <div class="integration-card">
+                    <div class="integration-header">
+                        <img src="{{ url_for('static', filename='images/alert.svg') }}" alt="Alertas" class="integration-logo-img">
+                        <span class="integration-name">Envío de Alertas por email y WhatsApp</span>
                     </div>
-                    <div class="endpoint-body">
-                        <div class="code-block">
-                            <label>Request Body</label>
-                            <div class="code-container">
-                                <pre><code id="log-code">{
-  "message": "Un evento ocurrió",
-  "level": "info",
-  "service": "mi-servicio",
-  "ddsource": "python",
-  "hostname": "localhost",
-  "tags": ["env:production"],
-  "date": "2024-11-04T15:35:56"
-}</code></pre>
-                                <button class="copy-btn" onclick="copyCode('log-code', this)">📋 Copiar</button>
-                            </div>
-                        </div>
-                        <div class="response-info">
-                            <strong>Response:</strong> <code>202 Accepted</code> — {"message": "Log recibido y en proceso"}
-                        </div>
+                    <div class="integration-info">
+                        <code>Alertas</code>
+                    </div>
+                    <div class="integration-logos">
+                        <img src="{{ url_for('static', filename='images/email.svg') }}" alt="Email" class="iot-logo iot-logo-light" title="Email">
+                        <img src="{{ url_for('static', filename='images/whatsapp.svg') }}" alt="WhatsApp" class="iot-logo iot-logo-light" title="WhatsApp">
+                        <span class="iot-label">Canales</span>
                     </div>
                 </div>
-
-                <div class="endpoint-card">
-                    <div class="endpoint-header">
-                        <span class="method post">POST</span>
-                        <span class="endpoint-path">/logs</span>
-                        <span class="endpoint-desc">Enviar múltiples logs</span>
-                    </div>
-                    <div class="endpoint-body">
-                        <div class="code-block">
-                            <label>Request Body</label>
-                            <div class="code-container">
-                                <pre><code id="logs-code">{
-  "logs": [
-    {
-      "message": "Primer log",
-      "level": "info",
-      "service": "mi-servicio",
-      "ddsource": "python",
-      "hostname": "localhost",
-      "tags": ["env:test"]
-    },
-    {
-      "message": "Segundo log",
-      "level": "error",
-      "service": "mi-servicio",
-      "ddsource": "python",
-      "hostname": "localhost",
-      "tags": ["env:production"]
-    }
-  ]
-}</code></pre>
-                                <button class="copy-btn" onclick="copyCode('logs-code', this)">📋 Copiar</button>
-                            </div>
-                        </div>
-                        <div class="response-info">
-                            <strong>Response:</strong> <code>202 Accepted</code> — {"message": "Todos los logs han sido recibidos y estan en proceso"}
-                        </div>
+                <div class="integration-card integration-card-highlight">
+                    <a href="/monitor" class="integration-link integration-link-block">
+                        <img src="{{ url_for('static', filename='images/demo.svg') }}" alt="Demo" class="integration-logo-img">
+                        <span class="integration-name">ONLINE DEMO</span>
+                        <span class="integration-arrow">→</span>
+                    </a>
+                    <p class="integration-demo-desc">Ver el monitor de nivel de agua en vivo. Nivel, historial y estado del estanque.</p>
+                    <div class="integration-info">
+                        <code>Monitor</code> — /monitor
                     </div>
                 </div>
             </div>
+        </section>
 
-            <div class="section">
-                <h2>Configuración</h2>
-                <p style="margin-bottom: 15px;">Variables de entorno necesarias en el archivo <code>.env</code>:</p>
-                <table class="env-table">
-                    <thead>
-                        <tr>
-                            <th>Variable</th>
-                            <th>Descripción</th>
-                            <th>Default</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><code>MONGODB_URI</code></td>
-                            <td>URI de conexión a MongoDB</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td><code>ENABLE_MONGO_DB</code></td>
-                            <td>Habilita almacenamiento en MongoDB</td>
-                            <td><code>false</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>DATADOG_API_KEY</code></td>
-                            <td>API Key de DataDog</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td><code>ENABLE_SEND_LOG_TO_DATADOG</code></td>
-                            <td>Habilita envío de logs a DataDog</td>
-                            <td><code>false</code></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="section">
-                <h2>Ejemplos con cURL</h2>
-                
-                <div class="code-block">
-                    <label>Enviar métrica (localhost)</label>
-                    <div class="code-container">
-                        <pre><code id="curl-metrics">curl -X POST http://localhost:5000/metrics \
-  -H "Content-Type: application/json" \
-  -d '{
-    "series": [{
-      "metric": "test.counter",
-      "points": [[1730745173, 1]],
-      "tags": ["env:dev"],
-      "host": "localhost"
-    }]
-  }'</code></pre>
-                        <button class="copy-btn" onclick="copyCode('curl-metrics', this)">📋 Copiar</button>
-                    </div>
-                </div>
-
-                <div class="code-block" style="margin-top: 20px;">
-                    <label>Enviar log (localhost)</label>
-                    <div class="code-container">
-                        <pre><code id="curl-log">curl -X POST http://localhost:5000/log \
-  -H "Content-Type: application/json" \
-  -d '{
-    "message": "Test log message",
-    "level": "info",
-    "service": "my-service",
-    "ddsource": "python",
-    "hostname": "localhost",
-    "tags": ["env:dev"]
-  }'</code></pre>
-                        <button class="copy-btn" onclick="copyCode('curl-log', this)">📋 Copiar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
         <footer>
-            {{ app_name }} v{{ app_version }} | Colector centralizado de métricas y logs
+            CLRobotics {{ app_name }}@{{ app_version }} | Colector centralizado de métricas y logs
         </footer>
     </div>
 

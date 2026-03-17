@@ -336,7 +336,6 @@ def logout():
 # ============================================================
 
 @app.route('/')
-@login_required
 def home():
     """
     Home - Documentación y estado de la API
