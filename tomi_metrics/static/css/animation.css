@@ -2,9 +2,9 @@
 
 .anim-scene {
     width: 100%;
-    max-width: 700px;
+    max-width: 630px;
     margin: 0 auto;
-    aspect-ratio: 900 / 1230;
+    aspect-ratio: 1080 / 670;
     min-height: 200px;
     position: relative;
     overflow: hidden;

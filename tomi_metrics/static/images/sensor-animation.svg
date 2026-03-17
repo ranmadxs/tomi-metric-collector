@@ -70,6 +70,9 @@
     <marker id="arrowY" markerWidth="6" markerHeight="8" refX="3" refY="0" orient="auto">
       <polygon points="0 8, 6 0, 6 8" fill="#64748b"/>
     </marker>
+    <symbol id="whatsappIcon" viewBox="0 0 24 24">
+      <path fill="#25D366" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </symbol>
     <clipPath id="pipeClip">
       <rect x="-72" y="397" width="192" height="16" rx="4"/>
     </clipPath>
@@ -325,6 +328,34 @@
   <!-- Bordes zanja tuberias (bajo tierra) -->
   <line x1="-80" y1="390" x2="125" y2="390" stroke="#713f12" stroke-width="2"/>
   <line x1="-80" y1="420" x2="125" y2="420" stroke="#422006" stroke-width="1.5"/>
+  <!-- Globos comic tipo sello (coordinados con nivel) -->
+  <g font-family="sans-serif" font-size="11" fill="#1e293b">
+    <!-- Globo 1: a la izquierda del telefono - visible solo cuando agua sobre linea roja -->
+    <g transform="translate(320, 40)">
+      <animate attributeName="opacity" values="0.92;0.92;0;0;0.92;0.92" keyTimes="0;0.35;0.38;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
+      <rect x="0" y="0" width="224" height="92" rx="12" ry="12" fill="#fefce8" stroke="#eab308" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <path d="M 205 92 L 225 110 L 215 92 Z" fill="#fefce8" stroke="#eab308" stroke-width="1" stroke-dasharray="2 2"/>
+      <text x="112" y="38" text-anchor="middle" fill="#1e293b" font-weight="500" font-size="18">Monitorea 24x7</text>
+      <text x="112" y="62" text-anchor="middle" fill="#1e293b" font-weight="500" font-size="18">el nivel de Agua &#x1F4A7;</text>
+    </g>
+    <!-- Globo 2: al lado del telefono a la derecha - nivel rojo (alertas) -->
+    <g transform="translate(640, -50) scale(1.2)">
+      <animate attributeName="opacity" values="0;0;0.92;0.92;0;0" keyTimes="0;0.34;0.35;0.62;0.63;1" dur="24s" repeatCount="indefinite"/>
+      <rect x="0" y="0" width="160" height="69" rx="12" ry="12" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <path d="M 0 44 L -18 67 L 0 61 Z" fill="#fef2f2" stroke="#dc2626" stroke-width="1" stroke-dasharray="2 2"/>
+      <text x="80" y="28" text-anchor="middle" fill="#1e293b" font-weight="500" font-size="14">Alertas por correo o</text>
+      <text x="80" y="46" text-anchor="middle" fill="#1e293b" font-weight="500" font-size="14">WhatsApp.</text>
+      <use href="#whatsappIcon" x="77" y="46" width="18" height="18"/>
+    </g>
+    <!-- Globo 3: cierres automatizados - nivel rojo (valvula cerrada) -->
+    <g transform="translate(-105, 255) scale(1.2)">
+      <animate attributeName="opacity" values="0;0;0.92;0.92;0;0" keyTimes="0;0.34;0.35;0.62;0.63;1" dur="24s" repeatCount="indefinite"/>
+      <rect x="0" y="0" width="180" height="56" rx="12" ry="12" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <path d="M 158 56 L 178 74 L 168 56 Z" fill="#f0fdf4" stroke="#22c55e" stroke-width="1" stroke-dasharray="2 2"/>
+      <text x="90" y="24" text-anchor="middle" fill="#1e293b" font-weight="500">Ejecuta cierres automatizados</text>
+      <text x="90" y="40" text-anchor="middle" fill="#1e293b" font-weight="500">en llaves y tuber&#xED;as.</text>
+    </g>
+  </g>
   <!-- Camion repartidor: solo cuando nivel en rojo (35-60%), en movimiento, manguera se extiende -->
   <g>
     <animate attributeName="opacity" values="0;0;1;1;1;0;0" keyTimes="0;0.35;0.36;0.58;0.6;0.62;1" dur="24s" repeatCount="indefinite"/>
@@ -333,8 +364,8 @@
       <animateTransform attributeName="transform" type="translate" additive="sum" values="210 0;210 0;0 0;0 0;0 0;210 0;210 0" keyTimes="0;0.35;0.36;0.58;0.6;0.62;1" dur="24s" repeatCount="indefinite"/>
       <g>
         <animateTransform attributeName="transform" type="translate" values="0 0;0 2;0 0" keyTimes="0;0.5;1" dur="1.2s" repeatCount="indefinite"/>
-        <g transform="translate(0, 480) scale(2) translate(0, -480)">
-          <!-- Parte posterior del camion (50% visible) -->
+        <g transform="translate(0, 480) scale(2.4) translate(0, -480)">
+          <!-- Parte posterior del camion (cisterna) -->
           <rect x="0" y="380" width="90" height="100" rx="4" fill="#334155" stroke="#475569" stroke-width="1"/>
           <rect x="5" y="385" width="80" height="50" rx="2" fill="#1e293b" stroke="#64748b"/>
           <rect x="8" y="388" width="35" height="44" rx="1" fill="#475569"/>
@@ -349,11 +380,22 @@
             <animate attributeName="y" values="390;390;430;430;430" keyTimes="0;0.38;0.58;0.6;1" dur="24s" repeatCount="indefinite"/>
           </rect>
           <text x="45" y="415" font-size="12" fill="#94a3b8" text-anchor="middle">AGUA</text>
-        <!-- Ruedas 100 debajo de tierra (y=380), en y=480 -->
+          <!-- Cabina delantera (estilo camion aljibe) -->
+          <path d="M 90 480 L 90 408 L 96 398 L 138 398 L 144 408 L 144 480 Z" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+          <rect x="94" y="405" width="22" height="30" rx="2" fill="#64748b" fill-opacity="0.5"/>
+          <rect x="118" y="405" width="22" height="30" rx="2" fill="#64748b" fill-opacity="0.5"/>
+          <rect x="144" y="408" width="5" height="72" fill="#0f172a" stroke="#475569" stroke-width="0.6"/>
+          <rect x="145" y="418" width="2" height="5" rx="0.5" fill="#64748b" fill-opacity="0.6"/>
+          <rect x="145" y="430" width="2" height="5" rx="0.5" fill="#64748b" fill-opacity="0.6"/>
+          <rect x="145" y="442" width="2" height="5" rx="0.5" fill="#64748b" fill-opacity="0.6"/>
+          <!-- Ruedas traseras (cisterna) -->
           <circle cx="25" cy="480" r="18" fill="#1e293b" stroke="#64748b"/>
           <circle cx="25" cy="480" r="12" fill="#334155"/>
           <circle cx="65" cy="480" r="18" fill="#1e293b" stroke="#64748b"/>
           <circle cx="65" cy="480" r="12" fill="#334155"/>
+          <!-- Rueda delantera (cabina) -->
+          <circle cx="115" cy="480" r="18" fill="#1e293b" stroke="#64748b"/>
+          <circle cx="115" cy="480" r="12" fill="#334155"/>
           <!-- Manguera: se extiende en movimiento desde camion al estanque -->
           <g>
             <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.35;0.36;0.58;0.6" dur="24s" repeatCount="indefinite"/>
@@ -371,6 +413,8 @@
   <!-- Estanque soterrado (solo 20% visible) -->
   <rect x="120" y="300" width="180" height="200" rx="20" fill="url(#tankGrad)" stroke="#475569" stroke-width="2"/>
   <rect x="123" y="303" width="174" height="12" rx="6" fill="#64748b" fill-opacity="0.5"/>
+  <!-- Linea de nivel maximo (segmentada como la roja) -->
+  <line x1="115" y1="340" x2="305" y2="340" stroke="#38bdf8" stroke-width="2" stroke-dasharray="8 6"/>
   <!-- Agua animada: se vacia (35%), se llena desde camion (38-58%), luego lleno -->
   <rect id="water" x="128" y="340" width="164" height="152" rx="16" fill="#38bdf8">
     <animate attributeName="height" values="152;45;45;152;152;152" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
@@ -400,15 +444,15 @@
   <!-- Senales verdes hacia abajo (ultrasonido - se alargan cuando baja el nivel) -->
   <g opacity="0.9">
     <line x1="205" y1="298" x2="205" y2="338" stroke="#4ade80" stroke-width="2" stroke-dasharray="6 6">
-      <animate attributeName="y2" values="338;455;455;338;338" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="340;455;455;340;340;340" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
       <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="0.8s" repeatCount="indefinite"/>
     </line>
     <line x1="210" y1="298" x2="210" y2="338" stroke="#4ade80" stroke-width="2" stroke-dasharray="6 6">
-      <animate attributeName="y2" values="338;455;455;338;338" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="340;455;455;340;340;340" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
       <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="0.8s" repeatCount="indefinite" begin="0.2s"/>
     </line>
     <line x1="215" y1="298" x2="215" y2="338" stroke="#4ade80" stroke-width="2" stroke-dasharray="6 6">
-      <animate attributeName="y2" values="338;455;455;338;338" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="340;455;455;340;340;340" keyTimes="0;0.35;0.38;0.58;0.6;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
       <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="0.8s" repeatCount="indefinite" begin="0.4s"/>
     </line>
   </g>
