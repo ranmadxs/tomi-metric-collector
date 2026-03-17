@@ -1,0 +1,278 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 360" fill="none">
+  <defs>
+    <filter id="connGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- ESP8266 - contenido inline -->
+  <g id="esp8266-group">
+    <g transform="translate(0,0)">
+      <style>
+        .esp-trace { animation: espGlow 3s ease-in-out infinite; }
+        .esp-node { animation: espNode 2s ease-in-out infinite; }
+        .esp-pulse { stroke-dasharray: 20 400; animation: espPulse 2.5s linear infinite; }
+        @keyframes espGlow { 0%, 100% { opacity: 0.85; } 50% { opacity: 1; } }
+        @keyframes espNode { 0%, 100% { opacity: 0.9; } 50% { opacity: 1; } }
+        @keyframes espPulse { 0% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 420; } }
+      </style>
+      <defs>
+        <filter id="esp-traceGlow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="esp-nodeGlow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="esp-chipGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <linearGradient id="esp-chipGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#0f172a"/><stop offset="50%" stop-color="#020617"/><stop offset="100%" stop-color="#0f172a"/>
+        </linearGradient>
+        <radialGradient id="esp-nodeRadial" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#e0f7fa"/><stop offset="50%" stop-color="#4dd0e1"/><stop offset="100%" stop-color="#0097a7"/>
+        </radialGradient>
+      </defs>
+      <rect x="0" y="0" width="320" height="200" fill="#050a12"/>
+      <rect x="15" y="15" width="290" height="170" rx="8" fill="#0a1220" stroke="#0f2744" stroke-width="0.5"/>
+      <g filter="url(#esp-traceGlow)" class="esp-trace">
+        <path d="M 35 22 L 35 65 L 118 82" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 55 22 L 55 70 L 118 86" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 75 22 L 75 68 L 118 90" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 95 22 L 95 72 L 118 94" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 115 22 L 115 70 L 118 98" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 135 22 L 135 68 L 118 102" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 155 22 L 155 65 L 160 106" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 175 22 L 175 68 L 202 102" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 195 22 L 195 70 L 202 98" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 215 22 L 215 72 L 202 94" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 235 22 L 235 68 L 202 90" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 255 22 L 255 70 L 202 86" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 275 22 L 275 65 L 202 82" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 285 22 L 285 68 L 202 78" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 305 22 L 305 65 L 202 75" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 35 178 L 35 135 L 118 118" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 55 178 L 55 130 L 118 122" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 75 178 L 75 132 L 118 126" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 95 178 L 95 128 L 118 130" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 115 178 L 115 130 L 118 134" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 135 178 L 135 132 L 118 138" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 155 178 L 155 135 L 160 100" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 175 178 L 175 132 L 202 98" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 195 178 L 195 130 L 202 102" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 215 178 L 215 128 L 202 106" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 235 178 L 235 132 L 202 110" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 255 178 L 255 130 L 202 114" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 275 178 L 275 135 L 202 118" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 285 178 L 285 132 L 202 122" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+        <path d="M 305 178 L 305 135 L 202 126" stroke="#4dd0e1" stroke-width="1" fill="none"/>
+      </g>
+      <g stroke="#e0f7fa" stroke-width="2" fill="none" opacity="0.95" filter="url(#esp-traceGlow)">
+        <path class="esp-pulse" d="M 35 22 L 35 65 L 118 82"/>
+        <path class="esp-pulse" d="M 55 22 L 55 70 L 118 86" style="animation-delay: 0.07s"/>
+        <path class="esp-pulse" d="M 75 22 L 75 68 L 118 90" style="animation-delay: 0.14s"/>
+        <path class="esp-pulse" d="M 95 22 L 95 72 L 118 94" style="animation-delay: 0.21s"/>
+        <path class="esp-pulse" d="M 115 22 L 115 70 L 118 98" style="animation-delay: 0.28s"/>
+        <path class="esp-pulse" d="M 135 22 L 135 68 L 118 102" style="animation-delay: 0.35s"/>
+        <path class="esp-pulse" d="M 155 22 L 155 65 L 160 106" style="animation-delay: 0.42s"/>
+        <path class="esp-pulse" d="M 175 22 L 175 68 L 202 102" style="animation-delay: 0.49s"/>
+        <path class="esp-pulse" d="M 195 22 L 195 70 L 202 98" style="animation-delay: 0.56s"/>
+        <path class="esp-pulse" d="M 215 22 L 215 72 L 202 94" style="animation-delay: 0.63s"/>
+        <path class="esp-pulse" d="M 235 22 L 235 68 L 202 90" style="animation-delay: 0.70s"/>
+        <path class="esp-pulse" d="M 255 22 L 255 70 L 202 86" style="animation-delay: 0.77s"/>
+        <path class="esp-pulse" d="M 275 22 L 275 65 L 202 82" style="animation-delay: 0.84s"/>
+        <path class="esp-pulse" d="M 285 22 L 285 68 L 202 78" style="animation-delay: 0.91s"/>
+        <path class="esp-pulse" d="M 305 22 L 305 65 L 202 75" style="animation-delay: 0.98s"/>
+        <path class="esp-pulse" d="M 35 178 L 35 135 L 118 118" style="animation-delay: 0.04s"/>
+        <path class="esp-pulse" d="M 55 178 L 55 130 L 118 122" style="animation-delay: 0.11s"/>
+        <path class="esp-pulse" d="M 75 178 L 75 132 L 118 126" style="animation-delay: 0.18s"/>
+        <path class="esp-pulse" d="M 95 178 L 95 128 L 118 130" style="animation-delay: 0.25s"/>
+        <path class="esp-pulse" d="M 115 178 L 115 130 L 118 134" style="animation-delay: 0.32s"/>
+        <path class="esp-pulse" d="M 135 178 L 135 132 L 118 138" style="animation-delay: 0.39s"/>
+        <path class="esp-pulse" d="M 155 178 L 155 135 L 160 100" style="animation-delay: 0.46s"/>
+        <path class="esp-pulse" d="M 175 178 L 175 132 L 202 98" style="animation-delay: 0.53s"/>
+        <path class="esp-pulse" d="M 195 178 L 195 130 L 202 102" style="animation-delay: 0.60s"/>
+        <path class="esp-pulse" d="M 215 178 L 215 128 L 202 106" style="animation-delay: 0.67s"/>
+        <path class="esp-pulse" d="M 235 178 L 235 132 L 202 110" style="animation-delay: 0.74s"/>
+        <path class="esp-pulse" d="M 255 178 L 255 130 L 202 114" style="animation-delay: 0.81s"/>
+        <path class="esp-pulse" d="M 275 178 L 275 135 L 202 118" style="animation-delay: 0.88s"/>
+        <path class="esp-pulse" d="M 285 178 L 285 132 L 202 122" style="animation-delay: 0.95s"/>
+        <path class="esp-pulse" d="M 305 178 L 305 135 L 202 126" style="animation-delay: 1.02s"/>
+      </g>
+      <g filter="url(#esp-nodeGlow)">
+        <circle class="esp-node" cx="35" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="55" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="75" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="95" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="115" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="135" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="155" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="175" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="195" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="215" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="235" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="255" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="275" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="285" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="305" cy="22" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="35" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="55" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="75" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="95" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="115" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="135" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="155" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="175" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="195" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="215" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="235" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="255" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="275" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="285" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+        <circle class="esp-node" cx="305" cy="178" r="2.5" fill="url(#esp-nodeRadial)" stroke="#80deea" stroke-width="0.5"/>
+      </g>
+      <text x="35" y="18" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">VIN</text>
+      <text x="55" y="18" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">GND</text>
+      <text x="75" y="18" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">RST</text>
+      <text x="95" y="18" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">EN</text>
+      <text x="115" y="18" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">3V3</text>
+      <text x="135" y="18" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">GND</text>
+      <text x="155" y="18" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">CLK</text>
+      <text x="175" y="18" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">SDO</text>
+      <text x="195" y="18" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">CMD</text>
+      <text x="215" y="18" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">SDI</text>
+      <text x="235" y="18" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">SD0</text>
+      <text x="255" y="18" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">SD1</text>
+      <text x="275" y="18" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">SD2</text>
+      <text x="285" y="18" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">SD3</text>
+      <text x="305" y="18" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">A0</text>
+      <text x="35" y="185" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">3V3</text>
+      <text x="55" y="185" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">GND</text>
+      <text x="75" y="185" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">TX</text>
+      <text x="95" y="185" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">RX</text>
+      <text x="115" y="185" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">D8</text>
+      <text x="135" y="185" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">D7</text>
+      <text x="155" y="185" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">D6</text>
+      <text x="175" y="185" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">D5</text>
+      <text x="195" y="185" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">D4</text>
+      <text x="215" y="185" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">D3</text>
+      <text x="235" y="185" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">D2</text>
+      <text x="255" y="185" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">D1</text>
+      <text x="275" y="185" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">D0</text>
+      <text x="285" y="185" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">-</text>
+      <text x="305" y="185" font-family="monospace" font-size="5" fill="#80deea" font-weight="600" text-anchor="middle">-</text>
+      <rect x="55" y="65" width="10" height="3" rx="1" fill="#0d1b2a" stroke="#1e3a5f" stroke-width="0.3"/>
+      <rect x="255" y="65" width="10" height="3" rx="1" fill="#0d1b2a" stroke="#1e3a5f" stroke-width="0.3"/>
+      <ellipse cx="75" cy="95" rx="4" ry="2.5" fill="#0d1b2a" stroke="#1e3a5f" stroke-width="0.3"/>
+      <ellipse cx="245" cy="95" rx="4" ry="2.5" fill="#0d1b2a" stroke="#1e3a5f" stroke-width="0.3"/>
+      <g filter="url(#esp-chipGlow)">
+        <rect x="118" y="75" width="84" height="50" rx="2" fill="url(#esp-chipGrad)" stroke="#4dd0e1" stroke-width="1.5"/>
+        <rect x="120" y="72" width="5" height="3" rx="0.5" fill="#1e3a5f" stroke="#4dd0e1" stroke-width="0.4"/>
+        <rect x="130" y="72" width="5" height="3" rx="0.5" fill="#1e3a5f" stroke="#4dd0e1" stroke-width="0.4"/>
+        <rect x="140" y="72" width="5" height="3" rx="0.5" fill="#1e3a5f" stroke="#4dd0e1" stroke-width="0.4"/>
+        <rect x="150" y="72" width="5" height="3" rx="0.5" fill="#1e3a5f" stroke="#4dd0e1" stroke-width="0.4"/>
+        <rect x="160" y="72" width="5" height="3" rx="0.5" fill="#1e3a5f" stroke="#4dd0e1" stroke-width="0.4"/>
+        <rect x="170" y="72" width="5" height="3" rx="0.5" fill="#1e3a5f" stroke="#4dd0e1" stroke-width="0.4"/>
+        <rect x="180" y="72" width="5" height="3" rx="0.5" fill="#1e3a5f" stroke="#4dd0e1" stroke-width="0.4"/>
+        <rect x="190" y="72" width="5" height="3" rx="0.5" fill="#1e3a5f" stroke="#4dd0e1" stroke-width="0.4"/>
+        <rect x="120" y="125" width="5" height="3" rx="0.5" fill="#1e3a5f" stroke="#4dd0e1" stroke-width="0.4"/>
+        <rect x="130" y="125" width="5" height="3" rx="0.5" fill="#1e3a5f" stroke="#4dd0e1" stroke-width="0.4"/>
+        <rect x="140" y="125" width="5" height="3" rx="0.5" fill="#1e3a5f" stroke="#4dd0e1" stroke-width="0.4"/>
+        <rect x="150" y="125" width="5" height="3" rx="0.5" fill="#1e3a5f" stroke="#4dd0e1" stroke-width="0.4"/>
+        <rect x="160" y="125" width="5" height="3" rx="0.5" fill="#1e3a5f" stroke="#4dd0e1" stroke-width="0.4"/>
+        <rect x="170" y="125" width="5" height="3" rx="0.5" fill="#1e3a5f" stroke="#4dd0e1" stroke-width="0.4"/>
+        <rect x="180" y="125" width="5" height="3" rx="0.5" fill="#1e3a5f" stroke="#4dd0e1" stroke-width="0.4"/>
+        <rect x="190" y="125" width="5" height="3" rx="0.5" fill="#1e3a5f" stroke="#4dd0e1" stroke-width="0.4"/>
+        <circle cx="124" cy="74" r="0.8" fill="#4dd0e1" opacity="0.8"/>
+      </g>
+      <text x="160" y="98" text-anchor="middle" font-family="Space Grotesk, system-ui" font-size="11" font-weight="700" fill="#80deea">ESP8266</text>
+      <text x="160" y="107" text-anchor="middle" font-family="Space Grotesk, system-ui" font-size="6" fill="#4dd0e1" opacity="0.9">80 MHz - 4 MB Flash</text>
+      <text x="160" y="114" text-anchor="middle" font-family="Space Grotesk, system-ui" font-size="6" fill="#4dd0e1" opacity="0.9">64 KB RAM</text>
+    </g>
+  </g>
+
+  <!-- HC-SR04 - 48% escala (+15%), rotado 180° para pines por arriba -->
+  <g id="hc-group" transform="translate(62, 230) scale(0.483) translate(140, 90) rotate(180) translate(-140, -90)">
+    <style>
+      .hc-trace { animation: hcGlow 3s ease-in-out infinite; }
+      .hc-node { animation: hcNode 2s ease-in-out infinite; }
+      .hc-pulse { stroke-dasharray: 15 300; animation: hcPulse 2s linear infinite; }
+      .hc-transducer { animation: hcPing 1.5s ease-in-out infinite; }
+      @keyframes hcGlow { 0%, 100% { opacity: 0.85; } 50% { opacity: 1; } }
+      @keyframes hcNode { 0%, 100% { opacity: 0.9; } 50% { opacity: 1; } }
+      @keyframes hcPulse { 0% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 300; } }
+      @keyframes hcPing { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+    </style>
+    <defs>
+      <filter id="hc-traceGlow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="hc-nodeGlow" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="hc-sensorGlow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <linearGradient id="hc-pcbGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#0d2818"/><stop offset="50%" stop-color="#051a0d"/><stop offset="100%" stop-color="#0d2818"/>
+      </linearGradient>
+      <radialGradient id="hc-nodeRadial" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#bbf7d0"/><stop offset="50%" stop-color="#22c55e"/><stop offset="100%" stop-color="#16a34a"/>
+      </radialGradient>
+      <radialGradient id="hc-transducerGrad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#2d3d2d"/><stop offset="70%" stop-color="#1a2e1a"/><stop offset="100%" stop-color="#0d1b0d"/>
+      </radialGradient>
+    </defs>
+    <g filter="url(#hc-traceGlow)" class="hc-trace">
+      <path d="M 70 160 L 70 115 L 100 95" stroke="#22c55e" stroke-width="1.2" fill="none"/>
+      <path d="M 110 160 L 110 115 L 120 95" stroke="#22c55e" stroke-width="1.2" fill="none"/>
+      <path d="M 150 160 L 150 115 L 160 95" stroke="#22c55e" stroke-width="1.2" fill="none"/>
+      <path d="M 190 160 L 190 115 L 180 95" stroke="#22c55e" stroke-width="1.2" fill="none"/>
+    </g>
+    <g stroke="#86efac" stroke-width="2" fill="none" opacity="0.95" filter="url(#hc-traceGlow)">
+      <path class="hc-pulse" d="M 70 160 L 70 115 L 100 95"/>
+      <path class="hc-pulse" d="M 110 160 L 110 115 L 120 95" style="animation-delay: 0.25s"/>
+      <path class="hc-pulse" d="M 150 160 L 150 115 L 160 95" style="animation-delay: 0.5s"/>
+      <path class="hc-pulse" d="M 190 160 L 190 115 L 180 95" style="animation-delay: 0.75s"/>
+    </g>
+    <g filter="url(#hc-nodeGlow)">
+      <circle class="hc-node" cx="70" cy="160" r="3" fill="url(#hc-nodeRadial)" stroke="#4ade80" stroke-width="0.5"/>
+      <circle class="hc-node" cx="110" cy="160" r="3" fill="url(#hc-nodeRadial)" stroke="#4ade80" stroke-width="0.5"/>
+      <circle class="hc-node" cx="150" cy="160" r="3" fill="url(#hc-nodeRadial)" stroke="#4ade80" stroke-width="0.5"/>
+      <circle class="hc-node" cx="190" cy="160" r="3" fill="url(#hc-nodeRadial)" stroke="#4ade80" stroke-width="0.5"/>
+    </g>
+    <!-- Texto, ojos y boca: contrarotación para que queden derechos -->
+    <g transform="translate(140, 90) rotate(180) translate(-140, -90)">
+      <g filter="url(#hc-sensorGlow)">
+        <rect x="75" y="55" width="130" height="55" rx="4" fill="#0d1b0d" stroke="#22c55e" stroke-width="1.5"/>
+        <ellipse class="hc-transducer" cx="105" cy="75" rx="4.3" ry="2.9" fill="url(#hc-transducerGrad)" stroke="#22c55e" stroke-width="1"/>
+        <ellipse class="hc-transducer" cx="175" cy="75" rx="4.3" ry="2.9" fill="url(#hc-transducerGrad)" stroke="#22c55e" stroke-width="1"/>
+        <ellipse cx="105" cy="75" rx="1.8" ry="1.1" fill="#1e3d2e" stroke="#34d399" stroke-width="0.5" opacity="0.8"/>
+        <ellipse cx="175" cy="75" rx="1.8" ry="1.1" fill="#1e3d2e" stroke="#34d399" stroke-width="0.5" opacity="0.8"/>
+      </g>
+      <text x="140" y="78" text-anchor="middle" font-family="Space Grotesk, system-ui" font-size="22" font-weight="700" fill="#4ade80">HC-SR-04</text>
+      <text x="140" y="97" text-anchor="middle" font-family="Space Grotesk, system-ui" font-size="14" fill="#22c55e" opacity="0.9">40 kHz - 2-400 cm</text>
+      <path d="M 128 64 Q 140 59 152 64" stroke="#34d399" stroke-width="0.5" fill="none" opacity="0.4"/>
+      <path d="M 122 66 Q 140 61 158 66" stroke="#34d399" stroke-width="0.4" fill="none" opacity="0.3"/>
+    </g>
+    <!-- Etiquetas de pines: junto a cada pin (y=172), tamaño 8, contrarotación para legibles -->
+    <g transform="translate(70, 172) rotate(180) translate(-70,-172)"><text x="70" y="172" font-family="monospace" font-size="8" fill="#4ade80" font-weight="600" text-anchor="middle">VCC</text></g>
+    <g transform="translate(110, 172) rotate(180) translate(-110,-172)"><text x="110" y="172" font-family="monospace" font-size="8" fill="#4ade80" font-weight="600" text-anchor="middle">Trig</text></g>
+    <g transform="translate(150, 172) rotate(180) translate(-150,-172)"><text x="150" y="172" font-family="monospace" font-size="8" fill="#4ade80" font-weight="600" text-anchor="middle">Echo</text></g>
+    <g transform="translate(190, 172) rotate(180) translate(-190,-172)"><text x="190" y="172" font-family="monospace" font-size="8" fill="#4ade80" font-weight="600" text-anchor="middle">GND</text></g>
+  </g>
+
+  <!-- Conexiones: ESP abajo -> HC pines por arriba (scale 0.483) -->
+  <g filter="url(#connGlow)" stroke="#22c55e" stroke-width="1.5" fill="none">
+    <path d="M 35 178 L 35 216 L 163 216 L 163 241"/>
+    <path d="M 55 178 L 55 220 L 108 220 L 108 241"/>
+    <path d="M 155 178 L 155 232 L 125 232 L 125 241"/>
+    <path d="M 175 178 L 175 244 L 142 244"/>
+  </g>
+</svg>

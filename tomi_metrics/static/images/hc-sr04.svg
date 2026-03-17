@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 180" fill="none">
+  <style>
+    @keyframes traceGlow { 0%, 100% { opacity: 0.85; } 50% { opacity: 1; } }
+    @keyframes nodePulse { 0%, 100% { opacity: 0.9; } 50% { opacity: 1; } }
+    @keyframes lightTravel {
+      0% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: 300; }
+    }
+    @keyframes pingPulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    .trace { animation: traceGlow 3s ease-in-out infinite; }
+    .glow-node { animation: nodePulse 2s ease-in-out infinite; }
+    .light-pulse {
+      stroke-dasharray: 15 300;
+      animation: lightTravel 2s linear infinite;
+    }
+    .transducer { animation: pingPulse 1.5s ease-in-out infinite; }
+  </style>
+  <defs>
+    <filter id="traceGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="nodeGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="sensorGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="pcbGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d2818"/>
+      <stop offset="50%" stop-color="#051a0d"/>
+      <stop offset="100%" stop-color="#0d2818"/>
+    </linearGradient>
+    <radialGradient id="nodeRadial" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#bbf7d0"/>
+      <stop offset="50%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </radialGradient>
+    <radialGradient id="transducerGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2d3d2d"/>
+      <stop offset="70%" stop-color="#1a2e1a"/>
+      <stop offset="100%" stop-color="#0d1b0d"/>
+    </radialGradient>
+  </defs>
+
+  <!-- PCB -->
+  <rect x="0" y="0" width="280" height="180" fill="#051a0d"/>
+  <rect x="20" y="20" width="240" height="140" rx="8" fill="url(#pcbGrad)" stroke="#1a3d2e" stroke-width="0.5"/>
+
+  <!-- HC-SR04: 4 pins VCC, Trig, Echo, GND - en el borde inferior -->
+  <!-- Circuit traces - desde pines hacia el modulo central -->
+  <g filter="url(#traceGlow)" class="trace">
+    <path d="M 70 160 L 70 115 L 100 95" stroke="#22c55e" stroke-width="1.2" fill="none"/>
+    <path d="M 110 160 L 110 115 L 120 95" stroke="#22c55e" stroke-width="1.2" fill="none"/>
+    <path d="M 150 160 L 150 115 L 160 95" stroke="#22c55e" stroke-width="1.2" fill="none"/>
+    <path d="M 190 160 L 190 115 L 180 95" stroke="#22c55e" stroke-width="1.2" fill="none"/>
+  </g>
+
+  <!-- Light pulse -->
+  <g stroke="#86efac" stroke-width="2" fill="none" opacity="0.95" filter="url(#traceGlow)">
+    <path class="light-pulse" d="M 70 160 L 70 115 L 100 95"/>
+    <path class="light-pulse" d="M 110 160 L 110 115 L 120 95" style="animation-delay: 0.25s"/>
+    <path class="light-pulse" d="M 150 160 L 150 115 L 160 95" style="animation-delay: 0.5s"/>
+    <path class="light-pulse" d="M 190 160 L 190 115 L 180 95" style="animation-delay: 0.75s"/>
+  </g>
+
+  <!-- Pin nodes -->
+  <g filter="url(#nodeGlow)">
+    <circle class="glow-node" cx="70" cy="160" r="3" fill="url(#nodeRadial)" stroke="#4ade80" stroke-width="0.5"/>
+    <circle class="glow-node" cx="110" cy="160" r="3" fill="url(#nodeRadial)" stroke="#4ade80" stroke-width="0.5"/>
+    <circle class="glow-node" cx="150" cy="160" r="3" fill="url(#nodeRadial)" stroke="#4ade80" stroke-width="0.5"/>
+    <circle class="glow-node" cx="190" cy="160" r="3" fill="url(#nodeRadial)" stroke="#4ade80" stroke-width="0.5"/>
+  </g>
+
+  <!-- Pin labels -->
+  <text x="70" y="172" font-family="monospace" font-size="7" fill="#4ade80" font-weight="600" text-anchor="middle">VCC</text>
+  <text x="110" y="172" font-family="monospace" font-size="7" fill="#4ade80" font-weight="600" text-anchor="middle">Trig</text>
+  <text x="150" y="172" font-family="monospace" font-size="7" fill="#4ade80" font-weight="600" text-anchor="middle">Echo</text>
+  <text x="190" y="172" font-family="monospace" font-size="7" fill="#4ade80" font-weight="600" text-anchor="middle">GND</text>
+
+  <!-- Modulo HC-SR04 - cuerpo central con transductores -->
+  <g filter="url(#sensorGlow)">
+    <!-- PCB del sensor -->
+    <rect x="75" y="55" width="130" height="55" rx="4" fill="#0d1b0d" stroke="#22c55e" stroke-width="1.5"/>
+    <!-- Transductores ultrasonicos (dos cilindros) - mas pequenos -->
+    <ellipse class="transducer" cx="105" cy="75" rx="12" ry="8" fill="url(#transducerGrad)" stroke="#22c55e" stroke-width="1"/>
+    <ellipse class="transducer" cx="175" cy="75" rx="12" ry="8" fill="url(#transducerGrad)" stroke="#22c55e" stroke-width="1"/>
+    <!-- Detalle interior transductores -->
+    <ellipse cx="105" cy="75" rx="5" ry="3" fill="#1e3d2e" stroke="#34d399" stroke-width="0.5" opacity="0.8"/>
+    <ellipse cx="175" cy="75" rx="5" ry="3" fill="#1e3d2e" stroke="#34d399" stroke-width="0.5" opacity="0.8"/>
+  </g>
+
+  <!-- Texto HC-SR-04 con especificaciones dentro del modulo -->
+  <text x="140" y="98" text-anchor="middle" font-family="Space Grotesk, system-ui, sans-serif" font-size="13" font-weight="700" fill="#4ade80">HC-SR-04</text>
+  <text x="140" y="108" text-anchor="middle" font-family="Space Grotesk, system-ui, sans-serif" font-size="6" font-weight="500" fill="#22c55e" opacity="0.9">40 kHz - 2-400 cm</text>
+
+  <!-- Ondas ultrasonicas (decorativas) -->
+  <path d="M 125 65 Q 140 55 155 65" stroke="#34d399" stroke-width="0.5" fill="none" opacity="0.4"/>
+  <path d="M 115 68 Q 140 58 165 68" stroke="#34d399" stroke-width="0.4" fill="none" opacity="0.3"/>
+</svg>
