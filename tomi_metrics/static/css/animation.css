@@ -1,5 +1,134 @@
 /* Animación profesional 2025 - sensor, estanque, alertas */
 
+.anim-scene-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 630px;
+    margin: 0 auto;
+}
+
+.anim-sello-agua {
+    position: absolute;
+    left: 50%;
+    top: -22px;
+    transform: translateX(-50%) rotate(-2deg);
+    padding: 8px 14px;
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(14, 165, 233, 0.2) 100%);
+    border: 2px solid rgba(56, 189, 248, 0.5);
+    border-radius: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #7dd3fc;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    z-index: 10;
+    pointer-events: none;
+}
+
+.anim-sello-agua-logo {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 680px) {
+    .anim-sello-agua {
+        left: 50%;
+        top: -20px;
+        transform: translateX(-50%) rotate(-2deg);
+        font-size: 0.75rem;
+        white-space: normal;
+        text-align: center;
+        max-width: 90%;
+    }
+}
+
+.anim-sello-whatsapp {
+    position: absolute;
+    right: -100px;
+    top: 50%;
+    transform: translateY(-50%) rotate(4deg);
+    padding: 8px 14px;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(22, 163, 74, 0.2) 100%);
+    border: 2px solid rgba(34, 197, 94, 0.5);
+    border-radius: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    z-index: 10;
+    pointer-events: none;
+}
+
+.anim-sello-whatsapp-logo {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+.anim-sello-whatsapp-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #86efac;
+}
+
+@media (max-width: 680px) {
+    .anim-sello-whatsapp {
+        right: 50%;
+        top: auto;
+        bottom: -90px;
+        transform: translateX(50%) translateY(0) rotate(-2deg);
+    }
+}
+
+.anim-sello-automata {
+    position: absolute;
+    left: 50%;
+    bottom: -22px;
+    transform: translateX(-50%) rotate(2deg);
+    padding: 8px 14px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(124, 58, 237, 0.2) 100%);
+    border: 2px solid rgba(139, 92, 246, 0.5);
+    border-radius: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #c4b5fd;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    z-index: 10;
+    pointer-events: none;
+}
+
+.anim-sello-automata-logo {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 680px) {
+    .anim-sello-automata {
+        bottom: -24px;
+        font-size: 0.75rem;
+    }
+}
+
 .anim-scene {
     width: 100%;
     max-width: 630px;

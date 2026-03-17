@@ -66,6 +66,19 @@ body {
     font-weight: 700;
     margin-bottom: 8px;
     text-shadow: 0 2px 16px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25em;
+    flex-wrap: wrap;
+}
+
+.hero-title-logo {
+    width: 0.55em;
+    height: 0.55em;
+    border-radius: 50%;
+    object-fit: cover;
+    vertical-align: middle;
 }
 
 .hero-subtitle {
@@ -96,6 +109,40 @@ body {
     font-weight: 600;
 }
 
+/* Tabs estilo StarCraft - UltraSS Estandar / Pro */
+.product-tabs {
+    display: flex;
+    gap: 4px;
+    margin-top: 14px;
+    justify-content: center;
+}
+
+.product-tab {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 8px 18px;
+    background: linear-gradient(145deg, rgba(6, 78, 99, 0.3) 0%, rgba(8, 51, 68, 0.25) 100%);
+    border: 1px solid rgba(34, 211, 238, 0.35);
+    border-radius: 2px;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.product-tab:hover {
+    color: #67e8f9;
+    border-color: rgba(34, 211, 238, 0.5);
+    background: linear-gradient(145deg, rgba(6, 78, 99, 0.4) 0%, rgba(8, 51, 68, 0.35) 100%);
+}
+
+.product-tab.active {
+    color: #67e8f9;
+    border-color: rgba(34, 211, 238, 0.6);
+    background: linear-gradient(145deg, rgba(6, 78, 99, 0.5) 0%, rgba(8, 51, 68, 0.4) 100%);
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
 .hero-logout {
     position: absolute;
     top: 20px;
@@ -114,16 +161,365 @@ body {
     color: white;
 }
 
+/* Sellos tipo panel StarCraft 2 - Sensor de Profundidad + Características */
+.product-seal-section {
+    padding: 28px 22px 36px;
+    background: linear-gradient(180deg, #0f172a 0%, #0c1222 50%, #0f172a 100%);
+}
+
+.product-seals-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    align-items: stretch;
+}
+
+.product-seals-grid .product-seal {
+    flex: 1 1 300px;
+}
+
+.product-seals-grid .product-seal-sc2 {
+    flex: 2 1 360px;
+    min-width: 280px;
+}
+
+.product-seals-grid .product-seal-purple {
+    flex: 1 1 260px;
+    max-width: 280px;
+}
+
+@media (max-width: 680px) {
+    .product-seals-grid {
+        flex-direction: column;
+    }
+    .product-seals-grid .product-seal-purple {
+        max-width: none;
+    }
+}
+
+.product-seal {
+    position: relative;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 24px 28px 28px;
+    background: linear-gradient(145deg, rgba(6, 78, 99, 0.25) 0%, rgba(8, 51, 68, 0.35) 50%, rgba(2, 44, 34, 0.2) 100%);
+    border: 1px solid rgba(34, 211, 238, 0.45);
+}
+
+/* Imágenes NodeMCU v2 + HC-SR04 debajo del texto con recuadro tipo sello */
+.product-seal-images {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: flex-end;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.product-seal-img-wrap {
+    position: relative;
+    padding: 8px;
+    background: rgba(6, 78, 99, 0.2);
+    border: 1px solid rgba(34, 211, 238, 0.45);
+    border-radius: 4px;
+    box-shadow: inset 0 0 12px rgba(34, 211, 238, 0.08);
+}
+
+.product-seal-img-wrap .product-seal-frame-corner {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-color: rgba(34, 211, 238, 0.6);
+    border-style: solid;
+    border-width: 0;
+}
+
+.product-seal-img-wrap .product-seal-frame-corner.tl {
+    top: 4px;
+    left: 4px;
+    border-top-width: 2px;
+    border-left-width: 2px;
+}
+
+.product-seal-img-wrap .product-seal-frame-corner.tr {
+    top: 4px;
+    right: 4px;
+    border-top-width: 2px;
+    border-right-width: 2px;
+}
+
+.product-seal-img-wrap .product-seal-frame-corner.bl {
+    bottom: 4px;
+    left: 4px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+}
+
+.product-seal-img-wrap .product-seal-frame-corner.br {
+    bottom: 4px;
+    right: 4px;
+    border-bottom-width: 2px;
+    border-right-width: 2px;
+}
+
+.product-seal-img {
+    display: block;
+    max-width: 140px;
+    max-height: 100px;
+    object-fit: contain;
+    opacity: 0.95;
+}
+
+.product-seal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(34, 211, 238, 0.02) 2px,
+        rgba(34, 211, 238, 0.02) 4px
+    );
+    pointer-events: none;
+}
+
+.product-seal-corner {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-color: rgba(34, 211, 238, 0.6);
+    border-style: solid;
+    border-width: 0;
+}
+
+.product-seal-corner-tl {
+    top: 8px;
+    left: 8px;
+    border-top-width: 2px;
+    border-left-width: 2px;
+}
+
+.product-seal-corner-tr {
+    top: 8px;
+    right: 8px;
+    border-top-width: 2px;
+    border-right-width: 2px;
+}
+
+.product-seal-corner-bl {
+    bottom: 8px;
+    left: 8px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+}
+
+.product-seal-corner-br {
+    bottom: 8px;
+    right: 8px;
+    border-bottom-width: 2px;
+    border-right-width: 2px;
+}
+
+.product-seal-scanline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(34, 211, 238, 0.02) 50%,
+        transparent 100%
+    );
+    animation: productSealScan 4s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes productSealScan {
+    0%, 100% { opacity: 0.3; transform: translateY(-100%); }
+    50% { opacity: 0.6; transform: translateY(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .product-seal-scanline {
+        animation: none;
+        opacity: 0.2;
+    }
+}
+
+.product-seal-content {
+    position: relative;
+    z-index: 1;
+}
+
+.product-seal-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #67e8f9;
+    text-shadow: 0 0 12px rgba(34, 211, 238, 0.4);
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+}
+
+.product-seal-desc {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: #a5f3fc;
+    margin-bottom: 10px;
+    opacity: 0.95;
+}
+
+.product-seal-metrics {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: #99f6e4;
+    opacity: 0.9;
+}
+
+.product-seal-metrics strong {
+    color: #5eead4;
+    font-weight: 600;
+}
+
+@media (max-width: 600px) {
+    .product-seal {
+        padding: 20px 18px 24px;
+    }
+    .product-seal-title {
+        font-size: 1.2rem;
+    }
+    .product-seal-desc,
+    .product-seal-metrics {
+        font-size: 0.85rem;
+    }
+}
+
+/* Sello púrpura - Características del sensor */
+.product-seal-purple {
+    background: linear-gradient(145deg, rgba(88, 28, 135, 0.3) 0%, rgba(109, 40, 217, 0.25) 50%, rgba(67, 56, 202, 0.2) 100%) !important;
+    border-color: rgba(167, 139, 250, 0.5) !important;
+    box-shadow:
+        0 0 20px rgba(139, 92, 246, 0.15),
+        0 0 40px rgba(88, 28, 135, 0.1),
+        inset 0 0 30px rgba(167, 139, 250, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+.product-seal-purple .product-seal-corner {
+    border-color: rgba(167, 139, 250, 0.65) !important;
+}
+
+.product-seal-scanline-purple {
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(167, 139, 250, 0.03) 50%,
+        transparent 100%
+    ) !important;
+}
+
+.product-seal-title-purple {
+    color: #c4b5fd !important;
+    text-shadow: 0 0 12px rgba(139, 92, 246, 0.4) !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.product-seal-gear {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    color: #a78bfa;
+}
+
+.product-seal-purple .product-seal-desc,
+.product-seal-purple .product-seal-list {
+    color: #ddd6fe;
+}
+
+.product-seal-list {
+    list-style: none;
+    margin: 0 0 12px 0;
+    padding: 0;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.product-seal-list li {
+    position: relative;
+    padding-left: 0;
+    margin-bottom: 6px;
+}
+
+.product-seal-list li::before {
+    content: '•';
+    color: #a78bfa;
+    margin-right: 6px;
+}
+
+.product-seal-subtitle {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #c4b5fd;
+    margin: 10px 0 6px 0;
+}
+
+.product-seal-list-tech {
+    font-size: 0.78rem;
+}
+
+.product-seal-list-tech li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.product-seal-list-tech li::before {
+    content: none;
+}
+
+.product-seal-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.product-seal-icon-sm {
+    width: 14px;
+    height: 14px;
+}
+
 /* Sección animación */
 .animation-section {
     background: linear-gradient(180deg, #0f172a 0%, #0c1222 100%);
     padding: 36px 22px;
+    overflow: visible;
 }
 
 .animation-container {
     max-width: 810px;
     margin: 0 auto;
     text-align: center;
+    padding-top: 50px;
+    padding-right: 120px;
+    padding-bottom: 50px;
+}
+
+@media (max-width: 680px) {
+    .animation-container {
+        padding-top: 45px;
+        padding-right: 22px;
+        padding-bottom: 100px;
+    }
 }
 
 .animation-gif {

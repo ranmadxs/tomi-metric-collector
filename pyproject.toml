@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tomi-metric-collector"
-version = "1.9.12"
+version = "1.9.29"
 description = ""
 authors = ["Edgar"]
 readme = "README.md"
@@ -15,6 +15,8 @@ python-dotenv = "^1.0.1"
 pymongo = "^4.10.1"
 flasgger = "^0.9.7"
 paho-mqtt = "^2.1.0"
+pillow = "^12.1.1"
+rembg = {extras = ["cpu"], version = "^2.0.73"}
 
 [build-system]
 requires = ["poetry-core"]

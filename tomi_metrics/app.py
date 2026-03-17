@@ -35,107 +35,6 @@ def get_readme_content():
     except Exception:
         return "README no disponible"
 
-def check_mongodb_connection():
-    """Verifica si MongoDB está conectado y retorna info de conexión"""
-    mongo_uri = os.getenv("MONGODB_URI", "")
-    
-    if not mongo_uri:
-        return {
-            "connected": False,
-            "status": "No configurado",
-            "uri": "No configurado"
-        }
-    
-    try:
-        test_client = MongoClient(mongo_uri, serverSelectionTimeoutMS=3000)
-        test_client.admin.command('ping')
-        test_client.close()
-        return {
-            "connected": True,
-            "status": "Conectado",
-            "uri": mask_uri(mongo_uri)
-        }
-    except Exception as e:
-        return {
-            "connected": False,
-            "status": "Error de conexión",
-            "uri": mask_uri(mongo_uri)
-        }
-
-def check_datadog_connection():
-    """Verifica si DataDog está configurado y retorna info"""
-    api_key = os.getenv("DATADOG_API_KEY", "")
-    enabled = os.getenv("ENABLE_SEND_LOG_TO_DATADOG", "False").lower() == "true"
-    
-    if not enabled:
-        return {
-            "connected": False,
-            "enabled": False,
-            "status": "Deshabilitado",
-            "api_key": mask_api_key(api_key) if api_key else "No configurado"
-        }
-    
-    if not api_key:
-        return {
-            "connected": False,
-            "enabled": True,
-            "status": "API Key no configurada",
-            "api_key": "No configurado"
-        }
-    
-    try:
-        response = requests.get(
-            "https://api.datadoghq.com/api/v1/validate",
-            headers={"DD-API-KEY": api_key},
-            timeout=5
-        )
-        if response.status_code == 200:
-            return {
-                "connected": True,
-                "enabled": True,
-                "status": "Conectado",
-                "api_key": mask_api_key(api_key)
-            }
-        else:
-            return {
-                "connected": False,
-                "enabled": True,
-                "status": "Error de conexión",
-                "api_key": mask_api_key(api_key)
-            }
-    except Exception as e:
-        return {
-            "connected": False,
-            "enabled": True,
-            "status": "Error de conexión",
-            "api_key": mask_api_key(api_key)
-        }
-
-def mask_uri(uri, max_length=25):
-    """Oculta credenciales en la URI de MongoDB y limita longitud"""
-    if not uri:
-        return "No configurado"
-    try:
-        if "@" in uri:
-            parts = uri.split("@")
-            host_part = parts[-1]
-            if len(host_part) > max_length:
-                host_part = host_part[:max_length] + "..."
-            return f"***@{host_part}"
-        if len(uri) > max_length:
-            return uri[:max_length] + "..."
-        return uri
-    except Exception:
-        return "***"
-
-def mask_api_key(key):
-    """Oculta la API key mostrando solo los primeros y últimos caracteres"""
-    if not key:
-        return "No configurado"
-    if len(key) < 8:
-        return "***"
-    return f"{key[:4]}...{key[-4:]}"
-
 app = Flask(__name__, 
             template_folder='templates',
             static_folder='static')
@@ -338,28 +237,18 @@ def logout():
 @app.route('/')
 def home():
     """
-    Home - Documentación y estado de la API
+    Home - Página principal
     ---
     tags:
       - General
     responses:
       200:
-        description: Página principal con documentación y estado de conexiones
+        description: Página principal
     """
-    mongo_status = check_mongodb_connection()
-    datadog_status = check_datadog_connection()
-    mqtt_status = get_mqtt_status()
-    
-    is_logged_in = session.get('logged_in', False)
-    
     return render_template(
         'home.html',
         app_name=APP_NAME,
-        app_version=APP_VERSION,
-        mongo_status=mongo_status,
-        datadog_status=datadog_status,
-        mqtt_status=mqtt_status,
-        is_logged_in=is_logged_in
+        app_version=APP_VERSION
     ), 200
 
 @app.route('/metrics', methods=['POST'])
@@ -670,7 +559,7 @@ def send_log_to_datadog(log_entry):
 # ============================================================
 # MONITOR DE ESTANQUE (Blueprint)
 # ============================================================
-from tomi_metrics.monitor_estanque import monitor_bp, start_mqtt_thread, get_mqtt_status
+from tomi_metrics.monitor_estanque import monitor_bp, start_mqtt_thread
 
 app.register_blueprint(monitor_bp)
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CLRobotics - Sensores para un mundo en constante cambio.</title>
+    <title>CL Chile Robotics - Sensores para un mundo en constante cambio.</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/animation.css') }}">
@@ -18,22 +18,91 @@
             <div class="hero-overlay"></div>
             <img class="hero-image" src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1920&q=80" alt="Sensor ultrasónico en estanque - monitoreo de nivel de agua">
             <div class="hero-content">
-                <h1 class="hero-title">CLRobotics</h1>
+                <h1 class="hero-title">CL<img src="{{ url_for('static', filename='images/chile-logo.svg') }}" alt="Chile" class="hero-title-logo" aria-hidden="true">Robotics</h1>
                 <p class="hero-subtitle">Sensores para un mundo en constante cambio.</p>
                 <span class="hero-version-badge">
                     <span class="hero-version-package">{{ app_name }}</span><span class="hero-version-num">@{{ app_version }}</span>
                 </span>
-                {% if is_logged_in %}
-                <a href="/logout" class="hero-logout">🚪 Salir</a>
-                {% endif %}
+                <nav class="product-tabs product-tabs-sc2" role="tablist" aria-label="Seleccionar producto">
+                    <button type="button" class="product-tab" role="tab" aria-selected="false" aria-controls="panel-estandar" id="tab-estandar" data-tab="estandar">UltraSS Estandar</button>
+                    <button type="button" class="product-tab active" role="tab" aria-selected="true" aria-controls="panel-pro" id="tab-pro" data-tab="pro">UltraSS Pro</button>
+                </nav>
             </div>
         </section>
 
-        <!-- Animación: sensor, estanque y flujo de datos - SVG animado 2025 -->
-        <section class="animation-section">
-            <div class="animation-container">
-                <div class="anim-scene anim-zoom">
-                    <object type="image/svg+xml" data="{{ url_for('static', filename='images/sensor-animation.svg') }}?v=49" class="anim-svg-img" aria-label="Sensor ultrasónico - monitoreo de nivel de agua"></object>
+        <!-- Sellos tipo panel StarCraft 2: Sensor de Profundidad + Características -->
+        <section class="product-seal-section" aria-labelledby="product-seal-title">
+            <div class="product-seals-grid">
+                <div class="product-seal product-seal-sc2">
+                    <div class="product-seal-corner product-seal-corner-tl"></div>
+                    <div class="product-seal-corner product-seal-corner-tr"></div>
+                    <div class="product-seal-corner product-seal-corner-bl"></div>
+                    <div class="product-seal-corner product-seal-corner-br"></div>
+                    <div class="product-seal-scanline" aria-hidden="true"></div>
+                    <div class="product-seal-content">
+                        <h2 id="product-seal-title" class="product-seal-title">Sensor de Profundidad</h2>
+                        <p class="product-seal-desc">
+                            Ocupado para medir distancia entre el sensor y un objeto. Su uso práctico contempla acumuladores de agua, pozos de profundidad.
+                        </p>
+                        <p class="product-seal-metrics">
+                            Mide en tiempo real la distancia y entrega: <strong>porcentaje de llenado</strong>, <strong>litros estimados</strong>, <strong>estado del nivel</strong> (normal, alerta, peligro), <strong>historial diario y mensual</strong>.
+                        </p>
+                        <div class="product-seal-images" id="product-images-container">
+                            <div class="product-seal-img-wrap">
+                                <span class="product-seal-frame-corner tl"></span>
+                                <span class="product-seal-frame-corner tr"></span>
+                                <span class="product-seal-frame-corner bl"></span>
+                                <span class="product-seal-frame-corner br"></span>
+                                <img id="product-img-micro" src="{{ url_for('static', filename='images/esp32.png') }}" alt="ESP32" class="product-seal-img">
+                            </div>
+                            <div class="product-seal-img-wrap">
+                                <span class="product-seal-frame-corner tl"></span>
+                                <span class="product-seal-frame-corner tr"></span>
+                                <span class="product-seal-frame-corner bl"></span>
+                                <span class="product-seal-frame-corner br"></span>
+                                <img id="product-img-sensor" src="{{ url_for('static', filename='images/jsn-sr04t.png') }}" alt="Sensor ultrasonido sumergible JSN-SR04T" class="product-seal-img">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-seal product-seal-purple">
+                    <div class="product-seal-corner product-seal-corner-tl"></div>
+                    <div class="product-seal-corner product-seal-corner-tr"></div>
+                    <div class="product-seal-corner product-seal-corner-bl"></div>
+                    <div class="product-seal-corner product-seal-corner-br"></div>
+                    <div class="product-seal-scanline product-seal-scanline-purple" aria-hidden="true"></div>
+                    <div class="product-seal-content">
+                        <h2 class="product-seal-title product-seal-title-purple">
+                            <img src="{{ url_for('static', filename='images/gear.svg') }}" alt="" class="product-seal-gear" aria-hidden="true">
+                            Características del sensor
+                        </h2>
+                        <ul class="product-seal-list">
+                            <li>Permite medir el nivel de profundidad del agua dentro de un estanque, pozo de profundidad, etc.</li>
+                            <li>Se puede usar para medir la proximidad de objetos.</li>
+                            <li>Sensor ultrasonido HC-SR04</li>
+                        </ul>
+                        <p class="product-seal-subtitle">Detalle Técnico</p>
+                        <ul class="product-seal-list product-seal-list-tech">
+                            <li>Microcontrolador: NodeMCU v2 — ESP8266, 80 MHz, 4 MB Flash, 64 KB RAM</li>
+                            <li>
+                                <img src="{{ url_for('static', filename='images/whatsapp.svg') }}" alt="" class="product-seal-icon" aria-hidden="true">
+                                Alertas por WhatsApp
+                            </li>
+                            <li>
+                                <img src="https://cdn.simpleicons.org/gmail/EA4335" alt="" class="product-seal-icon" aria-hidden="true">
+                                Alertas por email
+                            </li>
+                            <li>
+                                <img src="{{ url_for('static', filename='images/alexa.svg') }}" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true">
+                                <img src="{{ url_for('static', filename='images/google-home.svg') }}" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true">
+                                Ready
+                            </li>
+                            <li>
+                                <img src="{{ url_for('static', filename='images/mqtt.svg') }}" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true">
+                                Compatible IoT
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </section>
@@ -65,10 +134,6 @@
                         <img src="https://cdn.simpleicons.org/mongodb/47A248" alt="MongoDB" class="integration-logo-img">
                         <span class="integration-name">Base de datos en la nube · Datos persistentes en tiempo real</span>
                     </div>
-                    <div class="integration-state">
-                        <span class="status-dot {{ '' if mongo_status.connected else 'disconnected' }}"></span>
-                        {{ mongo_status.status }}
-                    </div>
                     <div class="integration-info">
                         <code>MongoDB Atlas</code>
                     </div>
@@ -77,10 +142,6 @@
                     <div class="integration-header">
                         <img src="https://cdn.simpleicons.org/datadog/632CA6" alt="Datadog" class="integration-logo-img">
                         <span class="integration-name">Observabilidad · Métricas y logs en tiempo real</span>
-                    </div>
-                    <div class="integration-state">
-                        <span class="status-dot {{ '' if datadog_status.connected else 'disconnected' }}"></span>
-                        {{ datadog_status.status }}
                     </div>
                     <div class="integration-info">
                         <code>Datadog</code>
@@ -102,12 +163,8 @@
                         </span>
                         <span class="integration-name">Sensores Inteligentes · Alexa y Google Home</span>
                     </div>
-                    <div class="integration-state">
-                        <span class="status-dot {{ '' if mqtt_status.connected else 'disconnected' }}"></span>
-                        {{ mqtt_status.status }}
-                    </div>
                     <div class="integration-info">
-                        <code>{{ mqtt_status.info }}</code>
+                        <code>MQTT</code>
                     </div>
                     <div class="integration-logos">
                         <img src="{{ url_for('static', filename='images/alexa.svg') }}" alt="" class="iot-logo" aria-hidden="true">
@@ -154,11 +211,58 @@
             </div>
         </section>
 
+        <!-- Animación: sensor, estanque y flujo de datos - al final de la página -->
+        <section class="animation-section">
+            <div class="animation-container">
+                <div class="anim-scene-wrapper">
+                    <div class="anim-scene anim-zoom">
+                        <object type="image/svg+xml" data="{{ url_for('static', filename='images/sensor-animation.svg') }}?v=50" class="anim-svg-img" aria-label="Sensor ultrasónico - monitoreo de nivel de agua"></object>
+                    </div>
+                    <div class="anim-sello-agua" aria-hidden="true">
+                        <img src="https://cdn.simpleicons.org/gmail/EA4335" alt="" class="anim-sello-agua-logo">
+                        <span>Alertas por email</span>
+                    </div>
+                    <div class="anim-sello-whatsapp" aria-hidden="true">
+                        <img src="{{ url_for('static', filename='images/whatsapp.svg') }}" alt="" class="anim-sello-whatsapp-logo">
+                        <span class="anim-sello-whatsapp-title">Alertas por Whatsapp</span>
+                    </div>
+                    <div class="anim-sello-automata" aria-hidden="true">
+                        <img src="{{ url_for('static', filename='images/robot-brain.svg') }}" alt="" class="anim-sello-automata-logo">
+                        <span>Automatiza labores.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <footer>
-            CLRobotics {{ app_name }}@{{ app_version }} | Colector centralizado de métricas y logs
+            CL Chile Robotics {{ app_name }}@{{ app_version }} | Colector centralizado de métricas y logs
         </footer>
     </div>
-
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+    (function() {
+        var images = {
+            estandar: { micro: "{{ url_for('static', filename='images/nodemcu-v2.png') }}", sensor: "{{ url_for('static', filename='images/hc-sr04.png') }}", microAlt: "NodeMCU v2", sensorAlt: "Sensor HC-SR04" },
+            pro: { micro: "{{ url_for('static', filename='images/esp32.png') }}", sensor: "{{ url_for('static', filename='images/jsn-sr04t.png') }}", microAlt: "ESP32", sensorAlt: "Sensor ultrasonido sumergible JSN-SR04T" }
+        };
+        var tabs = document.querySelectorAll('.product-tab');
+        var imgMicro = document.getElementById('product-img-micro');
+        var imgSensor = document.getElementById('product-img-sensor');
+        tabs.forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                var t = this.getAttribute('data-tab');
+                tabs.forEach(function(t) { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+                this.classList.add('active');
+                this.setAttribute('aria-selected', 'true');
+                var imgs = images[t];
+                if (imgs && imgMicro && imgSensor) {
+                    imgMicro.src = imgs.micro;
+                    imgMicro.alt = imgs.microAlt;
+                    imgSensor.src = imgs.sensor;
+                    imgSensor.alt = imgs.sensorAlt;
+                }
+            });
+        });
+    })();
+    </script>
 </body>
 </html>
