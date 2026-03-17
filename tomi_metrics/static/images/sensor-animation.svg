@@ -2,18 +2,57 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-220 -110 1080 670" class="anim-zoom">
   <defs>
     <style type="text/css">
-      @keyframes popupShow {
+      @keyframes globoWhatsapp {
+        0%, 20% { opacity: 0; }
+        20%, 96% { opacity: 0.95; }
+        96%, 100% { opacity: 0; }
+      }
+      .globo-whatsapp { animation: globoWhatsapp 24s steps(1, end) infinite; }
+      @keyframes typingDots {
+        0%, 20% { opacity: 0; }
+        20%, 59% { opacity: 1; }
+        59%, 100% { opacity: 0; }
+      }
+      .typing-dots { animation: typingDots 24s steps(1, end) infinite; }
+      @keyframes dotPulse {
+        0%, 33% { opacity: 0.4; }
+        16%, 50% { opacity: 1; }
+        66%, 100% { opacity: 0.4; }
+      }
+      .typing-dot1 { animation: dotPulse 1.2s ease-in-out infinite; }
+      .typing-dot2 { animation: dotPulse 1.2s ease-in-out infinite 0.15s; }
+      .typing-dot3 { animation: dotPulse 1.2s ease-in-out infinite 0.3s; }
+      @keyframes replyWhatsapp {
+        0%, 59% { opacity: 0; }
+        59%, 96% { opacity: 1; }
+        96%, 100% { opacity: 0; }
+      }
+      .reply-whatsapp { animation: replyWhatsapp 24s steps(1, end) infinite; }
+      /* Cliente escribiendo: 1.5s = 6.25% del ciclo 24s → 59% a 65% */
+      @keyframes clientTypingDots {
+        0%, 59% { opacity: 0; }
+        59%, 65% { opacity: 1; }
+        65%, 100% { opacity: 0; }
+      }
+      .client-typing-dots { animation: clientTypingDots 24s steps(1, end) infinite; }
+      @keyframes clientReplyWhatsapp {
+        0%, 65% { opacity: 0; }
+        65%, 96% { opacity: 1; }
+        96%, 100% { opacity: 0; }
+      }
+      .client-reply-whatsapp { animation: clientReplyWhatsapp 24s steps(1, end) infinite; }
+      @keyframes rayoSenal {
+        0%, 82% { opacity: 0; }
+        82%, 95% { opacity: 0.9; }
+        95%, 100% { opacity: 0; }
+      }
+      .rayo-senal { animation: rayoSenal 24s steps(1) infinite; }
+      @keyframes rayoSenalRojo {
         0%, 29% { opacity: 0; }
-        29%, 80% { opacity: 1; }
-        80%, 100% { opacity: 0; }
+        29%, 50.5% { opacity: 0.9; }
+        50.5%, 100% { opacity: 0; }
       }
-      .popup-alerts { animation: popupShow 24s steps(1) infinite; }
-      @keyframes chartHide {
-        0%, 29% { opacity: 1; }
-        29%, 80% { opacity: 0; }
-        80%, 100% { opacity: 1; }
-      }
-      .chart-phone { animation: chartHide 24s steps(1) infinite; }
+      .rayo-senal-rojo { animation: rayoSenalRojo 24s steps(1) infinite; }
     </style>
     <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
       <stop offset="0%" style="stop-color:#0ea5e9"/>
@@ -32,6 +71,13 @@
     <linearGradient id="sensorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" style="stop-color:#475569"/>
       <stop offset="100%" style="stop-color:#334155"/>
+    </linearGradient>
+    <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e2e8f0"/>
+      <stop offset="25%" style="stop-color:#94a3b8"/>
+      <stop offset="50%" style="stop-color:#cbd5e1"/>
+      <stop offset="75%" style="stop-color:#64748b"/>
+      <stop offset="100%" style="stop-color:#94a3b8"/>
     </linearGradient>
     <filter id="glow">
       <feGaussianBlur stdDeviation="2" result="blur"/>
@@ -76,6 +122,10 @@
     <clipPath id="pipeClip">
       <rect x="-72" y="397" width="192" height="16" rx="4"/>
     </clipPath>
+    <!-- Hojas de brote de maíz (estrechas, lanceoladas - gramínea) -->
+    <path id="maizHoja1" d="M0 0 Q1 -8 0 -16" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round"/>
+    <path id="maizHoja2" d="M0 0 Q-1.5 -6 0 -14" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round"/>
+    <path id="maizHoja3" d="M0 0 Q1.2 -7 0 -15" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round"/>
     <linearGradient id="windowGlass" x1="0%" y1="0%" x2="0%" y2="100%" gradientUnits="objectBoundingBox">
       <stop offset="0%" style="stop-color:#93c5fd;stop-opacity:0.5"/>
       <stop offset="40%" style="stop-color:#bfdbfe;stop-opacity:0.35"/>
@@ -100,8 +150,9 @@
       <stop offset="100%" style="stop-color:#78350f"/>
     </linearGradient>
     <linearGradient id="soilGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#78716c"/>
-      <stop offset="100%" style="stop-color:#57534e"/>
+      <stop offset="0%" style="stop-color:#a16207"/>
+      <stop offset="40%" style="stop-color:#854d0e"/>
+      <stop offset="100%" style="stop-color:#713f12"/>
     </linearGradient>
   </defs>
   <!-- Casa con tuberia, medidor y bomba hacia el estanque -->
@@ -115,13 +166,13 @@
       <path d="M -308 -68 Q -293 -78 -278 -68 Q -263 -58 -248 -68 Q -233 -78 -218 -68 Q -203 -58 -188 -68 Q -173 -78 -158 -68 Q -143 -58 -128 -68" fill="none" stroke="#7c2d12" stroke-width="1.2" opacity="0.6"/>
       <path d="M -306 -66 Q -291 -76 -276 -66 Q -261 -56 -246 -66 Q -231 -76 -216 -66 Q -201 -56 -186 -66 Q -171 -76 -156 -66" fill="none" stroke="#5c1d0c" stroke-width="1" opacity="0.5"/>
       <path d="M -304 -64 Q -289 -74 -274 -64 Q -259 -54 -244 -64 Q -229 -74 -214 -64 Q -199 -54 -184 -64" fill="none" stroke="#7c2d12" stroke-width="1" opacity="0.4"/>
-      <!-- Porche vista lateral (hasta nivel tierra y=380) -->
-      <path d="M -382 -45 L -378 -65 L -318 -65 L -318 -45 Z" fill="url(#tileGrad)" stroke="#7c2d12" stroke-width="0.8"/>
-      <rect x="-382" y="-42" width="66" height="8" fill="#78716c" stroke="#57534e"/>
-      <rect x="-382" y="-34" width="66" height="414" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="0.8"/>
-      <line x1="-316" y1="-34" x2="-316" y2="380" stroke="#a8a29e" stroke-width="2"/>
-      <rect x="-380" y="75" width="8" height="301" fill="#57534e" stroke="#44403c"/>
-      <rect x="-382" y="374" width="66" height="6" rx="1" fill="#78716c" stroke="#57534e"/>
+      <!-- Porche vista lateral (mas ancho, hasta nivel tierra y=380) -->
+      <path d="M -392 -45 L -388 -65 L -308 -65 L -308 -45 Z" fill="url(#tileGrad)" stroke="#7c2d12" stroke-width="0.8"/>
+      <rect x="-392" y="-42" width="86" height="8" fill="#78716c" stroke="#57534e"/>
+      <rect x="-392" y="-34" width="86" height="414" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="0.8"/>
+      <line x1="-306" y1="-34" x2="-306" y2="380" stroke="#a8a29e" stroke-width="2"/>
+      <rect x="-390" y="75" width="8" height="301" fill="#57534e" stroke="#44403c"/>
+      <rect x="-392" y="374" width="86" height="6" rx="1" fill="#78716c" stroke="#57534e"/>
       <!-- Ventana mediterranea (marco blanco, subida, aspecto real) -->
       <rect x="-302" y="20" width="177" height="280" rx="4" fill="#fafaf9" stroke="#d6d3d1" stroke-width="3"/>
       <rect x="-298" y="24" width="169" height="272" rx="2" fill="url(#windowGlass)" stroke="#e7e5e4" stroke-width="1"/>
@@ -140,7 +191,7 @@
         <rect x="-2.5" y="28" width="5" height="6" rx="1" fill="#94a3b8" stroke="#64748b"/>
         <!-- Manija para abrir/cerrar (gira visiblemente al cerrar cuando baja nivel) -->
         <g transform="translate(8, 4)">
-          <animateTransform attributeName="transform" type="rotate" values="-45 0 4;-45 0 4;0 0 4;0 0 4;-45 0 4;-45 0 4" keyTimes="0;0.28;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
+          <animateTransform attributeName="transform" type="rotate" values="-45 0 4;-45 0 4;0 0 4;0 0 4;-45 0 4;-45 0 4" keyTimes="0;0.28;0.30;0.88;0.93;1" dur="24s" repeatCount="indefinite"/>
           <!-- Brazo de la manija -->
           <rect x="0" y="2" width="14" height="4" rx="2" fill="#64748b" stroke="#475569" stroke-width="0.8"/>
           <!-- Volante/rueda de la manija -->
@@ -164,127 +215,126 @@
       <ellipse cx="-175" cy="320" rx="6" ry="9" fill="#16a34a" transform="rotate(-15 -175 320)"/>
       <ellipse cx="-178" cy="415" rx="5" ry="8" fill="#15803d" transform="rotate(8 -178 415)"/>
       <ellipse cx="-182" cy="438" rx="6" ry="9" fill="#22c55e" transform="rotate(-10 -182 438)"/>
-      <!-- Jardinera terracota realista (maceta tipo ventana) -->
-      <path d="M-240 418 L-115 418 L-125 562 L-230 562 Z" fill="url(#planterGrad)" stroke="#92400e" stroke-width="1.5"/>
-      <path d="M-235 413 L-120 413 L-120 418 L-235 418 Z" fill="#78350f" stroke="#92400e" stroke-width="0.8"/>
-      <rect x="-232" y="415" width="115" height="8" rx="2" fill="url(#soilGrad)" stroke="#57534e" stroke-width="0.5"/>
-      <!-- Hojas realistas (forma de hoja con punta) -->
-      <path d="M-220 420 Q-200 410 -185 430 Q-195 435 -220 445 Z" fill="#166534" stroke="#15803d" stroke-width="0.5"/>
-      <path d="M-210 415 Q-195 400 -175 420 Q-188 428 -210 438 Z" fill="#15803d" stroke="#16a34a" stroke-width="0.5"/>
-      <path d="M-195 418 Q-178 405 -160 422 Q-172 432 -195 442 Z" fill="#16a34a" stroke="#22c55e" stroke-width="0.5"/>
-      <path d="M-180 422 Q-165 412 -148 428 Q-160 435 -180 448 Z" fill="#166534" stroke="#15803d" stroke-width="0.5"/>
-      <path d="M-165 415 Q-148 402 -130 418 Q-142 428 -165 440 Z" fill="#15803d" stroke="#16a34a" stroke-width="0.5"/>
-      <path d="M-225 445 Q-208 435 -190 455 Q-205 462 -225 472 Z" fill="#16a34a" stroke="#22c55e" stroke-width="0.5"/>
-      <path d="M-200 448 Q-183 438 -165 455 Q-178 465 -200 478 Z" fill="#166534" stroke="#15803d" stroke-width="0.5"/>
-      <path d="M-175 452 Q-158 442 -140 458 Q-153 468 -175 482 Z" fill="#15803d" stroke="#16a34a" stroke-width="0.5"/>
-      <path d="M-155 455 Q-138 445 -120 462 Q-133 472 -155 488 Z" fill="#16a34a" stroke="#22c55e" stroke-width="0.5"/>
-      <!-- Hortensias (racimos esfericos de florecitas) -->
-      <g fill="#7c3aed" opacity="0.9">
-        <circle cx="-215" cy="398" r="5"/><circle cx="-210" cy="392" r="4"/><circle cx="-220" cy="392" r="4"/>
-        <circle cx="-208" cy="402" r="4"/><circle cx="-222" cy="402" r="4"/><circle cx="-215" cy="406" r="4"/>
-        <circle cx="-205" cy="396" r="4"/><circle cx="-225" cy="396" r="4"/><circle cx="-212" cy="400" r="3"/>
+      <!-- Huerto: plantación de maíz con tierra arada y brotes -->
+      <!-- Marco/cantero (borde de madera o terracota) -->
+      <path d="M-238 418 L-118 418 L-128 555 L-228 555 Z" fill="url(#planterGrad)" stroke="#92400e" stroke-width="1.5"/>
+      <rect x="-235" y="408" width="120" height="10" rx="2" fill="#a16207" stroke="#713f12" stroke-width="0.5"/>
+      <!-- Tierra arada: surcos paralelos (furrows) -->
+      <path d="M-232 418 L-120 418 L-122 555 L-230 555 Z" fill="url(#soilGrad)" stroke="#713f12" stroke-width="0.5"/>
+      <!-- Surcos/crestas de la tierra arada (líneas horizontales que simulan el arado) -->
+      <line x1="-230" y1="435" x2="-122" y2="432" stroke="#854d0e" stroke-width="1.5" opacity="0.7"/>
+      <line x1="-230" y1="455" x2="-122" y2="452" stroke="#713f12" stroke-width="1" opacity="0.5"/>
+      <line x1="-230" y1="475" x2="-122" y2="472" stroke="#854d0e" stroke-width="1.5" opacity="0.7"/>
+      <line x1="-230" y1="495" x2="-122" y2="492" stroke="#713f12" stroke-width="1" opacity="0.5"/>
+      <line x1="-230" y1="515" x2="-122" y2="512" stroke="#854d0e" stroke-width="1.5" opacity="0.7"/>
+      <line x1="-230" y1="535" x2="-122" y2="532" stroke="#713f12" stroke-width="1" opacity="0.5"/>
+      <!-- Brotes de maíz (hojas estrechas tipo gramínea, etapa V1-V2) -->
+      <!-- Fila 1 -->
+      <g stroke="#166534" transform="translate(-220, 418)"><use xlink:href="#maizHoja1" transform="scale(1.4)"/><use xlink:href="#maizHoja2" transform="rotate(-25) scale(1.4)"/><use xlink:href="#maizHoja3" transform="rotate(25) scale(1.4)"/></g>
+      <g stroke="#15803d" transform="translate(-200, 418)"><use xlink:href="#maizHoja1" transform="scale(-1.4,1.4)"/><use xlink:href="#maizHoja2" transform="rotate(-20) scale(1.4)"/><use xlink:href="#maizHoja3" transform="rotate(30) scale(1.4)"/></g>
+      <g stroke="#16a34a" transform="translate(-180, 418)"><use xlink:href="#maizHoja1" transform="scale(1.4)"/><use xlink:href="#maizHoja2" transform="rotate(-30) scale(1.4)"/><use xlink:href="#maizHoja3" transform="rotate(20) scale(1.4)"/></g>
+      <g stroke="#166534" transform="translate(-160, 418)"><use xlink:href="#maizHoja1" transform="scale(-1.4,1.4)"/><use xlink:href="#maizHoja2" transform="rotate(-22) scale(1.4)"/><use xlink:href="#maizHoja3" transform="rotate(28) scale(1.4)"/></g>
+      <g stroke="#15803d" transform="translate(-140, 418)"><use xlink:href="#maizHoja1" transform="scale(1.4)"/><use xlink:href="#maizHoja2" transform="rotate(-28) scale(1.4)"/><use xlink:href="#maizHoja3" transform="rotate(22) scale(1.4)"/></g>
+      <!-- Fila 2 -->
+      <g stroke="#15803d" transform="translate(-210, 438)"><use xlink:href="#maizHoja1" transform="scale(1.26)"/><use xlink:href="#maizHoja2" transform="rotate(-25) scale(1.26)"/><use xlink:href="#maizHoja3" transform="rotate(25) scale(1.26)"/></g>
+      <g stroke="#16a34a" transform="translate(-190, 436)"><use xlink:href="#maizHoja1" transform="scale(-0.9,0.9)"/><use xlink:href="#maizHoja2" transform="rotate(-20) scale(1.26)"/><use xlink:href="#maizHoja3" transform="rotate(30) scale(1.26)"/></g>
+      <g stroke="#166534" transform="translate(-170, 438)"><use xlink:href="#maizHoja1" transform="scale(1.26)"/><use xlink:href="#maizHoja2" transform="rotate(-30) scale(1.26)"/><use xlink:href="#maizHoja3" transform="rotate(20) scale(1.26)"/></g>
+      <g stroke="#15803d" transform="translate(-150, 436)"><use xlink:href="#maizHoja1" transform="scale(-0.9,0.9)"/><use xlink:href="#maizHoja2" transform="rotate(-22) scale(1.26)"/><use xlink:href="#maizHoja3" transform="rotate(28) scale(1.26)"/></g>
+      <g stroke="#16a34a" transform="translate(-130, 438)"><use xlink:href="#maizHoja1" transform="scale(1.26)"/><use xlink:href="#maizHoja2" transform="rotate(-28) scale(1.26)"/><use xlink:href="#maizHoja3" transform="rotate(22) scale(1.26)"/></g>
+      <!-- Fila 3 -->
+      <g stroke="#16a34a" transform="translate(-218, 458)"><use xlink:href="#maizHoja1" transform="scale(1.26)"/><use xlink:href="#maizHoja2" transform="rotate(-25) scale(1.26)"/><use xlink:href="#maizHoja3" transform="rotate(25) scale(1.26)"/></g>
+      <g stroke="#166534" transform="translate(-198, 456)"><use xlink:href="#maizHoja1" transform="scale(-0.9,0.9)"/><use xlink:href="#maizHoja2" transform="rotate(-20) scale(1.26)"/><use xlink:href="#maizHoja3" transform="rotate(30) scale(1.26)"/></g>
+      <g stroke="#15803d" transform="translate(-178, 458)"><use xlink:href="#maizHoja1" transform="scale(1.26)"/><use xlink:href="#maizHoja2" transform="rotate(-30) scale(1.26)"/><use xlink:href="#maizHoja3" transform="rotate(20) scale(1.26)"/></g>
+      <g stroke="#16a34a" transform="translate(-158, 456)"><use xlink:href="#maizHoja1" transform="scale(-0.9,0.9)"/><use xlink:href="#maizHoja2" transform="rotate(-22) scale(1.26)"/><use xlink:href="#maizHoja3" transform="rotate(28) scale(1.26)"/></g>
+      <g stroke="#166534" transform="translate(-138, 458)"><use xlink:href="#maizHoja1" transform="scale(1.26)"/><use xlink:href="#maizHoja2" transform="rotate(-28) scale(1.26)"/><use xlink:href="#maizHoja3" transform="rotate(22) scale(1.26)"/></g>
+      <!-- Fila 4 -->
+      <g stroke="#166534" transform="translate(-212, 478)"><use xlink:href="#maizHoja1" transform="scale(1.19)"/><use xlink:href="#maizHoja2" transform="rotate(-25) scale(1.19)"/><use xlink:href="#maizHoja3" transform="rotate(25) scale(1.19)"/></g>
+      <g stroke="#15803d" transform="translate(-192, 476)"><use xlink:href="#maizHoja1" transform="scale(-1.19,1.19)"/><use xlink:href="#maizHoja2" transform="rotate(-20) scale(1.19)"/><use xlink:href="#maizHoja3" transform="rotate(30) scale(1.19)"/></g>
+      <g stroke="#16a34a" transform="translate(-172, 478)"><use xlink:href="#maizHoja1" transform="scale(1.19)"/><use xlink:href="#maizHoja2" transform="rotate(-30) scale(1.19)"/><use xlink:href="#maizHoja3" transform="rotate(20) scale(1.19)"/></g>
+      <g stroke="#166534" transform="translate(-152, 476)"><use xlink:href="#maizHoja1" transform="scale(-1.19,1.19)"/><use xlink:href="#maizHoja2" transform="rotate(-22) scale(1.19)"/><use xlink:href="#maizHoja3" transform="rotate(28) scale(1.19)"/></g>
+      <g stroke="#15803d" transform="translate(-132, 478)"><use xlink:href="#maizHoja1" transform="scale(1.19)"/><use xlink:href="#maizHoja2" transform="rotate(-28) scale(1.19)"/><use xlink:href="#maizHoja3" transform="rotate(22) scale(1.19)"/></g>
+      <!-- Fila 5 -->
+      <g stroke="#15803d" transform="translate(-220, 498)"><use xlink:href="#maizHoja1" transform="scale(1.19)"/><use xlink:href="#maizHoja2" transform="rotate(-25) scale(1.19)"/><use xlink:href="#maizHoja3" transform="rotate(25) scale(1.19)"/></g>
+      <g stroke="#16a34a" transform="translate(-200, 496)"><use xlink:href="#maizHoja1" transform="scale(-1.19,1.19)"/><use xlink:href="#maizHoja2" transform="rotate(-20) scale(1.19)"/><use xlink:href="#maizHoja3" transform="rotate(30) scale(1.19)"/></g>
+      <g stroke="#166534" transform="translate(-180, 498)"><use xlink:href="#maizHoja1" transform="scale(1.19)"/><use xlink:href="#maizHoja2" transform="rotate(-30) scale(1.19)"/><use xlink:href="#maizHoja3" transform="rotate(20) scale(1.19)"/></g>
+      <g stroke="#15803d" transform="translate(-160, 496)"><use xlink:href="#maizHoja1" transform="scale(-1.19,1.19)"/><use xlink:href="#maizHoja2" transform="rotate(-22) scale(1.19)"/><use xlink:href="#maizHoja3" transform="rotate(28) scale(1.19)"/></g>
+      <g stroke="#16a34a" transform="translate(-140, 498)"><use xlink:href="#maizHoja1" transform="scale(1.19)"/><use xlink:href="#maizHoja2" transform="rotate(-28) scale(1.19)"/><use xlink:href="#maizHoja3" transform="rotate(22) scale(1.19)"/></g>
+      <!-- Fila 6 -->
+      <g stroke="#16a34a" transform="translate(-210, 518)"><use xlink:href="#maizHoja1" transform="scale(1.12)"/><use xlink:href="#maizHoja2" transform="rotate(-25) scale(1.12)"/><use xlink:href="#maizHoja3" transform="rotate(25) scale(1.12)"/></g>
+      <g stroke="#166534" transform="translate(-190, 516)"><use xlink:href="#maizHoja1" transform="scale(-1.12,1.12)"/><use xlink:href="#maizHoja2" transform="rotate(-20) scale(1.12)"/><use xlink:href="#maizHoja3" transform="rotate(30) scale(1.12)"/></g>
+      <g stroke="#15803d" transform="translate(-170, 518)"><use xlink:href="#maizHoja1" transform="scale(1.12)"/><use xlink:href="#maizHoja2" transform="rotate(-30) scale(1.12)"/><use xlink:href="#maizHoja3" transform="rotate(20) scale(1.12)"/></g>
+      <g stroke="#16a34a" transform="translate(-150, 516)"><use xlink:href="#maizHoja1" transform="scale(-1.12,1.12)"/><use xlink:href="#maizHoja2" transform="rotate(-22) scale(1.12)"/><use xlink:href="#maizHoja3" transform="rotate(28) scale(1.12)"/></g>
+      <g stroke="#166534" transform="translate(-130, 518)"><use xlink:href="#maizHoja1" transform="scale(1.12)"/><use xlink:href="#maizHoja2" transform="rotate(-28) scale(1.12)"/><use xlink:href="#maizHoja3" transform="rotate(22) scale(1.12)"/></g>
+      <!-- Fila 7 (primera línea desde abajo) -->
+      <g stroke="#16a34a" transform="translate(-220, 538)"><use xlink:href="#maizHoja1" transform="scale(1.12)"/><use xlink:href="#maizHoja2" transform="rotate(-25) scale(1.12)"/><use xlink:href="#maizHoja3" transform="rotate(25) scale(1.12)"/></g>
+      <g stroke="#166534" transform="translate(-200, 538)"><use xlink:href="#maizHoja1" transform="scale(-1.12,1.12)"/><use xlink:href="#maizHoja2" transform="rotate(-20) scale(1.12)"/><use xlink:href="#maizHoja3" transform="rotate(30) scale(1.12)"/></g>
+      <g stroke="#15803d" transform="translate(-180, 538)"><use xlink:href="#maizHoja1" transform="scale(1.12)"/><use xlink:href="#maizHoja2" transform="rotate(-30) scale(1.12)"/><use xlink:href="#maizHoja3" transform="rotate(20) scale(1.12)"/></g>
+      <g stroke="#16a34a" transform="translate(-160, 538)"><use xlink:href="#maizHoja1" transform="scale(-1.12,1.12)"/><use xlink:href="#maizHoja2" transform="rotate(-22) scale(1.12)"/><use xlink:href="#maizHoja3" transform="rotate(28) scale(1.12)"/></g>
+      <g stroke="#166534" transform="translate(-140, 538)"><use xlink:href="#maizHoja1" transform="scale(1.12)"/><use xlink:href="#maizHoja2" transform="rotate(-28) scale(1.12)"/><use xlink:href="#maizHoja3" transform="rotate(22) scale(1.12)"/></g>
+      <!-- Letrero seguridad (estilo Prosegur/vigilancia) - scale(-1,1) corrige espejo de la casa -->
+      <g transform="translate(-308, 15) scale(-1, 1)" font-family="sans-serif">
+        <!-- Placa rectangular estilo alarma -->
+        <rect x="0" y="0" width="62" height="80" rx="4" fill="#fef08a" stroke="#1e293b" stroke-width="2"/>
+        <!-- Texto 24 hrs x 7 dias (3 líneas) - sobre la gota -->
+        <text x="31" y="18" text-anchor="middle" fill="#1e293b" font-weight="900" font-size="13">24 hrs</text>
+        <text x="31" y="29" text-anchor="middle" fill="#1e293b" font-weight="800" font-size="11">x</text>
+        <text x="31" y="40" text-anchor="middle" fill="#1e293b" font-weight="900" font-size="13">7 días</text>
+        <!-- Emoji gota de agua al centro -->
+        <text x="31" y="60" text-anchor="middle" font-size="22">&#x1F4A7;</text>
+        <text x="31" y="74" text-anchor="middle" fill="#1e293b" font-weight="700" font-size="10">monitoreo</text>
+        <!-- Segunda placa: metalizada con logo IoT (mismo porte que la amarilla: 62x80) -->
+        <rect x="0" y="88" width="62" height="80" rx="4" fill="url(#metalGrad)" stroke="#475569" stroke-width="1.5"/>
+        <g transform="translate(31, 118) scale(0.56)">
+          <!-- Logo IoT: hub central + nodos conectados (Internet de las Cosas) -->
+          <circle cx="0" cy="0" r="14" fill="none" stroke="#334155" stroke-width="2.5"/>
+          <circle cx="0" cy="0" r="5" fill="#334155"/>
+          <path d="M -10 -10 Q 0 -20 10 -10" fill="none" stroke="#334155" stroke-width="2"/>
+          <path d="M -14 -2 Q 0 -14 14 -2" fill="none" stroke="#334155" stroke-width="1.8"/>
+          <path d="M -16 6 Q 0 -8 16 6" fill="none" stroke="#334155" stroke-width="1.5"/>
+          <line x1="10" y1="8" x2="22" y2="18" stroke="#334155" stroke-width="1.8"/>
+          <line x1="-10" y1="8" x2="-22" y2="18" stroke="#334155" stroke-width="1.8"/>
+          <circle cx="22" cy="18" r="5" fill="#334155"/>
+          <circle cx="-22" cy="18" r="5" fill="#334155"/>
+        </g>
       </g>
-      <g fill="#a78bfa" opacity="0.85">
-        <circle cx="-178" cy="395" r="5"/><circle cx="-173" cy="389" r="4"/><circle cx="-183" cy="389" r="4"/>
-        <circle cx="-171" cy="399" r="4"/><circle cx="-185" cy="399" r="4"/><circle cx="-178" cy="403" r="4"/>
-      </g>
-      <!-- Rosas (petalos superpuestos) -->
-      <g transform="translate(-155, 400)">
-        <ellipse cx="0" cy="0" rx="6" ry="8" fill="#ec4899" transform="rotate(0)"/>
-        <ellipse cx="0" cy="0" rx="5" ry="7" fill="#f472b6" transform="rotate(72)"/>
-        <ellipse cx="0" cy="0" rx="5" ry="7" fill="#f472b6" transform="rotate(144)"/>
-        <ellipse cx="0" cy="0" rx="5" ry="7" fill="#f472b6" transform="rotate(216)"/>
-        <ellipse cx="0" cy="0" rx="5" ry="7" fill="#f472b6" transform="rotate(288)"/>
-        <circle cx="0" cy="0" r="3" fill="#fbbf24"/>
-      </g>
-      <g transform="translate(-135, 402)">
-        <ellipse cx="0" cy="0" rx="6" ry="8" fill="#dc2626" transform="rotate(0)"/>
-        <ellipse cx="0" cy="0" rx="5" ry="7" fill="#f87171" transform="rotate(72)"/>
-        <ellipse cx="0" cy="0" rx="5" ry="7" fill="#f87171" transform="rotate(144)"/>
-        <ellipse cx="0" cy="0" rx="5" ry="7" fill="#f87171" transform="rotate(216)"/>
-        <ellipse cx="0" cy="0" rx="5" ry="7" fill="#f87171" transform="rotate(288)"/>
-        <circle cx="0" cy="0" r="3" fill="#fbbf24"/>
-      </g>
-      <!-- Geranios/Petunias (5 petalos) -->
-      <g transform="translate(-195, 435)">
-        <path d="M0 -8 Q4 -4 0 0 Q-4 -4 0 -8" fill="#ec4899"/>
-        <path d="M0 -8 Q4 -4 0 0 Q-4 -4 0 -8" fill="#ec4899" transform="rotate(72)"/>
-        <path d="M0 -8 Q4 -4 0 0 Q-4 -4 0 -8" fill="#ec4899" transform="rotate(144)"/>
-        <path d="M0 -8 Q4 -4 0 0 Q-4 -4 0 -8" fill="#ec4899" transform="rotate(216)"/>
-        <path d="M0 -8 Q4 -4 0 0 Q-4 -4 0 -8" fill="#ec4899" transform="rotate(288)"/>
-        <circle cx="0" cy="0" r="4" fill="#fbbf24"/>
-      </g>
-      <g transform="translate(-160, 448)">
-        <path d="M0 -7 Q3 -3 0 0 Q-3 -3 0 -7" fill="#dc2626"/>
-        <path d="M0 -7 Q3 -3 0 0 Q-3 -3 0 -7" fill="#dc2626" transform="rotate(72)"/>
-        <path d="M0 -7 Q3 -3 0 0 Q-3 -3 0 -7" fill="#dc2626" transform="rotate(144)"/>
-        <path d="M0 -7 Q3 -3 0 0 Q-3 -3 0 -7" fill="#dc2626" transform="rotate(216)"/>
-        <path d="M0 -7 Q3 -3 0 0 Q-3 -3 0 -7" fill="#dc2626" transform="rotate(288)"/>
-        <circle cx="0" cy="0" r="3" fill="#fbbf24"/>
-      </g>
-      <!-- Margaritas (petalos blancos alrededor del centro) -->
-      <g transform="translate(-125, 442)">
-        <ellipse cx="0" cy="-6" rx="2" ry="6" fill="#fef3c7" transform="rotate(0)"/>
-        <ellipse cx="0" cy="-6" rx="2" ry="6" fill="#fef3c7" transform="rotate(45)"/>
-        <ellipse cx="0" cy="-6" rx="2" ry="6" fill="#fef3c7" transform="rotate(90)"/>
-        <ellipse cx="0" cy="-6" rx="2" ry="6" fill="#fef3c7" transform="rotate(135)"/>
-        <ellipse cx="0" cy="-6" rx="2" ry="6" fill="#fef3c7" transform="rotate(180)"/>
-        <ellipse cx="0" cy="-6" rx="2" ry="6" fill="#fef3c7" transform="rotate(225)"/>
-        <ellipse cx="0" cy="-6" rx="2" ry="6" fill="#fef3c7" transform="rotate(270)"/>
-        <ellipse cx="0" cy="-6" rx="2" ry="6" fill="#fef3c7" transform="rotate(315)"/>
-        <circle cx="0" cy="0" r="5" fill="#fde047"/>
-      </g>
-      <!-- Plantas colgantes (sobresalen abajo) -->
-      <path d="M-210 520 Q-225 545 -205 565 Q-195 550 -210 520" fill="#166534" stroke="#15803d" stroke-width="0.5"/>
-      <path d="M-185 525 Q-200 548 -182 568 Q-172 552 -185 525" fill="#15803d" stroke="#16a34a" stroke-width="0.5"/>
-      <path d="M-160 518 Q-178 542 -155 562 Q-145 548 -160 518" fill="#16a34a" stroke="#22c55e" stroke-width="0.5"/>
-      <!-- Flores colgantes (petunias) -->
-      <g transform="translate(-210, 555)">
-        <ellipse cx="0" cy="0" rx="4" ry="6" fill="#a855f7"/>
-        <ellipse cx="0" cy="0" rx="3" ry="5" fill="#c084fc" transform="rotate(60)"/>
-        <ellipse cx="0" cy="0" rx="3" ry="5" fill="#c084fc" transform="rotate(120)"/>
-        <circle cx="0" cy="0" r="2" fill="#fbbf24"/>
-      </g>
-      <g transform="translate(-182, 560)">
-        <ellipse cx="0" cy="0" rx="4" ry="6" fill="#ec4899"/>
-        <ellipse cx="0" cy="0" rx="3" ry="5" fill="#f472b6" transform="rotate(60)"/>
-        <ellipse cx="0" cy="0" rx="3" ry="5" fill="#f472b6" transform="rotate(120)"/>
-        <circle cx="0" cy="0" r="2" fill="#fbbf24"/>
+      <!-- IoT fuera del scale(-1,1): se posiciona con translate inverso para quedar en la placa -->
+      <g transform="translate(-308, 15)" font-family="sans-serif">
+        <text x="-31" y="152" text-anchor="middle" fill="#334155" font-weight="800" font-size="13">ToI</text>
       </g>
     </g>
     <!-- Conexion horizontal casa -> tuberia vertical (sale de la pared) -->
     <rect x="-87" y="430" width="52" height="20" rx="5" fill="#57534e" stroke="#44403c" stroke-width="1"/>
     <rect x="-86" y="432" width="49" height="16" rx="3" fill="#38bdf8" fill-opacity="0.5">
-      <animate attributeName="opacity" values="1;1;0.2;0.2;1;1" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;1;0.2;0.2;1;1" keyTimes="0;0.29;0.30;0.88;0.93;1" dur="24s" repeatCount="indefinite"/>
     </rect>
     <!-- Tuberia vertical casa -> tuberia soterrada (desde cimentacion) -->
     <rect x="-87" y="435" width="22" height="22" rx="4" fill="#78716c" stroke="#57534e"/>
     <rect x="-83" y="400" width="18" height="52" rx="4" fill="#57534e" stroke="#44403c" stroke-width="1"/>
     <rect x="-81" y="402" width="14" height="48" rx="3" fill="#38bdf8" fill-opacity="0.4">
-      <animate attributeName="opacity" values="1;1;0.2;0.2;1;1" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;1;0.2;0.2;1;1" keyTimes="0;0.29;0.30;0.88;0.93;1" dur="24s" repeatCount="indefinite"/>
     </rect>
     <!-- Tuberia horizontal soterrada (casa al estanque, diametro +10) -->
     <rect x="-75" y="395" width="198" height="22" rx="6" fill="#57534e" stroke="#44403c" stroke-width="1"/>
     <!-- Agua dentro de la tuberia soterrada (se corta cuando nivel rojo) -->
     <rect x="-72" y="398" width="192" height="16" rx="4" fill="#38bdf8" fill-opacity="0.7">
-      <animate attributeName="opacity" values="0.7;0.7;0.15;0.15;0.7;0.7" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.7;0.7;0.15;0.15;0.7;0.7" keyTimes="0;0.29;0.30;0.88;0.93;1" dur="24s" repeatCount="indefinite"/>
     </rect>
     <!-- Flujo animado de agua (solo cuando nivel OK, no rojo) -->
     <g clip-path="url(#pipeClip)">
       <line x1="-72" y1="406" x2="120" y2="406" stroke="#7dd3fc" stroke-width="4" stroke-dasharray="8 12">
         <animate attributeName="stroke-dashoffset" from="0" to="20" dur="1.5s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="1;1;0;0;1;1" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1;1;0;0;1;1" keyTimes="0;0.29;0.30;0.88;0.93;1" dur="24s" repeatCount="indefinite"/>
       </line>
       <line x1="-72" y1="406" x2="120" y2="406" stroke="#bae6fd" stroke-width="3" stroke-dasharray="6 14" opacity="0.7">
         <animate attributeName="stroke-dashoffset" from="14" to="0" dur="1.5s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="0.7;0.7;0;0;0.7;0.7" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.7;0.7;0;0;0.7;0.7" keyTimes="0;0.29;0.30;0.88;0.93;1" dur="24s" repeatCount="indefinite"/>
       </line>
     </g>
     <!-- Llave de paso (valvula con cruz que gira: cerrada=nivel rojo, abierta=agua pasa) -->
     <rect x="-45" y="382" width="22" height="36" rx="4" fill="#475569" stroke="#64748b" stroke-width="1"/>
     <g transform="translate(-34, 392)">
       <g>
-        <animateTransform attributeName="transform" type="rotate" values="0 0 0;0 0 0;90 0 0;90 0 0;0 0 0;0 0 0" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="rotate" values="0 0 0;0 0 0;90 0 0;90 0 0;0 0 0;0 0 0" keyTimes="0;0.29;0.30;0.88;0.93;1" dur="24s" repeatCount="indefinite"/>
         <rect x="-4" y="-6" width="8" height="12" rx="2" fill="#94a3b8" stroke="#64748b"/>
         <rect x="-6" y="-4" width="12" height="8" rx="2" fill="#94a3b8" stroke="#64748b"/>
       </g>
@@ -303,7 +353,7 @@
     <!-- Flujo agua en tuberia vertical (se corta cuando nivel rojo) -->
     <line x1="119" y1="402" x2="119" y2="498" stroke="#38bdf8" stroke-width="6" stroke-dasharray="4 8">
       <animate attributeName="stroke-dashoffset" from="0" to="12" dur="1.2s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" values="1;1;0;0;1;1" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;1;0;0;1;1" keyTimes="0;0.29;0.30;0.88;0.93;1" dur="24s" repeatCount="indefinite"/>
     </line>
   </g>
   <!-- Tierra (linea mas abajo - mas cielo arriba, recorte jardinera y estanque) -->
@@ -312,7 +362,7 @@
   <g transform="translate(80, 0) translate(-217.5, 0) scale(-1, 1) translate(217.5, 0)">
     <g transform="translate(-183, 338) scale(2.5)">
       <g>
-        <animate attributeName="opacity" values="1;0;0;0;1;1" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1;0;0;0;1;1" keyTimes="0;0.29;0.30;0.88;0.93;1" dur="24s" repeatCount="indefinite"/>
         <path d="M 0 12 Q 2 25 0 40 Q 3 80 0 120 Q -2 160 0 180" fill="none" stroke="#0ea5e9" stroke-width="8" stroke-linecap="round" stroke-dasharray="8 12">
           <animate attributeName="stroke-dashoffset" from="0" to="20" dur="0.4s" repeatCount="indefinite"/>
         </path>
@@ -328,39 +378,12 @@
   <!-- Bordes zanja tuberias (bajo tierra) -->
   <line x1="-80" y1="390" x2="125" y2="390" stroke="#713f12" stroke-width="2"/>
   <line x1="-80" y1="420" x2="125" y2="420" stroke="#422006" stroke-width="1.5"/>
-  <!-- Globos comic tipo sello (coordinados con nivel) -->
-  <g font-family="sans-serif" font-size="11" fill="#1e293b">
-    <!-- Globo 1: a la izquierda del telefono - visible solo cuando agua sobre linea roja -->
-    <g transform="translate(320, 40)">
-      <animate attributeName="opacity" values="0.92;0.92;0;0;0.92;0.92" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
-      <rect x="0" y="0" width="224" height="92" rx="12" ry="12" fill="#fefce8" stroke="#eab308" stroke-width="1.5" stroke-dasharray="4 3"/>
-      <path d="M 205 92 L 225 110 L 215 92 Z" fill="#fefce8" stroke="#eab308" stroke-width="1" stroke-dasharray="2 2"/>
-      <text x="112" y="38" text-anchor="middle" fill="#1e293b" font-weight="500" font-size="18">Monitorea 24x7</text>
-      <text x="112" y="62" text-anchor="middle" fill="#1e293b" font-weight="500" font-size="18">el nivel de Agua &#x1F4A7;</text>
-    </g>
-    <!-- Globo 2: al lado del telefono a la derecha - nivel rojo (alertas) -->
-    <g transform="translate(640, -50) scale(1.2)">
-      <animate attributeName="opacity" values="0;0;0.92;0.92;0;0" keyTimes="0;0.28;0.29;0.75;0.6;1" dur="24s" repeatCount="indefinite"/>
-      <rect x="0" y="0" width="160" height="69" rx="12" ry="12" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4 3"/>
-      <path d="M 0 44 L -18 67 L 0 61 Z" fill="#fef2f2" stroke="#dc2626" stroke-width="1" stroke-dasharray="2 2"/>
-      <text x="80" y="28" text-anchor="middle" fill="#1e293b" font-weight="500" font-size="14">Alertas por correo o</text>
-      <text x="80" y="46" text-anchor="middle" fill="#1e293b" font-weight="500" font-size="14">WhatsApp.</text>
-      <use xlink:href="#whatsappIcon" x="77" y="46" width="18" height="18"/>
-    </g>
-    <!-- Globo 3: cierres automatizados - nivel rojo (valvula cerrada) -->
-    <g transform="translate(-105, 255) scale(1.44)">
-      <animate attributeName="opacity" values="0;0;0.92;0.92;0;0" keyTimes="0;0.28;0.29;0.75;0.6;1" dur="24s" repeatCount="indefinite"/>
-      <rect x="0" y="0" width="180" height="40" rx="12" ry="12" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="4 3"/>
-      <path d="M 158 40 L 178 58 L 168 40 Z" fill="#f0fdf4" stroke="#22c55e" stroke-width="1" stroke-dasharray="2 2"/>
-      <text x="90" y="26" text-anchor="middle" fill="#1e293b" font-weight="500">Ejecuta cierres automatizados</text>
-    </g>
-  </g>
   <!-- Camion repartidor: llega cuando nivel en rojo (29%), llena hasta 58%, se va a 59% -->
   <g>
-    <animate attributeName="opacity" values="0;0;1;1;1;0;0" keyTimes="0;0.29;0.30;0.75;0.80;0.84;1" dur="24s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;1;1;1;0;0" keyTimes="0;0.29;0.30;0.88;0.93;0.96;1" dur="24s" repeatCount="indefinite"/>
     <g transform="translate(460, 60)">
       <!-- Llega cuando alerta/agua en rojo (29%), retira manguera (59%), se va en 2s -->
-      <animateTransform attributeName="transform" type="translate" additive="sum" values="210 0;210 0;0 0;0 0;0 0;210 0;210 0" keyTimes="0;0.29;0.30;0.75;0.80;0.84;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+      <animateTransform attributeName="transform" type="translate" additive="sum" values="210 0;210 0;0 0;0 0;0 0;210 0;210 0" keyTimes="0;0.29;0.30;0.88;0.93;0.96;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
       <g>
         <animateTransform attributeName="transform" type="translate" values="0 0;0 2;0 0" keyTimes="0;0.5;1" dur="1.2s" repeatCount="indefinite"/>
         <g transform="translate(0, 480) scale(2.4) translate(0, -480)">
@@ -371,12 +394,12 @@
           <rect x="48" y="388" width="35" height="44" rx="1" fill="#475569"/>
           <!-- Agua en cisterna del camion: empieza a vaciarse al conectar (30%), visible a medida que llena el estanque -->
           <rect x="10" y="390" width="31" height="40" rx="1" fill="url(#waterGrad)" opacity="0.95">
-            <animate attributeName="height" values="40;40;28;14;0;0;40" keyTimes="0;0.30;0.42;0.54;0.75;0.78;1" keySplines="0.4 0 0.2 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
-            <animate attributeName="y" values="390;390;402;416;430;430;390" keyTimes="0;0.30;0.42;0.54;0.75;0.78;1" keySplines="0.4 0 0.2 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+            <animate attributeName="height" values="40;40;28;14;0;0;40" keyTimes="0;0.30;0.42;0.54;0.88;0.91;1" keySplines="0.4 0 0.2 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+            <animate attributeName="y" values="390;390;402;416;430;430;390" keyTimes="0;0.30;0.42;0.54;0.88;0.91;1" keySplines="0.4 0 0.2 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
           </rect>
           <rect x="50" y="390" width="31" height="40" rx="1" fill="url(#waterGrad)" opacity="0.95">
-            <animate attributeName="height" values="40;40;28;14;0;0;40" keyTimes="0;0.30;0.42;0.54;0.75;0.78;1" keySplines="0.4 0 0.2 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
-            <animate attributeName="y" values="390;390;402;416;430;430;390" keyTimes="0;0.30;0.42;0.54;0.75;0.78;1" keySplines="0.4 0 0.2 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+            <animate attributeName="height" values="40;40;28;14;0;0;40" keyTimes="0;0.30;0.42;0.54;0.88;0.91;1" keySplines="0.4 0 0.2 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+            <animate attributeName="y" values="390;390;402;416;430;430;390" keyTimes="0;0.30;0.42;0.54;0.88;0.91;1" keySplines="0.4 0 0.2 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.2 0 0.5 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
           </rect>
           <text x="45" y="415" font-size="12" fill="#94a3b8" text-anchor="middle">AGUA</text>
           <!-- Cabina delantera (estilo camion aljibe) -->
@@ -397,12 +420,12 @@
           <circle cx="115" cy="480" r="12" fill="#334155"/>
           <!-- Manguera: se extiende en movimiento desde camion al estanque -->
           <g>
-            <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.29;0.30;0.88;0.93;1" dur="24s" repeatCount="indefinite"/>
             <path d="M 0 420 Q -90 450 -160 430" fill="none" stroke="#64748b" stroke-width="6" stroke-linecap="round" pathLength="200" stroke-dasharray="200 200">
-            <animate attributeName="stroke-dashoffset" values="200;200;0;0;200;200" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
+            <animate attributeName="stroke-dashoffset" values="200;200;0;0;200;200" keyTimes="0;0.29;0.30;0.88;0.93;1" dur="24s" repeatCount="indefinite"/>
           </path>
             <path d="M 0 420 Q -90 450 -160 430" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" pathLength="200" stroke-dasharray="200 200" opacity="0.85">
-            <animate attributeName="stroke-dashoffset" values="200;200;0;0;200;200" keyTimes="0;0.29;0.30;0.75;0.80;1" dur="24s" repeatCount="indefinite"/>
+            <animate attributeName="stroke-dashoffset" values="200;200;0;0;200;200" keyTimes="0;0.29;0.30;0.88;0.93;1" dur="24s" repeatCount="indefinite"/>
           </path>
           </g>
         </g>
@@ -416,14 +439,14 @@
   <line x1="115" y1="340" x2="305" y2="340" stroke="#38bdf8" stroke-width="2" stroke-dasharray="8 6"/>
   <!-- Agua animada: baja (0-29%), camion llena (30-58%), lleno->camion se va (59%), vacia cuando se va (59-100%) -->
   <rect id="water" x="128" y="340" width="164" height="152" rx="16" fill="#38bdf8">
-    <animate attributeName="height" values="152;152;45;45;152;152;152" keyTimes="0;0.042;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
-    <animate attributeName="y" values="340;340;455;455;340;340;340" keyTimes="0;0.042;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+    <animate attributeName="height" values="152;152;45;45;152;152;152" keyTimes="0;0.042;0.29;0.30;0.88;0.93;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+    <animate attributeName="y" values="340;340;455;455;340;340;340" keyTimes="0;0.042;0.29;0.30;0.88;0.93;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
   </rect>
   <!-- Linea de nivel critico -->
   <line x1="115" y1="435" x2="305" y2="435" stroke="#ef4444" stroke-width="2" stroke-dasharray="8 6"/>
   <!-- Ondulacion superficie del agua (sigue el nivel) -->
   <g clip-path="url(#waterClip)">
-    <animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 115;0 115;0 0;0 0;0 0" keyTimes="0;0.042;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 115;0 115;0 0;0 0;0 0" keyTimes="0;0.042;0.29;0.30;0.88;0.93;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
     <path d="M128 340 Q165 338 210 341 Q255 339 292 340" fill="none" stroke="#7dd3fc" stroke-width="2" stroke-opacity="0.7">
       <animate attributeName="d" values="M128 340 Q165 338 210 341 Q255 339 292 340;M128 341 Q165 339 210 342 Q255 340 292 341;M128 340 Q165 342 210 339 Q255 341 292 340" dur="2.5s" repeatCount="indefinite"/>
     </path>
@@ -443,15 +466,15 @@
   <!-- Senales verdes hacia abajo (ultrasonido - se alargan cuando baja el nivel) -->
   <g opacity="0.9">
     <line x1="205" y1="298" x2="205" y2="338" stroke="#4ade80" stroke-width="2" stroke-dasharray="6 6">
-      <animate attributeName="y2" values="340;340;455;455;340;340;340" keyTimes="0;0.042;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="340;340;455;455;340;340;340" keyTimes="0;0.042;0.29;0.30;0.88;0.93;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
       <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="0.8s" repeatCount="indefinite"/>
     </line>
     <line x1="210" y1="298" x2="210" y2="338" stroke="#4ade80" stroke-width="2" stroke-dasharray="6 6">
-      <animate attributeName="y2" values="340;340;455;455;340;340;340" keyTimes="0;0.042;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="340;340;455;455;340;340;340" keyTimes="0;0.042;0.29;0.30;0.88;0.93;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
       <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="0.8s" repeatCount="indefinite" begin="0.2s"/>
     </line>
     <line x1="215" y1="298" x2="215" y2="338" stroke="#4ade80" stroke-width="2" stroke-dasharray="6 6">
-      <animate attributeName="y2" values="340;340;455;455;340;340;340" keyTimes="0;0.042;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="340;340;455;455;340;340;340" keyTimes="0;0.042;0.29;0.30;0.88;0.93;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
       <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="0.8s" repeatCount="indefinite" begin="0.4s"/>
     </line>
   </g>
@@ -533,7 +556,23 @@
   </g>
   <!-- H2O -->
   <text x="210" y="415" text-anchor="middle" fill="white" font-size="24" font-weight="600">H<tspan font-size="16" dy="-4">2</tspan>O</text>
-  <!-- Celular -->
+  <!-- Rayos senal (encima de estanque/agua para que sean visibles) -->
+  <!-- Rayo linea roja (vaciado): sensor -> llave cerrar valvula -->
+  <g class="rayo-senal-rojo" style="pointer-events:none">
+    <path d="M 210 258 L 160 280 L 110 265 L 60 305 L 10 350 L -34 392" stroke="#fecaca" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.7"/>
+    <path d="M 210 258 L 160 280 L 110 265 L 60 305 L 10 350 L -34 392" stroke="#ef4444" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="8 10">
+      <animate attributeName="stroke-dashoffset" from="0" to="36" dur="0.3s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  <!-- Rayo linea azul (lleno): sensor -> llave abrir valvula -->
+  <g class="rayo-senal" style="pointer-events:none">
+    <path d="M 210 258 L 160 280 L 110 265 L 60 305 L 10 350 L -34 392" stroke="#dbeafe" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.7"/>
+    <path d="M 210 258 L 160 280 L 110 265 L 60 305 L 10 350 L -34 392" stroke="#38bdf8" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="8 10">
+      <animate attributeName="stroke-dashoffset" from="0" to="36" dur="0.3s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  <!-- Celular (50 izq, 20 abajo) -->
+  <g transform="translate(-50, 20)">
   <g opacity="0.95">
     <rect x="555" y="30" width="120" height="200" rx="16" fill="#1e293b" stroke="#64748b" stroke-width="1"/>
     <rect x="559" y="34" width="112" height="192" rx="12" fill="#0ea5e9" fill-opacity="0.2"/>
@@ -543,18 +582,20 @@
       <path d="M13.229 8.271a.482.482 0 0 0-.063-.745A9.46 9.46 0 0 0 8 6c-1.905 0-3.68.56-5.166 1.526a.48.48 0 0 0-.063.745.525.525 0 0 0 .652.065A8.46 8.46 0 0 1 8 7a8.46 8.46 0 0 1 4.576 1.336c.206.132.48.108.653-.065m-2.183 2.183c.226-.226.185-.605-.1-.75A6.5 6.5 0 0 0 8 9c-1.06 0-2.062.254-2.946.704-.285.145-.326.524-.1.75l.015.015c.16.16.407.19.611.09A5.5 5.5 0 0 1 8 10c.868 0 1.69.201 2.42.56.203.1.45.07.61-.091zM9.06 12.44c.196-.196.198-.52-.04-.66A2 2 0 0 0 8 11.5a2 2 0 0 0-1.02.28c-.238.14-.236.464-.04.66l.706.706a.5.5 0 0 0 .707 0l.707-.707z"/>
     </g>
     <!-- Grafico de linea (nivel agua) - coordinado con el estanque: baja (0-29%), sube (30-58%), baja (59-100%) -->
-    <g class="chart-phone" transform="translate(569, 68)">
+    <g transform="translate(569, 68)">
+      <animate attributeName="opacity" values="1;1;0;0;1;1;1;1" keyTimes="0;0.042;0.20;0.30;0.42;0.88;0.93;1" calcMode="discrete" dur="24s" repeatCount="indefinite"/>
       <line x1="0" y1="68" x2="92" y2="68" stroke="#64748b" stroke-width="1" marker-end="url(#arrowX)"/>
       <line x1="0" y1="68" x2="0" y2="0" stroke="#64748b" stroke-width="1" marker-end="url(#arrowY)"/>
       <path d="M 0 8 L 23 8 L 46 8 L 69 8 L 92 8" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <animate attributeName="d" values="M 0 8 L 23 8 L 46 8 L 69 8 L 92 8;M 0 8 L 23 8 L 46 8 L 69 8 L 92 8;M 0 8 L 23 28 L 46 48 L 69 64 L 92 64;M 0 8 L 23 28 L 46 48 L 69 64 L 92 64;M 0 8 L 23 8 L 46 8 L 69 8 L 92 8;M 0 8 L 23 8 L 46 8 L 69 8 L 92 8;M 0 8 L 23 8 L 46 8 L 69 8 L 92 8" keyTimes="0;0.042;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+        <animate attributeName="d" values="M 0 8 L 23 8 L 46 8 L 69 8 L 92 8;M 0 8 L 23 8 L 46 8 L 69 8 L 92 8;M 0 8 L 23 28 L 46 48 L 69 64 L 92 64;M 0 8 L 23 28 L 46 48 L 69 64 L 92 64;M 0 8 L 23 8 L 46 8 L 69 8 L 92 8;M 0 8 L 23 8 L 46 8 L 69 8 L 92 8;M 0 8 L 23 8 L 46 8 L 69 8 L 92 8" keyTimes="0;0.042;0.29;0.30;0.88;0.93;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.2 0 0.5 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
       </path>
       <line x1="0" y1="52" x2="92" y2="52" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4 4"/>
     </g>
     <text x="615" y="218" text-anchor="middle" fill="#94a3b8" font-size="10">tomi-metrics-collector</text>
   </g>
-  <!-- Popup alerta + Apps: visible cuando agua baja linea roja (CSS animation) -->
-  <g class="popup-alerts">
+  <!-- Popup alerta + Apps -->
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1;0;0;0;0" keyTimes="0;0.042;0.20;0.30;0.42;0.88;0.93;1" calcMode="discrete" dur="24s" repeatCount="indefinite"/>
     <rect x="559" y="58" width="112" height="168" rx="12" fill="#1e293b" fill-opacity="0.9"/>
     <!-- Icono llamada (aparece con popups) - status bar, misma altura que WiFi -->
     <g filter="url(#callGlow)" fill="#94a3b8" transform="translate(567, 42) scale(0.7)">
@@ -573,7 +614,7 @@
       <rect x="4" y="44" width="36" height="14" rx="4" fill="#2a3942"/>
       <text x="8" y="53" font-size="4" fill="#e9edef">hay que solicitar agua</text>
       <rect x="4" y="44" width="36" height="14" rx="4" fill="#2a3942">
-        <animate attributeName="width" values="36;36;0;0;36" keyTimes="0;0.30;0.5;0.75;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+        <animate attributeName="width" values="36;36;0;0;36" keyTimes="0;0.30;0.5;0.88;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
       </rect>
     </g>
     <g transform="translate(619, 128)">
@@ -592,21 +633,63 @@
   </g>
   <!-- Alerta -->
   <g opacity="0">
-    <animate attributeName="opacity" values="0;0;0.95;0.95;0;0" keyTimes="0;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;0.95;0.95;0;0" keyTimes="0;0.29;0.30;0.88;0.93;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
     <circle cx="620" cy="170" r="35" fill="#ef4444"/>
     <text x="620" y="178" text-anchor="middle" fill="white" font-size="28" font-weight="bold">!</text>
   </g>
+  </g>
   <!-- Email WhatsApp -->
   <g opacity="0">
-    <animate attributeName="opacity" values="0;0;0.95;0.95;0;0" keyTimes="0;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;0.95;0.95;0;0" keyTimes="0;0.29;0.30;0.88;0.93;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
     <text x="210" y="65" text-anchor="middle" fill="#94a3b8" font-size="14">Email / WhatsApp</text>
   </g>
   <!-- Camion -->
   <g opacity="0">
-    <animate attributeName="opacity" values="0;0;0.95;0.95;0;0" keyTimes="0;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
-    <animateTransform attributeName="transform" type="translate" values="-90 0;-90 0;0 0;0 0;-90 0;-90 0" keyTimes="0;0.29;0.30;0.75;0.80;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;0.95;0.95;0;0" keyTimes="0;0.29;0.30;0.88;0.93;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="translate" values="-90 0;-90 0;0 0;0 0;-90 0;-90 0" keyTimes="0;0.29;0.30;0.88;0.93;1" keySplines="0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1; 0.4 0 0.2 1" calcMode="spline" dur="24s" repeatCount="indefinite"/>
     <rect x="80" y="250" width="70" height="50" rx="8" fill="#475569"/>
     <rect x="120" y="235" width="80" height="25" rx="6" fill="#64748b"/>
     <text x="115" y="280" text-anchor="middle" fill="#94a3b8" font-size="20">Camion</text>
+  </g>
+  <!-- WhatsApp: visible sobre el telefono, desde alerta (20%) hasta que camion se va (96%) -->
+  <g font-family="sans-serif" font-size="11" fill="#1e293b">
+    <g transform="translate(570, -100) scale(1.2)" class="globo-whatsapp">
+      <rect x="0" y="0" width="200" height="188" rx="8" fill="#e5ddd5" stroke="#075e54" stroke-width="1"/>
+      <path d="M 0 150 L -12 188 L 0 175 Z" fill="#e5ddd5" stroke="#075e54" stroke-width="0.8"/>
+      <rect x="0" y="0" width="200" height="26" rx="8" fill="#075e54"/>
+      <rect x="0" y="20" width="200" height="6" fill="#128c7e"/>
+      <text x="100" y="17" text-anchor="middle" fill="white" font-size="10" font-weight="500">Proveedor de Agua S.A.</text>
+      <path d="M 8 13 L 11 10 L 8 7" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="84" y="30" width="112" height="50" rx="8" fill="#dcf8c6" stroke="#b2d8b0" stroke-width="0.5"/>
+      <text x="140" y="56" text-anchor="middle" fill="#111b21" font-size="11" font-weight="400">Necesito agua urgente &#x1F4A7;</text>
+      <text x="192" y="72" text-anchor="end" fill="#667781" font-size="8">12:34</text>
+      <path d="M 179 66 L 181 68 L 185 64 M 181 68 L 185 64 L 187 66" fill="none" stroke="#53bdeb" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- Escribiendo... (3 puntitos) visible 20%-59%, luego se oculta cuando llega la respuesta -->
+      <g class="typing-dots">
+        <rect x="8" y="86" width="52" height="32" rx="8" fill="#ffffff" stroke="#b0b0b0" stroke-width="1"/>
+        <circle cx="26" cy="102" r="2.5" fill="#667781" class="typing-dot1"/>
+        <circle cx="34" cy="102" r="2.5" fill="#667781" class="typing-dot2"/>
+        <circle cx="42" cy="102" r="2.5" fill="#667781" class="typing-dot3"/>
+      </g>
+      <g class="reply-whatsapp">
+        <rect x="8" y="86" width="130" height="48" rx="8" fill="#ffffff" stroke="#b0b0b0" stroke-width="1"/>
+        <text x="73" y="108" text-anchor="middle" fill="#111b21" font-size="11" font-weight="400">Carga completada,</text>
+        <text x="73" y="122" text-anchor="middle" fill="#111b21" font-size="11" font-weight="400">estanque lleno.</text>
+        <text x="132" y="124" text-anchor="end" fill="#667781" font-size="8">12:58</text>
+      </g>
+      <!-- Cliente escribiendo (lado derecho): 1.5s después de que responde el camión -->
+      <g class="client-typing-dots">
+        <rect x="96" y="140" width="52" height="32" rx="8" fill="#dcf8c6" stroke="#b2d8b0" stroke-width="0.5"/>
+        <circle cx="114" cy="156" r="2.5" fill="#667781" class="typing-dot1"/>
+        <circle cx="122" cy="156" r="2.5" fill="#667781" class="typing-dot2"/>
+        <circle cx="130" cy="156" r="2.5" fill="#667781" class="typing-dot3"/>
+      </g>
+      <!-- Respuesta del cliente: dedo arriba + gracias (aparece tras 1.5s de puntitos) -->
+      <g class="client-reply-whatsapp">
+        <rect x="96" y="140" width="100" height="42" rx="8" fill="#dcf8c6" stroke="#b2d8b0" stroke-width="0.5"/>
+        <text x="146" y="163" text-anchor="middle" fill="#111b21" font-size="11" font-weight="400">&#x1F44D; gracias</text>
+        <text x="192" y="174" text-anchor="end" fill="#667781" font-size="8">12:59</text>
+      </g>
+    </g>
   </g>
 </svg>
