@@ -40,7 +40,7 @@
                     <div class="product-seal-corner product-seal-corner-br"></div>
                     <div class="product-seal-scanline" aria-hidden="true"></div>
                     <div class="product-seal-content">
-                        <h2 id="product-seal-title" class="product-seal-title">Sensor de Profundidad</h2>
+                        <h2 id="product-seal-title" class="product-seal-title">Sensor de Profundidad: <span class="product-seal-title-kit">Kit UltraSS Pro</span></h2>
                         <p class="product-seal-desc">
                             Ocupado para medir distancia entre el sensor y un objeto. Su uso práctico contempla acumuladores de agua, pozos de profundidad.
                         </p>
@@ -48,21 +48,33 @@
                             Mide en tiempo real la distancia y entrega: <strong>porcentaje de llenado</strong>, <strong>litros estimados</strong>, <strong>estado del nivel</strong> (normal, alerta, peligro), <strong>historial diario y mensual</strong>.
                         </p>
                         <div class="product-seal-images" id="product-images-container">
-                            <div class="product-seal-img-wrap">
+                            <!-- UltraSS Estandar: diagrama integrado ESP8266 + HC-SR04 -->
+                            <div class="product-seal-img-wrap product-seal-svg-wrap" id="product-panel-estandar" style="display:none;">
                                 <span class="product-seal-frame-corner tl"></span>
                                 <span class="product-seal-frame-corner tr"></span>
                                 <span class="product-seal-frame-corner bl"></span>
                                 <span class="product-seal-frame-corner br"></span>
-                                <img id="product-img-micro" src="{{ url_for('static', filename='images/esp32.png') }}" alt="ESP32" class="product-seal-img">
+                                <img src="{{ url_for('static', filename='images/ultraSSEstandar.svg') }}" alt="NodeMCU ESP8266 + Sensor HC-SR04 integrados" class="product-seal-svg">
                             </div>
-                            <div class="product-seal-img-wrap">
-                                <span class="product-seal-frame-corner tl"></span>
-                                <span class="product-seal-frame-corner tr"></span>
-                                <span class="product-seal-frame-corner bl"></span>
-                                <span class="product-seal-frame-corner br"></span>
-                                <img id="product-img-sensor" src="{{ url_for('static', filename='images/jsn-sr04t.png') }}" alt="Sensor ultrasonido sumergible JSN-SR04T" class="product-seal-img">
+                            <!-- UltraSS Pro: ESP32 + sensor sumergible (sin cambios) -->
+                            <div class="product-seal-images product-seal-pro-panel" id="product-panel-pro">
+                                <div class="product-seal-img-wrap">
+                                    <span class="product-seal-frame-corner tl"></span>
+                                    <span class="product-seal-frame-corner tr"></span>
+                                    <span class="product-seal-frame-corner bl"></span>
+                                    <span class="product-seal-frame-corner br"></span>
+                                    <img id="product-img-micro" src="{{ url_for('static', filename='images/esp32.png') }}" alt="ESP32" class="product-seal-img">
+                                </div>
+                                <div class="product-seal-img-wrap">
+                                    <span class="product-seal-frame-corner tl"></span>
+                                    <span class="product-seal-frame-corner tr"></span>
+                                    <span class="product-seal-frame-corner bl"></span>
+                                    <span class="product-seal-frame-corner br"></span>
+                                    <img id="product-img-sensor" src="{{ url_for('static', filename='images/jsn-sr04t.png') }}" alt="Sensor ultrasonido sumergible JSN-SR04T" class="product-seal-img">
+                                </div>
                             </div>
                         </div>
+                        <button type="button" class="product-seal-btn-compra" id="btn-compra" aria-haspopup="dialog" aria-controls="popup-compra">Compra</button>
                     </div>
                 </div>
                 <div class="product-seal product-seal-purple">
@@ -76,32 +88,13 @@
                             <img src="{{ url_for('static', filename='images/gear.svg') }}" alt="" class="product-seal-gear" aria-hidden="true">
                             Características del sensor
                         </h2>
-                        <ul class="product-seal-list">
+                        <ul class="product-seal-list" id="product-seal-list">
                             <li>Permite medir el nivel de profundidad del agua dentro de un estanque, pozo de profundidad, etc.</li>
                             <li>Se puede usar para medir la proximidad de objetos.</li>
-                            <li>Sensor ultrasonido HC-SR04</li>
+                            <li id="product-sensor-type">Sensor ultrasonido JSN-SR04T sumergible</li>
                         </ul>
                         <p class="product-seal-subtitle">Detalle Técnico</p>
-                        <ul class="product-seal-list product-seal-list-tech">
-                            <li>Microcontrolador: NodeMCU v2 — ESP8266, 80 MHz, 4 MB Flash, 64 KB RAM</li>
-                            <li>
-                                <img src="{{ url_for('static', filename='images/whatsapp.svg') }}" alt="" class="product-seal-icon" aria-hidden="true">
-                                Alertas por WhatsApp
-                            </li>
-                            <li>
-                                <img src="https://cdn.simpleicons.org/gmail/EA4335" alt="" class="product-seal-icon" aria-hidden="true">
-                                Alertas por email
-                            </li>
-                            <li>
-                                <img src="{{ url_for('static', filename='images/alexa.svg') }}" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true">
-                                <img src="{{ url_for('static', filename='images/google-home.svg') }}" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true">
-                                Ready
-                            </li>
-                            <li>
-                                <img src="{{ url_for('static', filename='images/mqtt.svg') }}" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true">
-                                Compatible IoT
-                            </li>
-                        </ul>
+                        <ul class="product-seal-list product-seal-list-tech" id="product-seal-list-tech"></ul>
                     </div>
                 </div>
             </div>
@@ -238,30 +231,134 @@
             CL Chile Robotics {{ app_name }}@{{ app_version }} | Colector centralizado de métricas y logs
         </footer>
     </div>
+
+    <!-- Popup Compra: componentes del Kit (contenido dinámico según tab activo) -->
+    <dialog id="popup-compra" class="popup-compra" aria-labelledby="popup-compra-title" aria-modal="true">
+        <div class="popup-compra-inner">
+            <h2 id="popup-compra-title" class="popup-compra-title">Componentes del Kit UltraSonicS Estandar</h2>
+            <button type="button" class="popup-compra-close" id="popup-compra-close" aria-label="Cerrar">&times;</button>
+            <div class="popup-compra-list" id="popup-compra-list"></div>
+        </div>
+    </dialog>
+
     <script>
     (function() {
-        var images = {
-            estandar: { micro: "{{ url_for('static', filename='images/nodemcu-v2.png') }}", sensor: "{{ url_for('static', filename='images/hc-sr04.png') }}", microAlt: "NodeMCU v2", sensorAlt: "Sensor HC-SR04" },
-            pro: { micro: "{{ url_for('static', filename='images/esp32.png') }}", sensor: "{{ url_for('static', filename='images/jsn-sr04t.png') }}", microAlt: "ESP32", sensorAlt: "Sensor ultrasonido sumergible JSN-SR04T" }
+        var base = "{{ url_for('static', filename='') }}";
+        var whatsappImg = base + "images/whatsapp.svg";
+        var gmailImg = "https://cdn.simpleicons.org/gmail/EA4335";
+        var alexaImg = base + "images/alexa.svg";
+        var googleHomeImg = base + "images/google-home.svg";
+        var mqttImg = base + "images/mqtt.svg";
+
+        var kitData = {
+            estandar: {
+                title: 'Sensor de Profundidad: <span class="product-seal-title-kit">Kit UltraSS Estandar</span>',
+                popupTitle: 'Componentes del Kit UltraSonicS Estandar',
+                sensorType: 'Sensor ultrasonido HC-SR04',
+                tech: [
+                    'Microcontrolador: NodeMCU v2 — ESP8266, 80 MHz, 4 MB Flash, 64 KB RAM',
+                    '<img src="' + whatsappImg + '" alt="" class="product-seal-icon" aria-hidden="true"> Alertas por WhatsApp',
+                    '<img src="' + gmailImg + '" alt="" class="product-seal-icon" aria-hidden="true"> Alertas por email',
+                    '<img src="' + alexaImg + '" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true"><img src="' + googleHomeImg + '" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true"> Ready',
+                    '<img src="' + mqttImg + '" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true"> Compatible IoT'
+                ],
+                popupItems: [
+                    { img: base + 'images/nodemcu-v2.png', alt: 'NodeMCU v2', title: 'NodeMCU v2', specs: ['Microcontrolador: ESP8266', 'Frecuencia: 80 MHz', 'Flash: 4 MB', 'RAM: 64 KB', 'WiFi integrado 802.11 b/g/n'] },
+                    { img: base + 'images/hc-sr04.png', alt: 'Sensor HC-SR04', title: 'Sensor HC-SR04', specs: ['Tipo: Ultrasónico', 'Frecuencia: 40 kHz', 'Rango: 2 cm - 400 cm', 'Precisión: ±3 mm', 'Voltaje: 5V DC'] }
+                ]
+            },
+            pro: {
+                title: 'Sensor de Profundidad: <span class="product-seal-title-kit">Kit UltraSS Pro</span>',
+                popupTitle: 'Componentes del Kit UltraSonicS Pro',
+                sensorType: 'Sensor ultrasonido JSN-SR04T sumergible',
+                tech: [
+                    'Microcontrolador: ESP32 — Dual-core 240 MHz, 4 MB Flash, 520 KB RAM',
+                    '<img src="' + whatsappImg + '" alt="" class="product-seal-icon" aria-hidden="true"> Alertas por WhatsApp',
+                    '<img src="' + gmailImg + '" alt="" class="product-seal-icon" aria-hidden="true"> Alertas por email',
+                    '<img src="' + alexaImg + '" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true"><img src="' + googleHomeImg + '" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true"> Ready',
+                    '<img src="' + mqttImg + '" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true"> Compatible IoT'
+                ],
+                popupItems: [
+                    { img: base + 'images/esp32.png', alt: 'ESP32', title: 'ESP32', specs: ['Microcontrolador: Dual-core 240 MHz', 'Flash: 4 MB', 'RAM: 520 KB', 'WiFi + Bluetooth integrado', 'GPIO: 36 pines'] },
+                    { img: base + 'images/jsn-sr04t.png', alt: 'Sensor JSN-SR04T', title: 'Sensor JSN-SR04T', specs: ['Tipo: Ultrasónico sumergible', 'Frecuencia: 40 kHz', 'Rango: 25 cm - 450 cm', 'IP65 resistente al agua', 'Voltaje: 5V DC'] }
+                ]
+            }
         };
+
+        function getActiveTab() {
+            var active = document.querySelector('.product-tab.active');
+            return active ? active.getAttribute('data-tab') : 'pro';
+        }
+
+        function updateKitContent(tab) {
+            var data = kitData[tab] || kitData.pro;
+            var titleEl = document.getElementById('product-seal-title');
+            var sensorTypeEl = document.getElementById('product-sensor-type');
+            var techListEl = document.getElementById('product-seal-list-tech');
+            if (titleEl) titleEl.innerHTML = data.title;
+            if (sensorTypeEl) sensorTypeEl.textContent = data.sensorType;
+            if (techListEl && data.tech) {
+                techListEl.innerHTML = data.tech.map(function(item) { return '<li>' + item + '</li>'; }).join('');
+            }
+        }
+
+        function updatePopupContent(tab) {
+            var data = kitData[tab] || kitData.pro;
+            var titleEl = document.getElementById('popup-compra-title');
+            var listEl = document.getElementById('popup-compra-list');
+            if (titleEl) titleEl.textContent = data.popupTitle;
+            if (listEl && data.popupItems) {
+                listEl.innerHTML = data.popupItems.map(function(item) {
+                    return '<div class="popup-compra-item">' +
+                        '<div class="popup-compra-img-wrap"><img src="' + item.img + '" alt="' + item.alt + '" class="popup-compra-img"></div>' +
+                        '<div class="popup-compra-info">' +
+                        '<h3 class="popup-compra-item-title">' + item.title + '</h3>' +
+                        '<ul class="popup-compra-specs">' + item.specs.map(function(s) { return '<li>' + s + '</li>'; }).join('') + '</ul>' +
+                        '</div></div>';
+                }).join('');
+            }
+        }
+
         var tabs = document.querySelectorAll('.product-tab');
-        var imgMicro = document.getElementById('product-img-micro');
-        var imgSensor = document.getElementById('product-img-sensor');
+        var panelEstandar = document.getElementById('product-panel-estandar');
+        var panelPro = document.getElementById('product-panel-pro');
+
+        updateKitContent('pro');
+        updatePopupContent('pro');
+
         tabs.forEach(function(tab) {
             tab.addEventListener('click', function() {
                 var t = this.getAttribute('data-tab');
-                tabs.forEach(function(t) { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+                tabs.forEach(function(tb) { tb.classList.remove('active'); tb.setAttribute('aria-selected', 'false'); });
                 this.classList.add('active');
                 this.setAttribute('aria-selected', 'true');
-                var imgs = images[t];
-                if (imgs && imgMicro && imgSensor) {
-                    imgMicro.src = imgs.micro;
-                    imgMicro.alt = imgs.microAlt;
-                    imgSensor.src = imgs.sensor;
-                    imgSensor.alt = imgs.sensorAlt;
+                if (t === 'estandar') {
+                    if (panelEstandar) panelEstandar.style.display = '';
+                    if (panelPro) panelPro.style.display = 'none';
+                } else {
+                    if (panelEstandar) panelEstandar.style.display = 'none';
+                    if (panelPro) panelPro.style.display = 'flex';
                 }
+                updateKitContent(t);
+                updatePopupContent(t);
             });
         });
+
+        var btnCompra = document.getElementById('btn-compra');
+        var popup = document.getElementById('popup-compra');
+        var popupClose = document.getElementById('popup-compra-close');
+        if (btnCompra && popup) {
+            btnCompra.addEventListener('click', function() {
+                updatePopupContent(getActiveTab());
+                popup.showModal();
+            });
+        }
+        if (popupClose && popup) {
+            popupClose.addEventListener('click', function() { popup.close(); });
+        }
+        if (popup) {
+            popup.addEventListener('click', function(e) { if (e.target === popup) popup.close(); });
+        }
     })();
     </script>
 </body>
