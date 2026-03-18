@@ -34,38 +34,47 @@
         <section class="product-seal-section" aria-labelledby="product-seal-title">
             <div class="product-seals-grid">
                 <div class="product-seal product-seal-sc2">
+                    <a href="/monitor" class="product-seal-live-demo" title="Ver monitor en vivo">
+                        <img src="{{ url_for('static', filename='images/demo.svg') }}" alt="" aria-hidden="true">
+                        <span>Live Demo</span>
+                    </a>
                     <div class="product-seal-corner product-seal-corner-tl"></div>
                     <div class="product-seal-corner product-seal-corner-tr"></div>
                     <div class="product-seal-corner product-seal-corner-bl"></div>
                     <div class="product-seal-corner product-seal-corner-br"></div>
                     <div class="product-seal-scanline" aria-hidden="true"></div>
+                    <!-- SVG como fondo del card -->
+                    <div class="product-seal-images product-seal-bg-images" id="product-images-container">
+                        <div class="product-seal-img-wrap product-seal-svg-wrap" id="product-panel-estandar" style="display:none;">
+                            <img src="{{ url_for('static', filename='images/ultraSSEstandar.svg') }}" alt="" class="product-seal-svg" aria-hidden="true">
+                        </div>
+                        <div class="product-seal-img-wrap product-seal-svg-wrap" id="product-panel-pro">
+                            <img src="{{ url_for('static', filename='images/ultraSSPro.svg') }}" alt="" class="product-seal-svg" aria-hidden="true">
+                        </div>
+                    </div>
                     <div class="product-seal-content">
                         <h2 id="product-seal-title" class="product-seal-title">Sensor de Profundidad: <span class="product-seal-title-kit">Kit UltraSS Pro</span></h2>
                         <p class="product-seal-desc">
-                            Ocupado para medir distancia entre el sensor y un objeto. Su uso práctico contempla acumuladores de agua, pozos de profundidad.
+                            Ocupado para medir distancia entre el sensor y un objeto. Su uso práctico contempla acumuladores de agua, pozos de profundidad entre muchas otras aplicaciones prácticas.
                         </p>
-                        <p class="product-seal-metrics">
-                            Mide en tiempo real la distancia y entrega: <strong>porcentaje de llenado</strong>, <strong>litros estimados</strong>, <strong>estado del nivel</strong> (normal, alerta, peligro), <strong>historial diario y mensual</strong>.
-                        </p>
-                        <div class="product-seal-images" id="product-images-container">
-                            <!-- UltraSS Estandar: diagrama integrado ESP8266 + HC-SR04 -->
-                            <div class="product-seal-img-wrap product-seal-svg-wrap" id="product-panel-estandar" style="display:none;">
-                                <span class="product-seal-frame-corner tl"></span>
-                                <span class="product-seal-frame-corner tr"></span>
-                                <span class="product-seal-frame-corner bl"></span>
-                                <span class="product-seal-frame-corner br"></span>
-                                <img src="{{ url_for('static', filename='images/ultraSSEstandar.svg') }}" alt="NodeMCU ESP8266 + Sensor HC-SR04 integrados" class="product-seal-svg">
-                            </div>
-                            <!-- UltraSS Pro: diagrama integrado ESP32 + JSN-SR04T -->
-                            <div class="product-seal-img-wrap product-seal-svg-wrap" id="product-panel-pro">
-                                <span class="product-seal-frame-corner tl"></span>
-                                <span class="product-seal-frame-corner tr"></span>
-                                <span class="product-seal-frame-corner bl"></span>
-                                <span class="product-seal-frame-corner br"></span>
-                                <img src="{{ url_for('static', filename='images/ultraSSPro.svg') }}" alt="ESP32 + Sensor JSN-SR04T sumergible integrados" class="product-seal-svg">
-                            </div>
-                        </div>
+                        <p class="product-seal-metrics">📊 Mide en tiempo real la distancia y entrega: <strong>porcentaje de llenado</strong>, <strong>litros estimados</strong>, <strong>historial diario y mensual</strong>.</p>
+                        <p class="product-seal-metrics">🔔 <strong>Notificaciones y Alertas:</strong> por WhatsApp o email cuando el estanque baja de ciertos umbrales de peligro, así puede hablar directamente con proveedores o bien hablarse a sí mismo por el email.</p>
+                        <p class="product-seal-metrics">🖥️ <strong>GUI:</strong> vía plataforma web se puede acceder desde cualquier lugar a los datos del sensor en tiempo real, puede observar estadísticas históricas anuales, mensuales y diarias.</p>
+                        <p class="product-seal-metrics">📈 <strong>Estadísticas:</strong> se guardan las mediciones en la nube para poder entregar reportes de consumo, tasas de cambio, eficiencia de consumo y tendencias.</p>
                         <button type="button" class="product-seal-btn-compra" id="btn-compra" aria-haspopup="dialog" aria-controls="popup-compra">Compra</button>
+                        <!-- Logos oficiales: Pro = Bluetooth, WiFi, IoT, Alexa | Estandar = WiFi, IoT, Alexa -->
+                        <div class="product-seal-logos" id="product-seal-logos-pro">
+                            <img src="{{ url_for('static', filename='images/bluetooth.svg') }}" alt="Bluetooth" class="product-seal-logo" title="Bluetooth">
+                            <img src="{{ url_for('static', filename='images/wifi.svg') }}" alt="WiFi" class="product-seal-logo" title="WiFi">
+                            <img src="{{ url_for('static', filename='images/mqtt.svg') }}" alt="IoT" class="product-seal-logo product-seal-logo-mqtt" title="IoT">
+                            <img src="{{ url_for('static', filename='images/amazonalexa.svg') }}" alt="Alexa" class="product-seal-logo" title="Alexa">
+                            <svg class="product-seal-logo product-seal-logo-waterproof" role="img" viewBox="0 0 24 20" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" title="IP65 Waterproof"><path fill="none" stroke="#67e8f9" stroke-width="1.5" d="M12 1 L4 5 L4 12 Q12 22 20 12 L20 5 Z"/><path fill="#67e8f9" d="M12 6 C9 9 9 12 12 14 C15 12 15 9 12 6 Z"/></svg>
+                        </div>
+                        <div class="product-seal-logos" id="product-seal-logos-estandar" style="display:none;">
+                            <img src="{{ url_for('static', filename='images/wifi.svg') }}" alt="WiFi" class="product-seal-logo" title="WiFi">
+                            <img src="{{ url_for('static', filename='images/mqtt.svg') }}" alt="IoT" class="product-seal-logo product-seal-logo-mqtt" title="IoT">
+                            <img src="{{ url_for('static', filename='images/amazonalexa.svg') }}" alt="Alexa" class="product-seal-logo" title="Alexa">
+                        </div>
                     </div>
                 </div>
                 <div class="product-seal product-seal-purple">
@@ -79,11 +88,8 @@
                             <img src="{{ url_for('static', filename='images/gear.svg') }}" alt="" class="product-seal-gear" aria-hidden="true">
                             Características del sensor
                         </h2>
-                        <ul class="product-seal-list" id="product-seal-list">
-                            <li>Permite medir el nivel de profundidad del agua dentro de un estanque, pozo de profundidad, etc.</li>
-                            <li>Se puede usar para medir la proximidad de objetos.</li>
-                            <li id="product-sensor-type">Sensor ultrasonido JSN-SR04T sumergible</li>
-                        </ul>
+                        <ul class="product-seal-list" id="product-seal-list"></ul>
+                        <ul class="product-seal-list product-seal-list-pro" id="product-seal-list-pro"></ul>
                         <p class="product-seal-subtitle">Detalle Técnico</p>
                         <ul class="product-seal-list product-seal-list-tech" id="product-seal-list-tech"></ul>
                     </div>
@@ -145,7 +151,7 @@
                                 <circle cx="16" cy="11" r="0.8" fill="#ffffff"/>
                             </svg>
                         </span>
-                        <span class="integration-name">Sensores Inteligentes · Alexa y Google Home</span>
+                        <span class="integration-name">Sensores Inteligentes: Integración con Alexa y Google Home</span>
                     </div>
                     <div class="integration-info">
                         <code>MQTT</code>
@@ -203,7 +209,7 @@
                         <object type="image/svg+xml" data="{{ url_for('static', filename='images/sensor-animation.svg') }}?v=50" class="anim-svg-img" aria-label="Sensor ultrasónico - monitoreo de nivel de agua"></object>
                     </div>
                     <div class="anim-sello-agua" aria-hidden="true">
-                        <img src="https://cdn.simpleicons.org/gmail/EA4335" alt="" class="anim-sello-agua-logo">
+                        <img src="{{ url_for('static', filename='images/gmail.svg') }}" alt="" class="anim-sello-agua-logo">
                         <span>Alertas por email</span>
                     </div>
                     <div class="anim-sello-whatsapp" aria-hidden="true">
@@ -223,12 +229,167 @@
         </footer>
     </div>
 
-    <!-- Popup Compra: componentes del Kit (contenido dinámico según tab activo) -->
+    <!-- Popup Compra: paso 1 componentes, paso 2 suscripciones -->
     <dialog id="popup-compra" class="popup-compra" aria-labelledby="popup-compra-title" aria-modal="true">
         <div class="popup-compra-inner">
-            <h2 id="popup-compra-title" class="popup-compra-title">Componentes del Kit UltraSonicS Estandar</h2>
+            <button type="button" class="popup-compra-arrow popup-compra-arrow-left" id="popup-arrow-left" aria-label="Ver Kit NodeMCU (Estandar)">‹</button>
+            <button type="button" class="popup-compra-arrow popup-compra-arrow-right" id="popup-arrow-right" aria-label="Ver Kit ESP32 (Pro)">›</button>
             <button type="button" class="popup-compra-close" id="popup-compra-close" aria-label="Cerrar">&times;</button>
-            <div class="popup-compra-list" id="popup-compra-list"></div>
+
+            <!-- Indicador de pasos (siempre visible) -->
+            <div class="popup-step-dots" aria-label="Progreso del proceso">
+                <span class="popup-step-dot active" data-step="1" aria-current="step"></span>
+                <span class="popup-step-dot" data-step="2"></span>
+                <span class="popup-step-dot" data-step="3"></span>
+                <span class="popup-step-dot" data-step="4"></span>
+                <span class="popup-step-dot" data-step="5"></span>
+            </div>
+
+            <!-- Paso 1: Componentes -->
+            <div class="popup-step" id="popup-step-1">
+                <div class="popup-step-header">
+                    <h2 id="popup-compra-title" class="popup-compra-title">Componentes del Kit UltraSonicS Estandar</h2>
+                    <div class="popup-compra-total" id="popup-compra-total">
+                        <div class="popup-compra-total-left">
+                            <span class="popup-compra-total-label">Total:</span>
+                            <span class="popup-compra-total-value" id="popup-compra-total-value">$0</span>
+                        </div>
+                        <button type="button" class="popup-compra-btn-continuar" id="popup-compra-continuar">Continuar</button>
+                    </div>
+                </div>
+                <div class="popup-step-scroll">
+                    <div class="popup-compra-list" id="popup-compra-list"></div>
+                </div>
+            </div>
+
+            <!-- Paso 2: Suscripciones -->
+            <div class="popup-step popup-step-hidden" id="popup-step-2">
+                <div class="popup-step-header">
+                    <button type="button" class="popup-compra-volver" id="popup-compra-volver">← Volver</button>
+                    <h2 class="popup-compra-title" id="popup-compra-title-subs">Suscripciones</h2>
+                    <div class="popup-compra-total" id="popup-compra-total-subs">
+                        <div class="popup-compra-total-left">
+                            <span class="popup-compra-total-label">Total suscripciones:</span>
+                            <span class="popup-compra-total-value" id="popup-compra-total-subs-value">$0</span>
+                        </div>
+                        <button type="button" class="popup-compra-btn-continuar" id="popup-compra-continuar-2">Continuar</button>
+                    </div>
+                </div>
+                <div class="popup-step-scroll">
+                    <div class="popup-compra-subs" id="popup-compra-subs"></div>
+                </div>
+            </div>
+
+            <!-- Paso 3: Datos para el Despacho -->
+            <div class="popup-step popup-step-hidden" id="popup-step-3">
+                <div class="popup-step-header">
+                    <button type="button" class="popup-compra-volver" id="popup-compra-volver-3">← Volver</button>
+                    <div class="popup-step-3-title-row">
+                        <h2 class="popup-compra-title">Datos para el Despacho</h2>
+                        <button type="button" class="popup-compra-btn-continuar" id="popup-compra-continuar-3">Continuar</button>
+                    </div>
+                </div>
+                <div class="popup-step-scroll">
+                    <form class="popup-despacho-form" id="popup-despacho-form">
+                        <div class="popup-despacho-field">
+                            <label for="popup-despacho-email">Email:</label>
+                            <input type="email" id="popup-despacho-email" name="email" placeholder="ejemplo@correo.com" required>
+                        </div>
+                        <div class="popup-despacho-field">
+                            <label for="popup-despacho-nombre">Nombre:</label>
+                            <input type="text" id="popup-despacho-nombre" name="nombre" required>
+                        </div>
+                        <div class="popup-despacho-field">
+                            <label for="popup-despacho-rut">Rut:</label>
+                            <input type="text" id="popup-despacho-rut" name="rut" required>
+                        </div>
+                        <div class="popup-despacho-field">
+                            <label for="popup-despacho-whatsapp">WhatsApp:</label>
+                            <input type="tel" id="popup-despacho-whatsapp" name="whatsapp" required>
+                        </div>
+                        <div class="popup-despacho-field">
+                            <label for="popup-despacho-comuna">Comuna:</label>
+                            <input type="text" id="popup-despacho-comuna" name="comuna" required>
+                        </div>
+                        <div class="popup-despacho-field">
+                            <label for="popup-despacho-region">Región:</label>
+                            <input type="text" id="popup-despacho-region" name="region" required>
+                        </div>
+                        <div class="popup-despacho-field">
+                            <label for="popup-despacho-direccion">Dirección Despacho:</label>
+                            <input type="text" id="popup-despacho-direccion" name="direccion" required>
+                        </div>
+                        <div class="popup-despacho-field">
+                            <label for="popup-despacho-extras">Datos Extras Despacho:</label>
+                            <textarea id="popup-despacho-extras" name="extras" rows="3"></textarea>
+                        </div>
+                        <div class="popup-despacho-field">
+                            <label for="popup-despacho-waze">Waze Link:</label>
+                            <input type="url" id="popup-despacho-waze" name="waze" placeholder="https://waze.com/...">
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Paso 4: Pago -->
+            <div class="popup-step popup-step-hidden" id="popup-step-4">
+                <div class="popup-step-header">
+                    <button type="button" class="popup-compra-volver" id="popup-compra-volver-4">← Volver</button>
+                    <div class="popup-step-3-title-row">
+                        <h2 class="popup-compra-title" id="popup-compra-title-pago">Pago: Kit UltraSS Estandar</h2>
+                        <button type="button" class="popup-compra-btn-continuar" id="popup-compra-finalizar">Confirmar</button>
+                    </div>
+                </div>
+                <div class="popup-step-scroll">
+                    <div class="popup-pago-resumen" id="popup-pago-resumen"></div>
+                    <h4 class="popup-pago-subtitle">¿Cómo vas a pagar?</h4>
+                    <div class="popup-pago-botones">
+                        <button type="button" class="popup-pago-boton" data-forma="transferencia"><span class="popup-pago-icono">🏦</span> Transferencia</button>
+                        <button type="button" class="popup-pago-boton" data-forma="mercadopago"><img src="https://www.mercadopago.cl/favicon.ico" alt="" class="popup-pago-logo"> MercadoPago</button>
+                    </div>
+                    <div class="popup-pago-glosa" id="popup-pago-glosa">
+                        <div class="popup-pago-glosa-content" id="glosa-transferencia" style="display:none;">
+                            <h4>Transferencia bancaria (Cuenta corriente)</h4>
+                            <p>La transacción se confirma en 24 hrs.</p>
+                            <div class="popup-pago-detalle">
+                                <div class="popup-pago-detalle-row"><strong>Banco:</strong> BCI</div>
+                                <div class="popup-pago-detalle-row"><strong>Nº cuenta:</strong> 70427160</div>
+                                <div class="popup-pago-detalle-row"><strong>Titular:</strong> Edgar Rodrigo Sánchez</div>
+                                <div class="popup-pago-detalle-row"><strong>RUT:</strong> 17.536.222-3</div>
+                                <div class="popup-pago-detalle-row"><strong>Email:</strong> grineldosanchez@yahoo.es</div>
+                                <div class="popup-pago-detalle-row"><strong>WhatsApp:</strong> <a href="https://wa.me/56986825231" target="_blank" rel="noopener">+56 9 8682 5231</a></div>
+                            </div>
+                        </div>
+                        <div class="popup-pago-glosa-content" id="glosa-mercadopago" style="display:none;">
+                            <h4><img src="https://www.mercadopago.cl/favicon.ico" alt="MercadoPago" class="popup-pago-logo"> MercadoPago</h4>
+                            <p>Con MercadoPago la compra es inmediata. La transacción se confirma de forma automática.</p>
+                        </div>
+                    </div>
+                    <div class="popup-pago-condiciones">
+                        <h4>Condiciones</h4>
+                        <p>Al confirmar aceptas los términos de la compra. Los datos de despacho serán utilizados para el envío. El pago debe realizarse según el medio elegido. Para transferencia, la confirmación puede tardar hasta 24 hrs hábiles.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 5: Confirmación -->
+            <div class="popup-step popup-step-hidden" id="popup-step-5">
+                <div class="popup-step-header">
+                    <h2 class="popup-compra-title">Confirmación</h2>
+                    <button type="button" class="popup-compra-btn-continuar" id="popup-compra-cerrar">Cerrar</button>
+                </div>
+                <div class="popup-step-scroll">
+                    <div class="popup-confirmacion" id="popup-confirmacion">
+                        <div class="popup-confirmacion-success">
+                            <div class="popup-confirmacion-icon">✅</div>
+                            <h3>¡Compra confirmada!</h3>
+                            <p>Tu pedido ha sido registrado. Datos de pago según el medio elegido:</p>
+                        </div>
+                        <div class="popup-confirmacion-total" id="popup-confirmacion-total"></div>
+                        <div class="popup-confirmacion-opciones" id="popup-confirmacion-opciones"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </dialog>
 
@@ -236,45 +397,96 @@
     (function() {
         var base = "{{ url_for('static', filename='') }}";
         var whatsappImg = base + "images/whatsapp.svg";
-        var gmailImg = "https://cdn.simpleicons.org/gmail/EA4335";
-        var alexaImg = base + "images/alexa.svg";
+        var gmailImg = base + "images/gmail.svg";
+        var alexaImg = base + "images/amazonalexa.svg";
         var googleHomeImg = base + "images/google-home.svg";
-        var mqttImg = base + "images/mqtt.svg";
+        var androidImg = base + "images/android.svg";
+
+        var listShared = [
+            '✅ Medir nivel de agua o de objetos frente a él.',
+            'Alertas por <img src="' + whatsappImg + '" alt="" class="product-seal-icon" aria-hidden="true"> <img src="' + gmailImg + '" alt="" class="product-seal-icon" aria-hidden="true">',
+            '<img src="' + alexaImg + '" alt="" class="product-seal-icon product-seal-icon-lg" aria-hidden="true"> compatible',
+            '<img src="' + googleHomeImg + '" alt="" class="product-seal-icon" aria-hidden="true"> compatible',
+            '✅ Wifi',
+            '<img src="' + androidImg + '" alt="" class="product-seal-icon" aria-hidden="true"> Android App'
+        ];
+        var listPro = [
+            '✅ Waterproof',
+            '✅ Bluetooth'
+        ];
 
         var kitData = {
             estandar: {
                 title: 'Sensor de Profundidad: <span class="product-seal-title-kit">Kit UltraSS Estandar</span>',
-                popupTitle: 'Componentes del Kit UltraSonicS Estandar',
-                sensorType: 'Sensor ultrasonido HC-SR04',
+                popupTitle: 'Componentes: Kit UltraSonicS Estandar',
+                popupSubsTitle: 'Suscripciones: Kit UltraSonicS Estandar',
+                popupPagoTitle: 'Pago: Kit UltraSS Estandar',
                 tech: [
                     'Microcontrolador: NodeMCU v2 — ESP8266, 80 MHz, 4 MB Flash, 64 KB RAM',
-                    '<img src="' + whatsappImg + '" alt="" class="product-seal-icon" aria-hidden="true"> Alertas por WhatsApp',
-                    '<img src="' + gmailImg + '" alt="" class="product-seal-icon" aria-hidden="true"> Alertas por email',
-                    '<img src="' + alexaImg + '" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true"><img src="' + googleHomeImg + '" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true"> Ready',
-                    '<img src="' + mqttImg + '" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true"> Compatible IoT'
+                    'WiFi: 802.11 b/g/n, 2.4 GHz (ESP8266)',
+                    'Sensor HC-SR04: Ultrasónico, 40 kHz, rango 2–400 cm, precisión ±3 mm, 5V DC'
                 ],
+                basePrice: 19500,
+                freeMonths: 1,
                 popupItems: [
-                    { img: base + 'images/nodemcu-v2.png', alt: 'NodeMCU v2', title: 'NodeMCU v2', specs: ['Microcontrolador: ESP8266', 'Frecuencia: 80 MHz', 'Flash: 4 MB', 'RAM: 64 KB', 'WiFi integrado 802.11 b/g/n'] },
-                    { img: base + 'images/hc-sr04.png', alt: 'Sensor HC-SR04', title: 'Sensor HC-SR04', specs: ['Tipo: Ultrasónico', 'Frecuencia: 40 kHz', 'Rango: 2 cm - 400 cm', 'Precisión: ±3 mm', 'Voltaje: 5V DC'] }
+                    { img: base + 'images/nodemcu-v2.png', alt: 'NodeMCU v2', title: 'NodeMCU v2', specs: ['Microcontrolador: ESP8266', 'Frecuencia: 80 MHz', 'Flash: 4 MB', 'RAM: 64 KB', 'WiFi integrado 802.11 b/g/n'], included: true },
+                    { img: base + 'images/hc-sr04.png', alt: 'Sensor HC-SR04', title: 'Sensor HC-SR04', specs: ['Tipo: Ultrasónico', 'Frecuencia: 40 kHz', 'Rango: 2 cm - 400 cm', 'Precisión: ±3 mm', 'Voltaje: 5V DC'], included: true },
+                    { img: base + 'images/cable-micro-usb.png', alt: 'Cable Micro USB', title: 'Cable Micro USB', specs: ['El cable no incluye adaptador de corriente'], included: true },
+                    { img: base + 'images/transformador-5v.png', alt: 'Transformador 5V', title: 'Transformador 5V genérico', specs: ['Para cargar ESP/NodeMCU', 'Salida: 5V DC', 'No incluye cable'], optional: true, price: 5000, key: 'transformador' },
+                    { img: base + 'images/caja-electronica.png', alt: 'Caja electrónica', title: 'Caja para componentes', specs: ['Caja pequeña para cubrir componentes eléctricos'], note: 'Foto de referencia', optional: true, price: 4000, key: 'caja' }
                 ]
             },
             pro: {
                 title: 'Sensor de Profundidad: <span class="product-seal-title-kit">Kit UltraSS Pro</span>',
-                popupTitle: 'Componentes del Kit UltraSonicS Pro',
-                sensorType: 'Sensor ultrasonido JSN-SR04T sumergible',
+                popupTitle: 'Componentes: Kit UltraSonicS Pro',
+                popupSubsTitle: 'Suscripciones: Kit UltraSonicS Pro',
+                popupPagoTitle: 'Pago: Kit UltraSS Pro',
                 tech: [
                     'Microcontrolador: ESP32 — Dual-core 240 MHz, 4 MB Flash, 520 KB RAM',
-                    '<img src="' + whatsappImg + '" alt="" class="product-seal-icon" aria-hidden="true"> Alertas por WhatsApp',
-                    '<img src="' + gmailImg + '" alt="" class="product-seal-icon" aria-hidden="true"> Alertas por email',
-                    '<img src="' + alexaImg + '" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true"><img src="' + googleHomeImg + '" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true"> Ready',
-                    '<img src="' + mqttImg + '" alt="" class="product-seal-icon product-seal-icon-sm" aria-hidden="true"> Compatible IoT'
+                    'WiFi: 802.11 b/g/n, 2.4 GHz + Bluetooth 4.2 (ESP32)',
+                    'Sensor JSN-SR04T: Ultrasónico sumergible, 40 kHz, rango 25–450 cm, IP65, 5V DC'
                 ],
+                basePrice: 35000,
+                freeMonths: 3,
                 popupItems: [
-                    { img: base + 'images/esp32.png', alt: 'ESP32', title: 'ESP32', specs: ['Microcontrolador: Dual-core 240 MHz', 'Flash: 4 MB', 'RAM: 520 KB', 'WiFi + Bluetooth integrado', 'GPIO: 36 pines'] },
-                    { img: base + 'images/jsn-sr04t.png', alt: 'Sensor JSN-SR04T', title: 'Sensor JSN-SR04T', specs: ['Tipo: Ultrasónico sumergible', 'Frecuencia: 40 kHz', 'Rango: 25 cm - 450 cm', 'IP65 resistente al agua', 'Voltaje: 5V DC'] }
+                    { img: base + 'images/esp32.png', alt: 'ESP32', title: 'ESP32', specs: ['Microcontrolador: Dual-core 240 MHz', 'Flash: 4 MB', 'RAM: 520 KB', 'WiFi + Bluetooth integrado', 'GPIO: 36 pines'], included: true },
+                    { img: base + 'images/jsn-sr04t.png', alt: 'Sensor JSN-SR04T', title: 'Sensor JSN-SR04T', specs: ['Tipo: Ultrasónico sumergible', 'Frecuencia: 40 kHz', 'Rango: 25 cm - 450 cm', 'IP65 resistente al agua', 'Voltaje: 5V DC'], included: true },
+                    { img: base + 'images/cable-micro-usb.png', alt: 'Cable Micro USB', title: 'Cable Micro USB', specs: ['El cable no incluye adaptador de corriente'], included: true },
+                    { img: base + 'images/transformador-5v.png', alt: 'Transformador 5V', title: 'Transformador 5V genérico', specs: ['Para cargar ESP/NodeMCU', 'Salida: 5V DC', 'No incluye cable'], optional: true, price: 5000, key: 'transformador' },
+                    { img: base + 'images/caja-electronica.png', alt: 'Caja electrónica', title: 'Caja para componentes', specs: ['Caja pequeña para cubrir componentes eléctricos'], note: 'Foto de referencia', optional: true, price: 4000, key: 'caja' },
+                    { img: base + 'images/cable-2m.png', alt: 'Cable 2 metros', title: 'Cable 2 metros', specs: ['Cable de extensión para sensor'], included: true }
                 ]
             }
         };
+
+        var popupState = { estandar: { step1: {}, step2: { mes: false, ano: false } }, pro: { step1: {}, step2: { mes: false, ano: false } } };
+        try {
+            var stored = localStorage.getItem('tomi_popup_state');
+            if (stored) popupState = JSON.parse(stored);
+        } catch (e) {}
+
+        function savePopupStateToStorage() {
+            try { localStorage.setItem('tomi_popup_state', JSON.stringify(popupState)); } catch (e) {}
+        }
+
+        function savePopupState(tab) {
+            var s1 = document.getElementById('popup-step-1');
+            var s2 = document.getElementById('popup-step-2');
+            if (s1 && !s1.classList.contains('popup-step-hidden')) {
+                document.querySelectorAll('#popup-compra-list .popup-compra-item[data-optional="1"]').forEach(function(el) {
+                    var cb = el.querySelector('.popup-compra-checkbox');
+                    var key = el.getAttribute('data-key');
+                    if (cb && key) popupState[tab].step1[key] = cb.checked;
+                });
+            }
+            if (s2 && !s2.classList.contains('popup-step-hidden')) {
+                var mesCb = document.getElementById('popup-subs-' + tab + '-mes');
+                var anoCb = document.getElementById('popup-subs-' + tab + '-ano');
+                if (mesCb) popupState[tab].step2.mes = mesCb.checked;
+                if (anoCb) popupState[tab].step2.ano = anoCb.checked;
+            }
+            savePopupStateToStorage();
+        }
 
         function getActiveTab() {
             var active = document.querySelector('.product-tab.active');
@@ -284,10 +496,15 @@
         function updateKitContent(tab) {
             var data = kitData[tab] || kitData.pro;
             var titleEl = document.getElementById('product-seal-title');
-            var sensorTypeEl = document.getElementById('product-sensor-type');
+            var listEl = document.getElementById('product-seal-list');
+            var listProEl = document.getElementById('product-seal-list-pro');
             var techListEl = document.getElementById('product-seal-list-tech');
             if (titleEl) titleEl.innerHTML = data.title;
-            if (sensorTypeEl) sensorTypeEl.textContent = data.sensorType;
+            if (listEl) listEl.innerHTML = listShared.map(function(item) { return '<li>' + item + '</li>'; }).join('');
+            if (listProEl) {
+                listProEl.innerHTML = listPro.map(function(item) { return '<li>' + item + '</li>'; }).join('');
+                listProEl.style.display = tab === 'pro' ? '' : 'none';
+            }
             if (techListEl && data.tech) {
                 techListEl.innerHTML = data.tech.map(function(item) { return '<li>' + item + '</li>'; }).join('');
             }
@@ -299,15 +516,228 @@
             var listEl = document.getElementById('popup-compra-list');
             if (titleEl) titleEl.textContent = data.popupTitle;
             if (listEl && data.popupItems) {
-                listEl.innerHTML = data.popupItems.map(function(item) {
-                    return '<div class="popup-compra-item">' +
+                var items = data.popupItems.slice().sort(function(a, b) {
+                    return (a.optional ? -1 : 1) - (b.optional ? -1 : 1);
+                });
+                listEl.innerHTML = items.map(function(item, idx) {
+                    var noteHtml = item.note ? '<p class="popup-compra-note">' + item.note + '</p>' : '';
+                    var itemId = 'popup-item-' + tab + '-' + idx;
+                    var checkHtml, priceHtml = '';
+                    if (item.included) {
+                        checkHtml = '<input type="checkbox" class="popup-compra-checkbox popup-compra-checkbox-readonly" checked disabled title="Incluido en el pack" id="' + itemId + '">';
+                        priceHtml = '';
+                    } else if (item.optional) {
+                        checkHtml = '<input type="checkbox" class="popup-compra-checkbox" data-price="' + (item.price || 0) + '" id="' + itemId + '">';
+                        priceHtml = ' <span class="popup-compra-price">$' + (item.price || 0).toLocaleString('es-CL') + '</span>';
+                    } else {
+                        checkHtml = '<input type="checkbox" class="popup-compra-checkbox popup-compra-checkbox-readonly" checked disabled title="Incluido" id="' + itemId + '">';
+                        priceHtml = '';
+                    }
+                    return '<div class="popup-compra-item" data-optional="' + (item.optional ? '1' : '0') + '" data-key="' + (item.key || '') + '">' +
+                        '<div class="popup-compra-item-main">' +
                         '<div class="popup-compra-img-wrap"><img src="' + item.img + '" alt="' + item.alt + '" class="popup-compra-img"></div>' +
                         '<div class="popup-compra-info">' +
-                        '<h3 class="popup-compra-item-title">' + item.title + '</h3>' +
+                        '<h3 class="popup-compra-item-title">' + item.title + priceHtml + '</h3>' +
                         '<ul class="popup-compra-specs">' + item.specs.map(function(s) { return '<li>' + s + '</li>'; }).join('') + '</ul>' +
-                        '</div></div>';
+                        noteHtml + '</div></div>' +
+                        '<div class="popup-compra-check-wrap">' + checkHtml + '</div></div>';
                 }).join('');
+                var state = popupState[tab] && popupState[tab].step1;
+                if (state) {
+                    document.querySelectorAll('#popup-compra-list .popup-compra-item[data-optional="1"]').forEach(function(el) {
+                        var cb = el.querySelector('.popup-compra-checkbox');
+                        var key = el.getAttribute('data-key');
+                        if (cb && key && state[key] !== undefined) cb.checked = state[key];
+                    });
+                }
+                updatePopupTotal(tab);
             }
+        }
+
+        function updatePopupTotal(tab) {
+            var data = kitData[tab] || kitData.pro;
+            var basePrice = data.basePrice || 0;
+            var extra = 0;
+            document.querySelectorAll('#popup-compra-list .popup-compra-checkbox:checked').forEach(function(cb) {
+                extra += parseInt(cb.getAttribute('data-price') || 0, 10);
+            });
+            var total = basePrice + extra;
+            var totalEl = document.getElementById('popup-compra-total-value');
+            if (totalEl) totalEl.textContent = '$' + total.toLocaleString('es-CL');
+        }
+
+        function showPopupStep(step) {
+            var s1 = document.getElementById('popup-step-1');
+            var s2 = document.getElementById('popup-step-2');
+            var s3 = document.getElementById('popup-step-3');
+            var s4 = document.getElementById('popup-step-4');
+            var s5 = document.getElementById('popup-step-5');
+            if (s1) s1.classList.toggle('popup-step-hidden', step !== 1);
+            if (s2) s2.classList.toggle('popup-step-hidden', step !== 2);
+            if (s3) s3.classList.toggle('popup-step-hidden', step !== 3);
+            if (s4) s4.classList.toggle('popup-step-hidden', step !== 4);
+            if (s5) s5.classList.toggle('popup-step-hidden', step !== 5);
+            // Actualizar pelotitas: completados = done, actual = active
+            document.querySelectorAll('.popup-step-dot').forEach(function(dot, i) {
+                var n = i + 1;
+                dot.classList.toggle('done', n < step);
+                dot.classList.toggle('active', n === step);
+                dot.setAttribute('aria-current', n === step ? 'step' : null);
+            });
+        }
+
+        function updateConfirmacionContent() {
+            var tab = getActiveTab();
+            var totalCompra = getTotalCompra(tab);
+            var totalSubs = getTotalSubs(tab);
+            var total = totalCompra + totalSubs;
+            var selBtn = document.querySelector('.popup-pago-boton.selected');
+            var formaPago = selBtn ? selBtn.getAttribute('data-forma') : '';
+            var formaNombre = { transferencia: 'Transferencia bancaria', mercadopago: 'MercadoPago' }[formaPago] || '';
+            var email = (document.getElementById('popup-despacho-email') && document.getElementById('popup-despacho-email').value) || '';
+            var whatsapp = (document.getElementById('popup-despacho-whatsapp') && document.getElementById('popup-despacho-whatsapp').value) || '';
+            var totalEl = document.getElementById('popup-confirmacion-total');
+            var opcionesEl = document.getElementById('popup-confirmacion-opciones');
+            if (totalEl) totalEl.textContent = 'Total a pagar: $' + total.toLocaleString('es-CL');
+            if (opcionesEl) {
+                var html = '';
+                if (formaPago === 'transferencia') {
+                    html = '<p>Te enviaremos los datos de transferencia a:</p>';
+                    if (email) html += '<p><strong>Email:</strong> ' + email + '</p>';
+                    if (whatsapp) html += '<p><strong>WhatsApp:</strong> ' + whatsapp + '</p>';
+                    if (!email && !whatsapp) html += '<p>Contacta por WhatsApp: <a href="https://wa.me/56986825231" target="_blank" rel="noopener">+56 9 8682 5231</a></p>';
+                } else if (formaPago === 'mercadopago') {
+                    html = '<p>Con MercadoPago la transacción se confirma de forma automática.</p>';
+                    if (email) html += '<p><strong>Email:</strong> ' + email + '</p>';
+                    if (whatsapp) html += '<p><strong>WhatsApp:</strong> ' + whatsapp + '</p>';
+                } else {
+                    html = '<p>Forma de pago: ' + formaNombre + '</p>';
+                }
+                opcionesEl.innerHTML = html;
+            }
+        }
+
+        function getTotalCompra(tab) {
+            var data = kitData[tab] || kitData.pro;
+            var base = data.basePrice || 0;
+            var extra = 0;
+            document.querySelectorAll('#popup-compra-list .popup-compra-checkbox:checked').forEach(function(cb) {
+                extra += parseInt(cb.getAttribute('data-price') || 0, 10);
+            });
+            return base + extra;
+        }
+
+        function getTotalSubs(tab) {
+            var extra = 0;
+            document.querySelectorAll('#popup-compra-subs .popup-subs-checkbox:checked').forEach(function(cb) {
+                extra += parseInt(cb.getAttribute('data-price') || 0, 10);
+            });
+            return extra;
+        }
+
+        function updatePopupPago(tab) {
+            var data = kitData[tab] || kitData.pro;
+            var titleEl = document.getElementById('popup-compra-title-pago');
+            if (titleEl && data.popupPagoTitle) titleEl.textContent = data.popupPagoTitle;
+            var basePrice = data.basePrice || 0;
+            var compraExtra = 0;
+            var compraRows = [];
+            compraRows.push('<div class="popup-pago-resumen-row"><span>Kit base</span><span>$' + basePrice.toLocaleString('es-CL') + '</span></div>');
+            document.querySelectorAll('#popup-compra-list .popup-compra-item[data-optional="1"]').forEach(function(el) {
+                var cb = el.querySelector('.popup-compra-checkbox');
+                if (cb && cb.checked) {
+                    var price = parseInt(cb.getAttribute('data-price') || 0, 10);
+                    var titEl = el.querySelector('.popup-compra-item-title') || el.querySelector('h3');
+                    var title = titEl ? titEl.textContent.replace(/\s*\$\d[\d.]*\s*/g, '').trim() : 'Opcional';
+                    compraExtra += price;
+                    compraRows.push('<div class="popup-pago-resumen-row"><span>' + title + '</span><span>$' + price.toLocaleString('es-CL') + '</span></div>');
+                }
+            });
+            var subtotalCompra = basePrice + compraExtra;
+            compraRows.push('<div class="popup-pago-resumen-row popup-pago-resumen-subtotal"><span>Subtotal componentes</span><span>$' + subtotalCompra.toLocaleString('es-CL') + '</span></div>');
+            var subsRows = [];
+            var subsTotal = 0;
+            document.querySelectorAll('#popup-compra-subs .popup-subs-checkbox').forEach(function(cb) {
+                if (cb.checked) {
+                    var price = parseInt(cb.getAttribute('data-price') || 0, 10);
+                    var parent = cb.closest('.popup-subs-item');
+                    var titleEl = parent && parent.querySelector('.popup-subs-title');
+                    var title = titleEl ? titleEl.textContent.replace(/\s*\$\d[\d.]*\s*/g, '').trim() : 'Suscripción';
+                    subsTotal += price;
+                    subsRows.push('<div class="popup-pago-resumen-row"><span>' + title + '</span><span>$' + price.toLocaleString('es-CL') + '</span></div>');
+                }
+            });
+            if (subsRows.length === 0) {
+                subsRows.push('<div class="popup-pago-resumen-row"><span>Free (incluido)</span><span>$0</span></div>');
+            }
+            subsRows.push('<div class="popup-pago-resumen-row popup-pago-resumen-subtotal"><span>Subtotal suscripciones</span><span>$' + subsTotal.toLocaleString('es-CL') + '</span></div>');
+            var total = subtotalCompra + subsTotal;
+            var selBtn = document.querySelector('.popup-pago-boton.selected');
+            var formaPago = selBtn ? selBtn.getAttribute('data-forma') : '';
+            var formaNombre = { transferencia: 'Transferencia bancaria', mercadopago: 'MercadoPago' }[formaPago] || '—';
+            var resumenEl = document.getElementById('popup-pago-resumen');
+            if (resumenEl) {
+                resumenEl.innerHTML = '<div class="popup-pago-resumen-block"><h4>Paso 1: Componentes</h4>' + compraRows.join('') + '</div>' +
+                    '<div class="popup-pago-resumen-block"><h4>Paso 2: Suscripciones</h4>' + subsRows.join('') + '</div>' +
+                    '<div class="popup-pago-resumen-block" id="popup-pago-forma-block"><h4>Paso 3: Forma de pago</h4><div class="popup-pago-resumen-row"><span>Método</span><span id="popup-pago-forma-value">' + formaNombre + '</span></div></div>' +
+                    '<div class="popup-pago-resumen-total"><span>Total a pagar</span><span id="popup-pago-total-value">$' + total.toLocaleString('es-CL') + '</span></div>';
+            }
+        }
+
+        function updatePopupSubs(tab) {
+            var data = kitData[tab] || kitData.pro;
+            var months = data.freeMonths || 1;
+            var freeName = tab === 'pro' ? 'Free Pro x 3 meses' : 'Free Estandar x 1 mes';
+            var subsTitleEl = document.getElementById('popup-compra-title-subs');
+            if (subsTitleEl && data.popupSubsTitle) subsTitleEl.textContent = data.popupSubsTitle;
+            var subsEl = document.getElementById('popup-compra-subs');
+            if (!subsEl) return;
+            var descHtml = '<p>• Se accede por la web o por la App a los datos desde cualquier parte del mundo.</p><p>• Se guardan los datos en la nube.</p>';
+            var descAnoHtml = descHtml + '<p><strong>Oferta:</strong> 2 meses gratis por la suscripción anual.</p>';
+            var freeId = 'popup-subs-' + tab + '-free';
+            var mesId = 'popup-subs-' + tab + '-mes';
+            var anoId = 'popup-subs-' + tab + '-ano';
+            subsEl.innerHTML = '<div class="popup-subs-item popup-subs-item-free">' +
+                '<div class="popup-subs-item-main">' +
+                '<div class="popup-subs-info">' +
+                '<h3 class="popup-subs-title">' + freeName + '</h3>' +
+                '<div class="popup-subs-detail">' + descHtml + '</div></div></div>' +
+                '<div class="popup-compra-check-wrap">' +
+                '<input type="checkbox" class="popup-compra-checkbox popup-compra-checkbox-readonly" checked disabled title="Incluido" id="' + freeId + '">' +
+                '</div></div>' +
+                '<div class="popup-subs-item popup-subs-item-mes">' +
+                '<div class="popup-subs-item-main">' +
+                '<div class="popup-subs-info">' +
+                '<h3 class="popup-subs-title">Suscripción x mes <span class="popup-compra-price">$5.000</span></h3>' +
+                '<div class="popup-subs-detail">' + descHtml + '</div></div></div>' +
+                '<div class="popup-compra-check-wrap">' +
+                '<input type="checkbox" class="popup-compra-checkbox popup-subs-checkbox" data-price="5000" id="' + mesId + '">' +
+                '</div></div>' +
+                '<div class="popup-subs-item popup-subs-item-ano">' +
+                '<div class="popup-subs-item-main">' +
+                '<div class="popup-subs-info">' +
+                '<h3 class="popup-subs-title">Suscripción por año <span class="popup-compra-price">$50.000</span></h3>' +
+                '<div class="popup-subs-detail">' + descAnoHtml + '</div></div></div>' +
+                '<div class="popup-compra-check-wrap">' +
+                '<input type="checkbox" class="popup-compra-checkbox popup-subs-checkbox" data-price="50000" id="' + anoId + '">' +
+                '</div></div>';
+            var state2 = popupState[tab] && popupState[tab].step2;
+            if (state2) {
+                var mesCb = document.getElementById(mesId);
+                var anoCb = document.getElementById(anoId);
+                if (mesCb) mesCb.checked = state2.mes;
+                if (anoCb) anoCb.checked = state2.ano;
+            }
+            updatePopupSubsTotal();
+        }
+
+        function updatePopupSubsTotal() {
+            var extra = 0;
+            document.querySelectorAll('#popup-compra-subs .popup-subs-checkbox:checked').forEach(function(cb) {
+                extra += parseInt(cb.getAttribute('data-price') || 0, 10);
+            });
+            var totalEl = document.getElementById('popup-compra-total-subs-value');
+            if (totalEl) totalEl.textContent = '$' + extra.toLocaleString('es-CL');
         }
 
         var tabs = document.querySelectorAll('.product-tab');
@@ -320,18 +750,36 @@
         tabs.forEach(function(tab) {
             tab.addEventListener('click', function() {
                 var t = this.getAttribute('data-tab');
+                var prevTab = getActiveTab();
+                if (prevTab !== t) savePopupState(prevTab);
                 tabs.forEach(function(tb) { tb.classList.remove('active'); tb.setAttribute('aria-selected', 'false'); });
                 this.classList.add('active');
                 this.setAttribute('aria-selected', 'true');
                 if (t === 'estandar') {
                     if (panelEstandar) panelEstandar.style.display = '';
                     if (panelPro) panelPro.style.display = 'none';
+                    var logosPro = document.getElementById('product-seal-logos-pro');
+                    var logosEstandar = document.getElementById('product-seal-logos-estandar');
+                    if (logosPro) logosPro.style.display = 'none';
+                    if (logosEstandar) logosEstandar.style.display = 'flex';
                 } else {
                     if (panelEstandar) panelEstandar.style.display = 'none';
                     if (panelPro) panelPro.style.display = '';
+                    var logosPro = document.getElementById('product-seal-logos-pro');
+                    var logosEstandar = document.getElementById('product-seal-logos-estandar');
+                    if (logosPro) logosPro.style.display = 'flex';
+                    if (logosEstandar) logosEstandar.style.display = 'none';
                 }
                 updateKitContent(t);
                 updatePopupContent(t);
+                var s2 = document.getElementById('popup-step-2');
+                var s4 = document.getElementById('popup-step-4');
+                if (s2 && !s2.classList.contains('popup-step-hidden')) {
+                    updatePopupSubs(t);
+                }
+                if (s4 && !s4.classList.contains('popup-step-hidden')) {
+                    updatePopupPago(t);
+                }
             });
         });
 
@@ -340,6 +788,7 @@
         var popupClose = document.getElementById('popup-compra-close');
         if (btnCompra && popup) {
             btnCompra.addEventListener('click', function() {
+                showPopupStep(1);
                 updatePopupContent(getActiveTab());
                 popup.showModal();
             });
@@ -347,9 +796,112 @@
         if (popupClose && popup) {
             popupClose.addEventListener('click', function() { popup.close(); });
         }
+        var btnContinuar = document.getElementById('popup-compra-continuar');
+        if (btnContinuar && popup) {
+            btnContinuar.addEventListener('click', function() {
+                savePopupState(getActiveTab());
+                showPopupStep(2);
+                updatePopupSubs(getActiveTab());
+            });
+        }
+        var btnContinuar2 = document.getElementById('popup-compra-continuar-2');
+        if (btnContinuar2 && popup) {
+            btnContinuar2.addEventListener('click', function() {
+                savePopupState(getActiveTab());
+                showPopupStep(3);
+            });
+        }
+        var btnVolver = document.getElementById('popup-compra-volver');
+        if (btnVolver) {
+            btnVolver.addEventListener('click', function() {
+                savePopupState(getActiveTab());
+                showPopupStep(1);
+            });
+        }
+        var btnVolver3 = document.getElementById('popup-compra-volver-3');
+        if (btnVolver3) {
+            btnVolver3.addEventListener('click', function() { showPopupStep(2); });
+        }
+        var btnContinuar3 = document.getElementById('popup-compra-continuar-3');
+        if (btnContinuar3 && popup) {
+            btnContinuar3.addEventListener('click', function() {
+                var form = document.getElementById('popup-despacho-form');
+                if (form && form.checkValidity()) {
+                    showPopupStep(4);
+                    updatePopupPago(getActiveTab());
+                } else if (form) {
+                    form.reportValidity();
+                }
+            });
+        }
+        var btnVolver4 = document.getElementById('popup-compra-volver-4');
+        if (btnVolver4) {
+            btnVolver4.addEventListener('click', function() { showPopupStep(3); });
+        }
+        var btnFinalizar = document.getElementById('popup-compra-finalizar');
+        if (btnFinalizar && popup) {
+            btnFinalizar.addEventListener('click', function() {
+                var selBtn = document.querySelector('.popup-pago-boton.selected');
+                if (!selBtn) {
+                    alert('Selecciona una forma de pago.');
+                    return;
+                }
+                updateConfirmacionContent();
+                showPopupStep(5);
+            });
+        }
+        var btnCerrar = document.getElementById('popup-compra-cerrar');
+        if (btnCerrar && popup) {
+            btnCerrar.addEventListener('click', function() { popup.close(); });
+        }
+        document.querySelectorAll('.popup-pago-boton[data-forma]').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                var forma = btn.getAttribute('data-forma');
+                document.querySelectorAll('.popup-pago-boton[data-forma]').forEach(function(b) { b.classList.remove('selected'); });
+                btn.classList.add('selected');
+                document.querySelectorAll('.popup-pago-glosa-content').forEach(function(g) { g.style.display = 'none'; });
+                var glosa = document.getElementById('glosa-' + forma);
+                if (glosa) glosa.style.display = 'block';
+                var formaVal = document.getElementById('popup-pago-forma-value');
+                var formaNombre = { transferencia: 'Transferencia bancaria', mercadopago: 'MercadoPago' }[forma] || '—';
+                if (formaVal) formaVal.textContent = formaNombre;
+            });
+        });
+        var arrowLeft = document.getElementById('popup-arrow-left');
+        var arrowRight = document.getElementById('popup-arrow-right');
+        function switchToOtherTab() {
+            var current = getActiveTab();
+            var targetTab = current === 'pro' ? document.getElementById('tab-estandar') : document.getElementById('tab-pro');
+            if (targetTab) targetTab.click();
+        }
+        if (arrowLeft) arrowLeft.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            switchToOtherTab();
+        });
+        if (arrowRight) arrowRight.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            switchToOtherTab();
+        });
         if (popup) {
             popup.addEventListener('click', function(e) { if (e.target === popup) popup.close(); });
         }
+        var popupList = document.getElementById('popup-compra-list');
+        if (popupList) popupList.addEventListener('change', function(e) {
+            if (e.target && e.target.classList.contains('popup-compra-checkbox')) {
+                updatePopupTotal(getActiveTab());
+                savePopupState(getActiveTab());
+            }
+        });
+        var popupSubs = document.getElementById('popup-compra-subs');
+        if (popupSubs) popupSubs.addEventListener('change', function(e) {
+            if (e.target && e.target.classList.contains('popup-subs-checkbox')) {
+                updatePopupSubsTotal();
+                savePopupState(getActiveTab());
+            }
+        });
     })();
     </script>
 </body>
